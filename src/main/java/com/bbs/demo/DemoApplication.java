@@ -1,3 +1,5 @@
+//application이 시작되면 main을 찾음
+
 package com.bbs.demo;
 
 import org.springframework.boot.SpringApplication;
@@ -8,6 +10,7 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
+		//SpringApplication.run(HelloController.class, args);
 	}
 
 }
