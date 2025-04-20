@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 카멜 케이스 자동 매핑 설정 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 쿼리 결과가 NULL인 경우에 대한 처리 -->
+        <setting name="callSettersOnNulls" value="true"/>
+        <!-- 실행 쿼리 로그 출력 -->
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+    
+    <typeHandlers>
+        <!-- LocalDateTime 타입 핸들러 -->
+        <typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler"/>
+    </typeHandlers>
+</configuration>
