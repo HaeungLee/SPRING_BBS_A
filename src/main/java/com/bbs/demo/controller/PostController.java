@@ -29,12 +29,12 @@ public class PostController {
 
     /** 게시글 상세 조회 + 조회수 증가 */
     @GetMapping("/view/{id}")
-    public String viewPost(@PathVariable("id") int posts_id, Model model, HttpSession session) {
+    public String viewPost(@PathVariable("id") int post_id, Model model, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if(currentUserId == null) currentUserId = 0;
         
-        postService.incrementViewCount(posts_id, currentUserId); // 조회수 증가
-        Post post = postService.getPostById(posts_id);
+        postService.incrementViewCount(post_id, currentUserId); // 조회수 증가
+        Post post = postService.getPostById(post_id);
         model.addAttribute("post", post);
         return "post/view";      // src/main/resources/templates/post/view.html
     }
@@ -60,14 +60,14 @@ public class PostController {
 
     /** 게시글 수정 폼 */
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") int posts_id, Model model, HttpSession session) {
+    public String showEditForm(@PathVariable("id") int post_id, Model model, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        Post post = postService.getPostById(posts_id);
-        if (post == null || post.getUsers_id() != currentUserId) {
+        Post post = postService.getPostById(post_id);
+        if (post == null || post.getUser_id() != currentUserId) {
             throw new RuntimeException("수정 권한이 없습니다.");
         }
 
@@ -77,26 +77,26 @@ public class PostController {
 
     /** 게시글 수정 처리 */
     @PostMapping("/edit/{id}")
-    public String updatePost(@PathVariable("id") int posts_id, @ModelAttribute Post post, HttpSession session) {
+    public String updatePost(@PathVariable("id") int post_id, @ModelAttribute Post post, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        post.setPosts_id(posts_id);
+        post.setPost_id(post_id);
         postService.updatePost(post, currentUserId);
-        return "redirect:/post/view/" + posts_id;
+        return "redirect:/post/view/" + post_id;
     }
 
     /** 게시글 삭제 처리 (JS confirm 으로 호출) */
     @PostMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") int posts_id, HttpSession session) {
+    public String deletePost(@PathVariable("id") int post_id, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        postService.deletePost(posts_id, currentUserId);
+        postService.deletePost(post_id, currentUserId);
         return "redirect:/post/list";
     }
 }

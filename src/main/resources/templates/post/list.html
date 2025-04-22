@@ -11,12 +11,13 @@
       <table class="table">
         <thead>
           <tr>
-            <th>글번호</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
+            <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="post : ${posts}">
-            <td th:text="${post.posts_id}"></td>
+            <td th:text="${post.post_id}"></td>
+            <td th:text="${post.title}"></td>
             <td th:text="${post.content}"></td>
             <td th:text="${post.region}"></td>
             <td th:text="${post.username}"></td>

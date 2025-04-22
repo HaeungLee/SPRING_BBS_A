@@ -5,59 +5,59 @@
 	<!-- 전체 게시글 조회: 작성자 이름 포함 -->
 	<select id="getAllPosts" resultType="com.bbs.demo.model.Post">
     	SELECT
-      		p.posts_id, p.file, p.content, p.region, p.views,
-      		p.created_at, p.updated_at, p.Users_id, p.is_notice,
-      		u.username AS username
+      		p.post_id, p.title, p.content, p.region, p.views,
+      		p.created_at, p.updated_at, p.user_id, p.is_notice,
+      		u.username
     	FROM Posts p
-    	JOIN Users u ON p.Users_id = u.User_id
+    	JOIN Users u ON p.user_id = u.user_id
     	ORDER BY p.created_at DESC
  	 </select>
 
 	<!-- 특정 게시글 조회: 작성자 이름 포함 -->
 	<select id="getPostById" parameterType="int" resultType="com.bbs.demo.model.Post">
     	SELECT
-     		p.posts_id, p.file, p.content, p.region, p.views,
-      		p.created_at, p.updated_at, p.Users_id, p.is_notice,
-      		u.username AS username
+     		p.post_id, p.title, p.content, p.region, p.views,
+      		p.created_at, p.updated_at, p.User_id, p.is_notice,
+      		u.username
     	FROM Posts p
-    	JOIN Users u ON p.Users_id = u.User_id
-    	WHERE p.posts_id = #{posts_id}
+    	JOIN Users u ON p.user_id = u.user_id
+    	WHERE p.post_id = #{post_id}
   </select>
 
 	<!-- 게시글 등록 -->
 	<insert id="insertPost" parameterType="com.bbs.demo.model.Post">
 		INSERT INTO Posts(
-			file, content, region, views,
-			created_at, updated_at, Users_id, is_notice
+			title, content, region, views,
+			created_at, updated_at, User_id, is_notice
 		)
 		VALUES(
-			#{file}, #{content}, #{region}, #{views},
-			#{created_at}, #{updated_at}, #{Users_id}, #{is_notice}
+			#{title}, #{content}, #{region}, #{views},
+			#{created_at}, #{updated_at}, #{user_id}, #{is_notice}
 		)
 	</insert>
 
 	<!-- 게시글 수정 (views 수정 제거됨) -->
 	<update id="updatePost" parameterType="com.bbs.demo.model.Post">
 		UPDATE Posts SET
-			file = #{file},
+			title = #{title},
 			content = #{content},
 			region = #{region},
 			updated_at = #{updated_at},
-			Users_id = #{Users_id},
+			user_id = #{user_id},
 			is_notice = #{is_notice}
-		WHERE posts_id = #{posts_id}
+		WHERE post_id = #{post_id}
 	</update>
 
 	<!-- 게시글 삭제 -->
 	<delete id="deletePost" parameterType="int">
-		DELETE FROM Posts WHERE posts_id = #{posts_id}
+		DELETE FROM Posts WHERE post_id = #{post_id}
 	</delete>
 
 	<!-- 조회수 증가 -->
 	<update id="incrementViewCount" parameterType="int">
 		UPDATE Posts
 		SET views = views + 1
-		WHERE posts_id = #{posts_id}
+		WHERE post_id = #{post_id}
 	</update>
 
 </mapper>

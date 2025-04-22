@@ -25,9 +25,9 @@ public class PostServiceImpl implements PostService {
     // ✅ 조회수 증가 + 게시글 조회 → 트랜잭션 처리
     @Override
     @Transactional
-    public Post getPostById(int posts_id) {
-        postMapper.incrementViewCount(posts_id); // 조회수 증가
-        return postMapper.getPostById(posts_id); // 게시글 조회
+    public Post getPostById(int post_id) {
+        postMapper.incrementViewCount(post_id); // 조회수 증가
+        return postMapper.getPostById(post_id); // 게시글 조회
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PostServiceImpl implements PostService {
         if(currentUserId == 0) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
-        post.setUsers_id(currentUserId);
+        post.setUser_id(currentUserId);
         LocalDateTime now = LocalDateTime.now();
         post.setCreated_at(now);
         post.setUpdated_at(now);
@@ -45,8 +45,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(Post post, int currentUserId) {
-        Post existing = postMapper.getPostById(post.getPosts_id());
-        if (existing == null || existing.getUsers_id() != currentUserId) {
+        Post existing = postMapper.getPostById(post.getPost_id());
+        if (existing == null || existing.getUser_id() != currentUserId) {
             throw new RuntimeException("작성자만 수정할 수 있습니다.");
         }
         post.setUpdated_at(LocalDateTime.now());
@@ -56,24 +56,24 @@ public class PostServiceImpl implements PostService {
     // ✅ 삭제에도 트랜잭션 (댓글 등 관련 처리 확장 대비)
     @Override
     @Transactional
-    public void deletePost(int posts_id, int currentUserId) {
-        Post post = postMapper.getPostById(posts_id);
-        if(post == null || post.getUsers_id() != currentUserId) {
+    public void deletePost(int post_id, int currentUserId) {
+        Post post = postMapper.getPostById(post_id);
+        if(post == null || post.getUser_id() != currentUserId) {
             throw new RuntimeException("작성자만 삭제할 수 있습니다.");
         }
 
-        // 향후 commentMapper.deleteByPostId(posts_id); 등 추가 가능
-        postMapper.deletePost(posts_id);
+        // 향후 commentMapper.deleteByPostId(post_id); 등 추가 가능
+        postMapper.deletePost(post_id);
     }
 
     // ⚠️ 기존 코드에서 중복으로 조회수 증가 호출 → 제거
     @Override
-    public void incrementViewCount(int posts_id, int currentUserId) {
-        Post post = postMapper.getPostById(posts_id);
-        if(post != null && post.getUsers_id() != currentUserId) {
-            postMapper.incrementViewCount(posts_id);
+    public void incrementViewCount(int post_id, int currentUserId) {
+        Post post = postMapper.getPostById(post_id);
+        if(post != null && post.getUser_id() != currentUserId) {
+            postMapper.incrementViewCount(post_id);
         }
         // 중복 호출 제거됨
-        // postMapper.incrementViewCount(posts_id);
+        // postMapper.incrementViewCount(post_id);
     }
 }
