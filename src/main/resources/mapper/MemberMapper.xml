@@ -2,4 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbs.demo.mapper.MemberMapper">
  
+    <resultMap id="MemberResultMap" type="com.bbs.demo.model.Member">
+        <id property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="nickname" column="nickname"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="isManager" column="is_manager"/>
+    </resultMap>
+
+    <select id="getAllMembers" resultMap="MemberResultMap">
+        SELECT * FROM Users
+    </select>
+
+    <select id="getMemberById" resultMap="MemberResultMap" parameterType="long">
+        SELECT * FROM Users WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertMember" parameterType="com.bbs.demo.model.Member">
+        INSERT INTO Users (username, password, email, nickname, created_at, is_manager)
+        VALUES (#{username}, #{password}, #{email}, #{nickname}, NOW(), #{isManager})
+    </insert>
+
+    <update id="updateMember" parameterType="com.bbs.demo.model.Member">
+        UPDATE Users
+        SET username = #{username}, password = #{password}, email = #{email}, nickname = #{nickname}, is_manager = #{isManager}
+        WHERE user_id = #{userId}
+    </update>
+    
+    <delete id="deleteMember" parameterType="int">
+        DELETE FROM Users WHERE user_id = #{userId}
+    </delete>
+    
 </mapper>
