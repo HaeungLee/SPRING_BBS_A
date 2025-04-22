@@ -124,7 +124,7 @@
 
     <div class="form-container">
         <h2 class="form-title" th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글 작성</h2>
-        
+        <!-- | 이거는 일부 특수문자가 있을때나, 여러개의 변수를 포함하는 URL을 전달할때, 하나의 탬플릿으로 인식하게 해줌. 근데 @{} 이거랑 작동 방식은 같음-->
         <form th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="title">제목</label>
