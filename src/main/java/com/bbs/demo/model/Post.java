@@ -18,4 +18,5 @@ public class Post {
 	private Integer Users_id;
 	private boolean isNotice;
 	
+	private String username;
 }

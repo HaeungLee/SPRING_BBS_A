@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+  <!-- head 부분 레이아웃 조각에 넘길 title -->
+  <head th:fragment="title">
     <title>게시글 목록</title>
-</head>
-<body>
+  </head>
 
-</body>
+  <body>
+    <!-- body 부분 레이아웃 조각에 넘길 section -->
+    <section th:fragment="section">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>글번호</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="post : ${posts}">
+            <td th:text="${post.posts_id}"></td>
+            <td th:text="${post.content}"></td>
+            <td th:text="${post.region}"></td>
+            <td th:text="${post.username}"></td>
+            <td th:text="${post.views}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </body>
 </html>

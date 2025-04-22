@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
-<head>
-    <title>게시글 상세 조회 및 댓글</title>
-</head>
-<body>
-
-</body>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="title">
+    <title>게시글 상세</title>
+  </head>
+  <body>
+    <section th:fragment="section">
+      <h1 th:text="${post.content}">제목</h1>
+      <p>작성자: <span th:text="${post.username}"></span></p>
+      <p>지역: <span th:text="${post.region}"></span></p>
+      <p>조회수: <span th:text="${post.views}"></span></p>
+      <!-- 수정/삭제 버튼은 작성자만 보이도록 -->
+      <div th:if="${#session.getAttribute('userId')} == post.Users_id">
+        <a th:href="@{|/post/edit/${post.posts_id}|}">수정</a>
+        <button th:onclick="'if(confirm(\'삭제하시겠습니까?\'))location.href=\'/post/delete/'+${post.posts_id}+'\';'">삭제</button>
+      </div>
+    </section>
+  </body>
 </html>
