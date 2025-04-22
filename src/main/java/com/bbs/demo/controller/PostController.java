@@ -22,7 +22,7 @@ public class PostController {
     public String listPosts(Model model) {
         List<Post> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);
-        return "post/postList";  // /src/main/resources/templates/post/list.html
+        return "post/list";  // /src/main/resources/templates/post/list.html
     }
 
     // 게시글 상세 조회
@@ -30,21 +30,21 @@ public class PostController {
     public String getPost(@PathVariable("id") int posts_id, Model model) {
         Post post = postService.getPostById(posts_id);
         model.addAttribute("post", post);
-        return "post/postDetail";
+        return "post/view";
     }
 
     // 게시글 등록 폼
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("post", new Post());
-        return "post/postForm";
+        return "post/form";
     }
 
     // 게시글 등록 처리
     @PostMapping("/new")
     public String createPost(@ModelAttribute Post post) {
         postService.insertPost(post);
-        return "redirect:/posts";
+        return "redirect:/list";
     }
 
     // 게시글 수정 폼
@@ -52,7 +52,7 @@ public class PostController {
     public String showEditForm(@PathVariable("id") int posts_id, Model model) {
         Post post = postService.getPostById(posts_id);
         model.addAttribute("post", post);
-        return "post/postForm";
+        return "post/form";
     }
 
     // 게시글 수정 처리
@@ -60,13 +60,13 @@ public class PostController {
     public String updatePost(@PathVariable("id") int posts_id, @ModelAttribute Post post) {
         post.setPosts_id(posts_id); // ID 설정
         postService.updatePost(post);
-        return "redirect:/posts";
+        return "redirect:/list";
     }
 
     // 게시글 삭제 처리
     @GetMapping("/delete/{id}")
     public String deletePost(@PathVariable("id") int posts_id) {
         postService.deletePost(posts_id);
-        return "redirect:/posts";
+        return "redirect:/list";
     }
 }
