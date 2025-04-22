@@ -1,5 +1,49 @@
 package com.bbs.demo.service.impl;
 
-public class CommentServiceImpl {
-    
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bbs.demo.mapper.CommentMapper;
+import com.bbs.demo.model.Comment;
+import com.bbs.demo.service.CommentService;
+
+@Service
+public class CommentServiceImpl implements CommentService {
+	
+	@Autowired
+	private CommentMapper commentMapper;
+
+	@Override
+	public List<Comment> getCommentsByPostId(int postId) {
+		// TODO Auto-generated method stub
+		return commentMapper.getCommentsByPostId(postId);
+	}
+
+	@Override
+	public void createComment(Comment comment) {
+		// TODO Auto-generated method stub
+		commentMapper.insertComment(comment);
+	}
+
+	@Override
+	public boolean updateComment(Comment comment, int userId) {
+		// TODO Auto-generated method stub
+		Comment existing = commentMapper.getCommentById(comment.getComment_id());
+		
+		if (existing != null && existing.getUsers_id() == userId) {
+			commentMapper.updateComment(comment);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteComment(int id, int userId) {
+		// TODO Auto-generated method stub
+		return commentMapper.deleteComment(id, userId) > 0;
+	}
+	
+
 }
