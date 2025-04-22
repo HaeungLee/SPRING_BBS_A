@@ -1,30 +1,104 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <!-- head 부분 레이아웃 조각에 넘길 title -->
   <head th:fragment="title">
     <title>게시글 목록</title>
+    <style>
+      .board-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .board-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .btn-write {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .table tr:hover {
+        background-color: #f5f5f5;
+      }
+      .table th {
+        background-color: #f2f2f2;
+      }
+      .post-title {
+        color: #0066cc;
+        text-decoration: none;
+      }
+      .post-title:hover {
+        text-decoration: underline;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .pagination a {
+        margin: 0 5px;
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+        text-decoration: none;
+        color: #333;
+      }
+      .pagination a.active {
+        background-color: #4CAF50;
+        color: white;
+      }
+    </style>
   </head>
 
   <body>
-    <!-- body 부분 레이아웃 조각에 넘길 section -->
     <section th:fragment="section">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="post : ${posts}">
-            <td th:text="${post.post_id}"></td>
-            <td th:text="${post.title}"></td>
-            <td th:text="${post.content}"></td>
-            <td th:text="${post.region}"></td>
-            <td th:text="${post.username}"></td>
-            <td th:text="${post.views}"></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="board-container">
+        <div class="board-header">
+          <h2>게시글 목록</h2>
+          <a th:href="@{/post/create}" class="btn-write">글 작성</a>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="post : ${posts}">
+              <td th:text="${post.post_id}"></td>
+              <td><a th:href="@{|/post/view/${post.post_id}|}" class="post-title" th:text="${post.title}"></a></td>
+              <td th:text="${#strings.abbreviate(post.content, 30)}"></td>
+              <td th:text="${post.region}"></td>
+              <td th:text="${post.username}"></td>
+              <td th:text="${post.views}"></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <!-- 페이징 처리 -->
+        <div class="pagination" th:if="${pagination != null}">
+          <a th:if="${pagination.prev}" th:href="@{|/post/list?page=${pagination.startPage - 1}|}">&laquo;</a>
+          <th:block th:each="num : ${#numbers.sequence(pagination.startPage, pagination.endPage)}"></th:block>
+            <a th:href="@{|/post/list?page=${num}|}" th:class="${pagination.page == num} ? 'active'" th:text="${num}"></a>
+          </th:block>
+          <a th:if="${pagination.next}" th:href="@{|/post/list?page=${pagination.endPage + 1}|}">&raquo;</a>
+        </div>
+      </div>
     </section>
   </body>
 </html>
