@@ -41,7 +41,7 @@ public class CommentController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		comment.setUserId(loginUser.getUserId());
+		comment.setUsers_id(loginUser.getUser_id());
 		commentService.createComment(comment);
 		return ResponseEntity.ok().build();
 
@@ -56,9 +56,9 @@ public class CommentController {
 		}
 
 		Comment comment = new Comment();
-		comment.setCommentId(id);
+		comment.setComment_id(id);
 		comment.setContent(body.get("content"));
-		boolean result = commentService.updateComment(comment, loginUser.getUserId());
+		boolean result = commentService.updateComment(comment, loginUser.getUser_id());
 		return result ? ResponseEntity.ok().build() : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
 
@@ -70,7 +70,7 @@ public class CommentController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		boolean result = commentService.deleteComment(id, loginUser.getUserId());
+		boolean result = commentService.deleteComment(id, loginUser.getUser_id());
 		return result ? ResponseEntity.ok(Collections.singletonMap("deleted", true))
 				: ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}

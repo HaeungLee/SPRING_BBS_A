@@ -30,9 +30,9 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean updateComment(Comment comment, int userId) {
 		// TODO Auto-generated method stub
-		Comment existing = commentMapper.getCommentById(comment.getCommentId());
+		Comment existing = commentMapper.getCommentById(comment.getComment_id());
 		
-		if (existing != null && existing.getUserId() == userId) {
+		if (existing != null && existing.getUsers_id() == userId) {
 			commentMapper.updateComment(comment);
 			return true;
 		}

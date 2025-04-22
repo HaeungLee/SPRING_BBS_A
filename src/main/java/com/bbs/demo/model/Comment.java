@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 public class Comment {
 	
-	private Integer commentId;
+	private Integer comment_id;
     private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Integer userId;
-    private Integer postId;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private Integer users_id;
+    private Integer post_id;
 }
