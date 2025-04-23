@@ -1,186 +1,305 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글 작성</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border-radius: 5px;
-        }
-        .form-title {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input[type="text"], 
-        .form-group select, 
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .form-group textarea {
-            resize: vertical;
-        }
-        .form-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            text-decoration: none;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        .file-help {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .attached-files {
-            list-style-type: none;
-            padding-left: 0;
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        .attached-files li {
-            padding: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #eee;
-        }
-        .attached-files li:last-child {
-            border-bottom: none;
-        }
-        .file-delete {
-            color: #dc3545;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-        header h1 {
-            margin: 0;
-            text-align: center;
-        }
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        .nav-links a {
-            color: white;
-            margin: 0 10px;
-            text-decoration: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title
+	th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글
+	작성</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	margin: 0;
+	padding: 20px;
+}
+
+.form-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
+}
+
+.form-title {
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.form-group {
+	margin-bottom: 20px;
+}
+
+.form-group label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.form-group input[type="text"], .form-group select, .form-group textarea
+	{
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+.form-group textarea {
+	resize: vertical;
+}
+
+.form-actions {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.btn {
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 16px;
+	text-decoration: none;
+}
+
+.btn-primary {
+	background-color: #007bff;
+	color: white;
+}
+
+.btn-secondary {
+	background-color: #6c757d;
+	color: white;
+}
+
+.file-help {
+	font-size: 12px;
+	color: #666;
+	margin-top: 5px;
+}
+
+.attached-files {
+	list-style-type: none;
+	padding-left: 0;
+	background-color: #f9f9f9;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+.attached-files li {
+	padding: 5px 0;
+	display: flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #eee;
+}
+
+.attached-files li:last-child {
+	border-bottom: none;
+}
+
+.file-delete {
+	color: #dc3545;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+header {
+	background-color: #333;
+	color: white;
+	padding: 10px 0;
+	margin-bottom: 20px;
+}
+
+header h1 {
+	margin: 0;
+	text-align: center;
+}
+
+.nav-links {
+	display: flex;
+	justify-content: center;
+	margin-top: 10px;
+}
+
+.nav-links a {
+	color: white;
+	margin: 0 10px;
+	text-decoration: none;
+}
+
+input[type="file"]::file-selector-button {
+	margin-right: 0;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+	margin-right: 0;
+}
+
+input[type="file"] {
+	color: transparent;
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>게시판</h1>
-        <div class="nav-links">
-            <a th:href="@{/}">홈</a>
-            <a th:href="@{/post/list}">게시글 목록</a>
-        </div>
-    </header>
+	<header>
+		<h1>게시판</h1>
+		<div class="nav-links">
+			<a th:href="@{/}">홈</a> <a th:href="@{/post/list}">게시글 목록</a>
+		</div>
+	</header>
 
-    <div class="form-container">
-        <h2 class="form-title" th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글 작성</h2>
-        <!-- | 이거는 일부 특수문자가 있을때나, 여러개의 변수를 포함하는 URL을 전달할때, 하나의 탬플릿으로 인식하게 해줌. 근데 @{} 이거랑 작동 방식은 같음-->
-        <form th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="title">제목</label>
-                <input type="text" id="title" name="title" th:value="${post != null ? post.title : ''}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="region">지역</label>
-                <select id="region" name="region" required>
-                    <option value="">지역 선택</option>
-                    <option value="서울" th:selected="${post != null && post.region == '서울'}">서울</option>
-                    <option value="경기" th:selected="${post != null && post.region == '경기'}">경기</option>
-                    <option value="인천" th:selected="${post != null && post.region == '인천'}">인천</option>
-                    <option value="강원" th:selected="${post != null && post.region == '강원'}">강원</option>
-                    <option value="충북" th:selected="${post != null && post.region == '충북'}">충북</option>
-                    <option value="충남" th:selected="${post != null && post.region == '충남'}">충남</option>
-                    <option value="대전" th:selected="${post != null && post.region == '대전'}">대전</option>
-                    <option value="경북" th:selected="${post != null && post.region == '경북'}">경북</option>
-                    <option value="경남" th:selected="${post != null && post.region == '경남'}">경남</option>
-                    <option value="대구" th:selected="${post != null && post.region == '대구'}">대구</option>
-                    <option value="울산" th:selected="${post != null && post.region == '울산'}">울산</option>
-                    <option value="부산" th:selected="${post != null && post.region == '부산'}">부산</option>
-                    <option value="전북" th:selected="${post != null && post.region == '전북'}">전북</option>
-                    <option value="전남" th:selected="${post != null && post.region == '전남'}">전남</option>
-                    <option value="광주" th:selected="${post != null && post.region == '광주'}">광주</option>
-                    <option value="제주" th:selected="${post != null && post.region == '제주'}">제주</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="content">내용</label>
-                <textarea id="content" name="content" rows="10" required th:text="${post != null ? post.content : ''}"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="files">파일 첨부</label>
-                <input type="file" id="files" name="files" multiple>
-                <div class="file-help">여러 파일을 선택하려면 Ctrl 키를 누른 상태에서 파일을 선택하세요.</div>
-            </div>
+	<div class="form-container">
+		<h2 class="form-title"
+			th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글
+			작성</h2>
+		<!-- | 이거는 일부 특수문자가 있을때나, 여러개의 변수를 포함하는 URL을 전달할때, 하나의 탬플릿으로 인식하게 해줌. 근데 @{} 이거랑 작동 방식은 같음-->
+		<form
+			th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}"
+			method="post" enctype="multipart/form-data">
+			<div class="form-group">
+				<label for="title">제목</label> <input type="text" id="title"
+					name="title" th:value="${post != null ? post.title : ''}" required>
+			</div>
 
-            <div class="form-group" th:if="${post.post_id != null && post.post_id > 0 && fileList != null && !fileList.empty}">
-                <label>첨부된 파일</label>
-                <ul class="attached-files">
-                    <li th:each="file : ${fileList}">
-                        <span th:text="${file.original_name}"></span>
-                        <a th:href="@{|/file/delete/${file.file_id}|}" class="file-delete" 
-                           onclick="return confirm('파일을 삭제하시겠습니까?');">삭제</a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="form-actions">
-                <a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
-                <button type="submit" class="btn btn-primary" th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">등록하기</button>
-            </div>
-        </form>
-    </div>
+			<div class="form-group">
+				<label for="region">지역</label> <select id="region" name="region"
+					required>
+					<option value="">지역 선택</option>
+					<option value="서울"
+						th:selected="${post != null && post.region == '서울'}">서울</option>
+					<option value="경기"
+						th:selected="${post != null && post.region == '경기'}">경기</option>
+					<option value="인천"
+						th:selected="${post != null && post.region == '인천'}">인천</option>
+					<option value="강원"
+						th:selected="${post != null && post.region == '강원'}">강원</option>
+					<option value="충북"
+						th:selected="${post != null && post.region == '충북'}">충북</option>
+					<option value="충남"
+						th:selected="${post != null && post.region == '충남'}">충남</option>
+					<option value="대전"
+						th:selected="${post != null && post.region == '대전'}">대전</option>
+					<option value="경북"
+						th:selected="${post != null && post.region == '경북'}">경북</option>
+					<option value="경남"
+						th:selected="${post != null && post.region == '경남'}">경남</option>
+					<option value="대구"
+						th:selected="${post != null && post.region == '대구'}">대구</option>
+					<option value="울산"
+						th:selected="${post != null && post.region == '울산'}">울산</option>
+					<option value="부산"
+						th:selected="${post != null && post.region == '부산'}">부산</option>
+					<option value="전북"
+						th:selected="${post != null && post.region == '전북'}">전북</option>
+					<option value="전남"
+						th:selected="${post != null && post.region == '전남'}">전남</option>
+					<option value="광주"
+						th:selected="${post != null && post.region == '광주'}">광주</option>
+					<option value="제주"
+						th:selected="${post != null && post.region == '제주'}">제주</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="content">내용</label>
+				<textarea id="content" name="content" rows="10" required
+					th:text="${post != null ? post.content : ''}"></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="files">파일 첨부</label><br>
+
+				<div style="display: flex; align-items: center; gap: 10px;">
+					<input type="file" id="files" name="files" multiple
+						accept="image/*"> <span id="file-count">선택된 파일 없음</span>
+				</div>
+
+				<div class="file-help">여러 파일을 선택하려면 Ctrl 키를 누른 상태에서 파일을 선택하세요.</div>
+			</div>
+
+			<div class="form-group">
+				<label>첨부된 파일</label>
+				<ul id="file-name-list" class="attached-files"></ul>
+			</div>
+
+
+			<div class="form-actions">
+				<a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
+				<button type="submit" class="btn btn-primary"
+					th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">등록하기</button>
+			</div>
+		</form>
+	</div>
+
+	<script>
+	let fileArray = [];
+
+	window.addEventListener("DOMContentLoaded", function () {
+		const fileInput = document.getElementById("files");
+		const fileCountSpan = document.getElementById("file-count");
+		const fileList = document.getElementById("file-name-list");
+
+		// 파일 선택 시
+		fileInput.addEventListener("change", function (event) {
+			const selectedFiles = Array.from(event.target.files);
+			fileArray = fileArray.concat(selectedFiles);
+
+			updateFileListDisplay();
+
+			// 같은 파일 다시 선택 가능하게
+			fileInput.value = "";
+		});
+
+		// 파일 목록 갱신
+		function updateFileListDisplay() {
+			fileList.innerHTML = "";
+
+			fileArray.forEach((file, index) => {
+				const li = document.createElement("li");
+
+				// 파일명
+				const fileName = document.createElement("span");
+				fileName.textContent = file.name;
+
+				// 삭제 버튼
+				const deleteBtn = document.createElement("a");
+				deleteBtn.href = "#";
+				deleteBtn.textContent = "삭제";
+				deleteBtn.className = "file-delete";
+				deleteBtn.style.marginLeft = "10px";
+				deleteBtn.style.color = "red";
+
+				// 삭제 시 처리
+				deleteBtn.onclick = function (e) {
+					e.preventDefault();
+					fileArray.splice(index, 1); // 배열에서 제거
+					updateFileListDisplay();     // UI 갱신
+				};
+
+				li.appendChild(fileName);
+				li.appendChild(deleteBtn);
+				fileList.appendChild(li);
+			});
+
+			// 개수 표시
+			fileCountSpan.textContent = fileArray.length > 0
+				? `파일 ${fileArray.length}개`
+				: "선택된 파일 없음";
+
+			// input.files 덮어쓰기
+			const dataTransfer = new DataTransfer();
+			fileArray.forEach(file => dataTransfer.items.add(file));
+			fileInput.files = dataTransfer.files;
+		}
+	});
+</script>
+
+
+
 </body>
 </html>
