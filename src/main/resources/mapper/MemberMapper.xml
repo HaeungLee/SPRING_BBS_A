@@ -8,8 +8,8 @@
         <result property="password" column="password"/>
         <result property="email" column="email"/>
         <result property="nickname" column="nickname"/>
-        <result property="createdAt" column="created_at"/>
         <result property="isManager" column="is_manager"/>
+        <result property="createdAt" column="created_at"/>
     </resultMap>
 
     <select id="getAllMembers" resultMap="MemberResultMap">
@@ -18,6 +18,10 @@
 
     <select id="getMemberById" resultMap="MemberResultMap" parameterType="long">
         SELECT * FROM Users WHERE user_id = #{userId}
+    </select>
+    
+    <select id="findByUsername" resultMap="MemberResultMap" parameterType="string">
+        SELECT * FROM Users WHERE username = #{username}
     </select>
 
     <insert id="insertMember" parameterType="com.bbs.demo.model.Member">

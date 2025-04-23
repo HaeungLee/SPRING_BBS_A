@@ -171,7 +171,7 @@
                     <li th:each="file : ${fileList}">
                         <span th:text="${file.original_name}"></span>
                         <a th:href="@{|/file/delete/${file.file_id}|}" class="file-delete" 
-                           onclick="return confirm('파일을 삭제하시겠습니까?');">삭제</a>
+                           th:onclick="|return confirm('파일을 삭제하시겠습니까?');|">삭제</a>
                     </li>
                 </ul>
             </div>

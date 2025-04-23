@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class Member {	
 	
-	private Integer user_id;
+	private Integer userId;  
     private String username;
     private String password;
     private String email;
     private String nickname;
     private String isManager;
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;  
 }
