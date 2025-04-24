@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 목록</title>
+</head>
+<body>
+    <h1>전체 회원 조회</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>아이디</th>
+                <th>이메일</th>
+                <th>닉네임</th>
+                <th>관리자 여부</th>
+                <th>가입일</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${members}">
+                <td th:text="${user.user_id}">1</td>
+                <td th:text="${user.username}">user1</td>
+                <td th:text="${user.email}">email@example.com</td>
+                <td th:text="${user.nickname}">닉네임</td>
+                <td th:text="${user.isManager}">N</td>
+                <td th:text="${user.createdAt}">2024-01-01</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/admin">← 관리자 홈으로</a></p>
+</body>
+</html>
