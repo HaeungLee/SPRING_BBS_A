@@ -1,7 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbs.demo.mapper.FileInfoMapper">
 
+	<resultMap id="FileInfoResultMap"
+		type="com.bbs.demo.model.FileInfo">
+		<id property="fileId" column="file_id" />
+		<result property="postId" column="post_id" />
+		<result property="fileOriginName" column="file_origin_name" />
+		<result property="fileStoreName" column="file_store_name" />
+		<result property="filePath" column="file_path" />
+		<result property="fileSize" column="file_size" />
+		<result property="uploadedAt" column="uploaded_at" />
+		<result property="isThumbnail" column="is_thumbnail" />
+		<result property="fileType" column="file_type" />
+	</resultMap>
 
+	<insert id="insertFileInfos">
+		INSERT INTO file_uploads (
+		post_id, file_origin_name, file_store_name,
+		file_path, file_size, uploaded_at,
+		is_thumbnail, file_type
+		)
+		VALUES
+		<foreach collection="list" item="file" separator=",">
+			(#{file.post_id}, #{file.file_origin_name}, #{file.file_store_name},
+			#{file.file_path},
+			#{file.fileSize}, #{file.uploadedAt},
+			#{file.isThumbnail}, #{file.fileType})
+		</foreach>
+	</insert>
+
+	<select id="findByPostId" resultMap="FileInfoResultMap"
+		parameterType="int">
+		SELECT * FROM file_uploads WHERE post_id = #{postId}
+	</select>
+
+	<select id="findById" resultMap="FileInfoResultMap"
+		parameterType="int">
+		SELECT * FROM file_uploads WHERE file_id = #{fileId}
+	</select>
+
+	<select id="findAll" resultMap="FileInfoResultMap">
+		SELECT * FROM file_uploads ORDER
+		BY uploaded_at DESC
+	</select>
+
+	<select id="findByStoredFileName" resultMap="FileInfoResultMap"
+		parameterType="string">
+		SELECT * FROM file_uploads WHERE file_store_name =
+		#{storedFileName} LIMIT 1
+	</select>
 
 </mapper>
