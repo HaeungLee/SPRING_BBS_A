@@ -86,49 +86,4 @@ public class FileController {
 				savedFile.getFileSize(), "uploadDate",
 				savedFile.getUploadedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 	}
-	
-
-//	// 첨부파일 다운로드
-//	@GetMapping("/post/download/{id}") // content-Disposition 설정되어 있으면 파일을 다운로드하도록 지시받음
-//	public ResponseEntity<Resource> downloadFile(@PathVariable("id") Long id) throws IOException {
-//		FileInfo file = filemapper.findById(id);
-//		Path filePath = uploadDir.resolve(file.getFile_store_name());
-//		Resource resource = new UrlResource(filePath.toUri());
-//
-//		String encodedFileName = URLEncoder.encode(file.getFile_origin_name(), StandardCharsets.UTF_8).replaceAll("\\+","%20");
-//
-//		return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM) // 브라우저가 파일을 다운로드 하도록 강제
-//				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
-//				.body(resource);
-//	}
-	
-	/*
-	 * @GetMapping("/post/view/{id}") // content_disposition 헤더가 설정되지 않으면 mime타입에 따라
-	 * 미리보기 또는 직접보기 모드로 처리 public ResponseEntity<Resource>
-	 * viewFile(@PathVariable("id") Long id) throws IOException { FileInfo file =
-	 * filemapper.findById(id); Path filePath =
-	 * uploadDir.resolve(file.getFile_store_name()); Resource resource = new
-	 * UrlResource(filePath.toUri());
-	 * 
-	 * String mimeType = file.getFileType(); if (mimeType == null ||
-	 * mimeType.isEmpty()) { mimeType = "application/octet-stream"; }
-	 * 
-	 * return ResponseEntity.ok() // 파일을 구분하려고 하는 것. 누르면 다운로드 / 아니면 볼 수 있게
-	 * .contentType(MediaType.parseMediaType(file.getFileType())).body(resource); }
-	 */
-
-	/*
-	 * @GetMapping("/delete/{id}") public String deleteFile(@PathVariable("id") Long
-	 * id) throws IOException { FileInfo file = filemapper.findById(id);
-	 * 
-	 * // 파일 삭제 Path filePath = uploadDir.resolve(file.getFile_store_name());
-	 * Files.deleteIfExists(filePath);
-	 * 
-	 * // DB에서 삭제 filemapper.deleteById(id);
-	 * 
-	 * // 파일을 업로드한 게시글의 view로 리다이렉트 하는 것이 이상적 // 여기서는 단순 리스트로 이동한다고 가정 return
-	 * "redirect:/post/view/"; }
-	 */
 }
-//MIME 타입(Content-Type)이 이미지, PDF등 브라우저에서 기본적으로 지원하는 형식일 경우, 브라우저는 파일을 다운로드 대신 바로 열어버릴 수 있음
-//RFC 5987 표준을 준수하면 대부분의 브라우저에서 한글 파일명을 올바르게 처리할 수 있음
