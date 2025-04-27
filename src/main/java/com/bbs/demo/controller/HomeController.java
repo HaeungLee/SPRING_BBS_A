@@ -84,6 +84,6 @@ public class HomeController {
          if (message != null && !message.isEmpty()) {
              model.addAttribute("errorMessage", message);
          }
-         return "ajax-error";
+         return "ajax-error";  
      }
 }

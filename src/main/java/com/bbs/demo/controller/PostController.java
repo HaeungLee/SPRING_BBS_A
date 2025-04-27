@@ -43,26 +43,16 @@ public class PostController {
 
     /** 게시글 상세 조회 + 조회수 증가 */
     @GetMapping("/view/{id}")
-    public String viewPost(@PathVariable("id") int post_id,
-                           Model model,
-                           HttpSession session) {
-    	
+    public String viewPost(@PathVariable("id") int post_id, Model model, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) currentUserId = 0;
 
-        Post post = postService.getPostById(post_id);
-        if (post == null) {
-            return "redirect:/post/list";
-        }
-
-        if (!Objects.equals(post.getUser_id(), currentUserId)) {
-            postService.incrementViewCount(post_id, currentUserId);
-        }
-
+        // ✅ getPostWithViewCount 호출 필수!
+        Post post = postService.getPostWithViewCount(post_id, currentUserId);
         model.addAttribute("post", post);
         return "post/view";
     }
-
+    
     /** 게시글 등록 폼 */
     @GetMapping("/create")
     public String showCreateForm(Model model) {

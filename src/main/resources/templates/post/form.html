@@ -144,6 +144,8 @@ input[type="file"] {
 	color: transparent;
 }
 </style>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
 	<header>
@@ -165,52 +167,27 @@ input[type="file"] {
 				<label for="title">제목</label> <input type="text" id="title"
 					name="title" th:value="${post != null ? post.title : ''}" required>
 			</div>
-
-			<div class="form-group">
-				<label for="region">지역</label> <select id="region" name="region"
-					required>
-					<option value="">지역 선택</option>
-					<option value="서울"
-						th:selected="${post != null && post.region == '서울'}">서울</option>
-					<option value="경기"
-						th:selected="${post != null && post.region == '경기'}">경기</option>
-					<option value="인천"
-						th:selected="${post != null && post.region == '인천'}">인천</option>
-					<option value="강원"
-						th:selected="${post != null && post.region == '강원'}">강원</option>
-					<option value="충북"
-						th:selected="${post != null && post.region == '충북'}">충북</option>
-					<option value="충남"
-						th:selected="${post != null && post.region == '충남'}">충남</option>
-					<option value="대전"
-						th:selected="${post != null && post.region == '대전'}">대전</option>
-					<option value="경북"
-						th:selected="${post != null && post.region == '경북'}">경북</option>
-					<option value="경남"
-						th:selected="${post != null && post.region == '경남'}">경남</option>
-					<option value="대구"
-						th:selected="${post != null && post.region == '대구'}">대구</option>
-					<option value="울산"
-						th:selected="${post != null && post.region == '울산'}">울산</option>
-					<option value="부산"
-						th:selected="${post != null && post.region == '부산'}">부산</option>
-					<option value="전북"
-						th:selected="${post != null && post.region == '전북'}">전북</option>
-					<option value="전남"
-						th:selected="${post != null && post.region == '전남'}">전남</option>
-					<option value="광주"
-						th:selected="${post != null && post.region == '광주'}">광주</option>
-					<option value="제주"
-						th:selected="${post != null && post.region == '제주'}">제주</option>
-				</select>
+			
+			<div style="margin-bottom:10px;">
+			  <input type="text" id="keyword" placeholder="장소 또는 주소 검색" style="width:70%;">
+			  <button type="button" onclick="searchPlace(event)">검색</button>
 			</div>
+			<div id="map" style="width:100%;height:400px;margin-bottom:10px;"></div>
+			
+			<div class="form-group">
+			   <label for="region">지역</label>
+			   <input type="text" id="region" name="region" readonly required 
+			          placeholder="지도에서 위치를 선택하거나 검색하세요" class="form-control">
+			   <input type="hidden" id="lat" name="lat">
+			   <input type="hidden" id="lng" name="lng">
+			 </div>
 
 			<div class="form-group">
 				<label for="content">내용</label>
 				<textarea id="content" name="content" rows="10" required
 					th:text="${post != null ? post.content : ''}"></textarea>
 			</div>
-
+  
 			<div class="form-group">
 				<label for="files">파일 첨부</label><br>
 
@@ -227,7 +204,6 @@ input[type="file"] {
 				<ul id="file-name-list" class="attached-files"></ul>
 			</div>
 
-
 			<div class="form-actions">
 				<a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
 				<button type="submit" class="btn btn-primary"
@@ -235,7 +211,100 @@ input[type="file"] {
 			</div>
 		</form>
 	</div>
+	
+	<script>
+	// 전역 변수로 선언
+	var map, marker, geocoder;
+	
+	window.onload = function() {
+		  kakao.maps.load(function() {
+		    var mapContainer = document.getElementById('map'),
+		        mapOption = {
+		            center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본값: 서울
+		            level: 7
+		        };
 
+		    // 전역 변수에 할당
+		    map = new kakao.maps.Map(mapContainer, mapOption);
+		    marker = new kakao.maps.Marker();
+		    geocoder = new kakao.maps.services.Geocoder();
+
+		    // 1. 내 위치 자동 표시
+		    if (navigator.geolocation) {
+		      navigator.geolocation.getCurrentPosition(function(position) {
+		        var lat = position.coords.latitude;
+		        var lng = position.coords.longitude;
+		        var locPosition = new kakao.maps.LatLng(lat, lng);
+
+		        // 지도 중심 이동 및 마커 표시
+		        map.setCenter(locPosition);
+		        marker.setMap(null);
+		        marker = new kakao.maps.Marker({ position: locPosition });
+		        marker.setMap(map);
+
+		        // 주소 자동 입력
+		        geocoder.coord2Address(lng, lat, function(result, status) {
+		          if (status === kakao.maps.services.Status.OK) {
+		            var addr = result[0].address.address_name;
+		            document.getElementById('region').value = addr;
+		            document.getElementById('lat').value = lat;
+		            document.getElementById('lng').value = lng;
+		          }
+		        });
+		      });
+		    }
+
+		    // 2. 지도 클릭 시 위치/주소 설정(기존 코드)
+		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+		      var latlng = mouseEvent.latLng;
+		      marker.setMap(null);
+		      marker = new kakao.maps.Marker({ position: latlng });
+		      marker.setMap(map);
+
+		      document.getElementById('lat').value = latlng.getLat();
+		      document.getElementById('lng').value = latlng.getLng();
+
+		      geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
+		        if (status === kakao.maps.services.Status.OK) {
+		          var addr = result[0].address.address_name;
+		          document.getElementById('region').value = addr;
+		        }
+		      });
+		    });
+		  });
+		};
+		
+		window.searchPlace = function(event) {
+		  if (event) event.preventDefault();
+		  
+		  var keyword = document.getElementById('keyword').value.trim();
+		  if (!keyword) {
+		    alert("검색어를 입력하세요!");
+		    return;
+		  }
+		  var ps = new kakao.maps.services.Places();
+		  ps.keywordSearch(keyword, function(data, status) {
+		    if (status === kakao.maps.services.Status.OK && data.length > 0) {
+		      var place = data[0];
+		      var lat = place.y;
+		      var lng = place.x;
+		      var locPosition = new kakao.maps.LatLng(lat, lng);
+
+		      map.setCenter(locPosition);
+		      marker.setMap(null);
+		      marker = new kakao.maps.Marker({ position: locPosition });
+		      marker.setMap(map);
+
+		      document.getElementById('lat').value = lat;
+		      document.getElementById('lng').value = lng;
+		      document.getElementById('region').value = place.address_name || place.road_address_name || place.place_name;
+		    } else {
+		      alert("검색 결과가 없습니다.");
+		    }
+		  });
+		};
+	</script>
+	
 	<script>
 	let fileArray = [];
 
@@ -298,8 +367,6 @@ input[type="file"] {
 		}
 	});
 </script>
-
-
 
 </body>
 </html>
