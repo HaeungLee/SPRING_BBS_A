@@ -1,26 +1,407 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>랜딩 홈페이지</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티 홈</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.2);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .nav {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 20px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3a7bd5;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f0f0f0;
+            color: #3a7bd5;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn-login {
+            background-color: white;
+            color: #3a7bd5;
+            border: 1px solid #3a7bd5;
+        }
+        
+        .btn-login:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .btn-register {
+            background-color: #3a7bd5;
+            color: white;
+        }
+        
+        .btn-register:hover {
+            background-color: #2d62b1;
+            box-shadow: 0 2px 8px rgba(58, 123, 213, 0.3);
+        }
+        
+        .main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 20px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 4rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #3a7bd5;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .feature-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+        
+        .cta-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .btn-cta {
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(58, 123, 213, 0.3);
+        }
+        
+        .btn-cta:hover {
+            background: linear-gradient(135deg, #2d62b1, #00bce4);
+            box-shadow: 0 8px 20px rgba(58, 123, 213, 0.4);
+        }
+        
+        .btn-cta i {
+            margin-left: 8px;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: #f5f5f5;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-section p {
+            line-height: 1.6;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: #ccc;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            color: #ccc;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            margin-top: 3rem;
+            text-align: center;
+            color: #999;
+            font-size: 0.8rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .header p {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
 </head>
-<style>
-    h1{
-        text-align: center;
-        margin-top: 50px;
-    }
-    a {
-        display: block;
-        text-align: center;
-        margin: 20px;
-        font-size: 20px;
-        text-decoration: none;
-        color: #007bff;
-        margin-top: 50px;
-    }
-</style>
 <body>
-    <h1>홈</h1>
-    <a th:href="@{/login}">로그인</a>
-    <a th:href="@{/post/list}">게시글 목록</a>
+    <!-- 네비게이션 바 -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="logo">A조 여행 게시판</a>
+            
+            <div class="nav-links">
+                <a href="#" class="active">홈</a>
+                <a th:href="@{/post/list}">게시판</a>
+                <a href="#">공지사항</a>
+                <a href="#">이벤트</a>
+            </div>
+            
+            <div class="auth-buttons" th:if="${session.userId == null}">
+                <a th:href="@{/login}" class="btn btn-login">로그인</a>
+                <a th:href="@{/register}" class="btn btn-register">회원가입</a>
+            </div>
+            <div class="auth-buttons" th:unless="${session.userId == null}">
+                <span th:text="${session.username}"></span>님 환영합니다!
+                <a href="#" class="btn btn-login">내 정보</a>
+                <a th:href="@{/logout}" class="btn btn-register">로그아웃</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 헤더 섹션 -->
+    <header class="header">
+        <div class="header-content">
+            <h1>여행 게시판 커뮤니티 포털에 오신 것을 환영합니다</h1>
+            <p>여행 관련 게시판, 정보 공유, 소통의 장을 제공합니다. 여러분의 생각과 경험을 공유해보세요.</p>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main">
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">활발한 커뮤니티</h3>
+                <p class="feature-text">의견을 나누고 정보를 공유하는 커뮤니티 활동에 참여하세요.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="feature-title">지역 기반 여행 정보</h3>
+                <p class="feature-text">여행 관련 소식과 정보를 지역 기반으로 확인 할 수 있습니다</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">안전한 환경</h3>
+                <p class="feature-text">개인정보 보호와 보안을 최우선으로 생각하는 안전한 커뮤니티 환경을 제공합니다.</p>
+            </div>
+        </section>
+        
+        <div class="cta-container">
+            <a th:href="@{/post/list}" class="btn btn-cta">
+                게시판 바로가기 <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>커뮤니티</h3>
+                <p>다양한 주제에 대한 토론과 정보 공유를 위한 온라인 커뮤니티 플랫폼입니다.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>바로가기</h3>
+                <ul class="footer-links">
+                    <li><a href="#">홈</a></li>
+                    <li><a th:href="@{/post/list}">게시판</a></li>
+                    <li><a href="#">공지사항</a></li>
+                    <li><a href="#">자주 묻는 질문</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>고객지원</h3>
+                <ul class="footer-links">
+                    <li><a href="#">문의하기</a></li>
+                    <li><a href="#">이용약관</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                    <li><a href="#">사이트맵</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 커뮤니티 포털. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

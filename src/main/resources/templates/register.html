@@ -1,11 +1,398 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>회원 가입</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        
+        /* body {
+            background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 0;
+        } */
+
+        body {
+            background-image: url('images/register.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .register-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: #65abf7;
+            outline: none;
+            box-shadow: 0 0 5px rgba(101, 171, 247, 0.3);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .btn-register {
+            background: linear-gradient(to right, #65abf7, #5d85e4);
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 15px;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(93, 133, 228, 0.3);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #d32f2f;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .validate-message {
+            font-size: 12px;
+            margin-top: 5px;
+            min-height: 18px;
+        }
+        
+        .invalid {
+            color: #d32f2f;
+        }
+        
+        .valid {
+            color: #2e7d32;
+        }
+        
+        .links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .links a {
+            color: #65abf7;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .links a:hover {
+            color: #5d85e4;
+            text-decoration: underline;
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .toggle-password:hover {
+            color: #333;
+        }
+        
+        .terms {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>회원 가입</h1>
-
+    <div class="register-container">
+        <h1>회원가입</h1>
+        
+        <div class="error-message" th:if="${registerError}" th:text="${registerError}"></div>
+        <div class="success-message" th:if="${registerSuccess}" th:text="${registerSuccess}"></div>
+        
+        <form method="post" id="registerForm" th:action="@{/register}" th:object="${member}">
+            <div class="form-group">
+                <label for="username">아이디 <span style="color:red;">*</span></label>
+                <input type="text" id="username" name="username" required minlength="4" maxlength="20" placeholder="4~20자의 영문, 숫자 조합">
+                <p class="validate-message" id="username-message"></p>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">비밀번호 <span style="color:red;">*</span></label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" required minlength="8" placeholder="8자 이상의 비밀번호">
+                    <span class="toggle-password" id="toggle-password">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
+                <p class="validate-message" id="password-message"></p>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인 <span style="color:red;">*</span></label>
+                <input type="password" id="confirmPassword" required placeholder="비밀번호 재입력">
+                <p class="validate-message" id="confirmPassword-message"></p>
+            </div>
+            
+            <div class="form-group">
+                <label for="nickname">닉네임 <span style="color:red;">*</span></label>
+                <input type="text" id="nickname" name="nickname" required placeholder="사이트에서 사용할 닉네임">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">이메일 <span style="color:red;">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="이메일 주소">
+                    <p class="validate-message" id="email-message"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">휴대폰 번호</label>
+                    <input type="tel" id="phone" name="phone" placeholder="숫자만 입력 (예: 01012345678)">
+                </div>
+            </div>
+            
+            <div class="terms">
+                <h3>이용약관</h3>
+                <p>
+                    본 서비스 이용약관은 회원가입 시 적용되며, 가입자는 아래 내용에 동의하는 것으로 간주됩니다.
+                    <br><br>
+                    1. 개인정보 수집 및 이용 동의: 회원가입 및 서비스 이용을 위해 필요한 최소한의 개인정보를 수집합니다.
+                    <br>
+                    2. 서비스 이용 약관: 본 서비스를 이용함에 있어 발생할 수 있는 모든 사항에 대해 동의합니다.
+                    <br>
+                    3. 마케팅 정보 수신 동의: 마케팅 정보 수신에 동의하시면 다양한 혜택과 소식을 받아보실 수 있습니다.
+                </p>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeTerms" required>
+                <label for="agreeTerms">이용약관에 동의합니다. (필수)</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="agreeMarketing" name="agreeMarketing">
+                <label for="agreeMarketing">마케팅 정보 수신에 동의합니다. (선택)</label>
+            </div>
+            
+            <button type="submit" class="btn-register">가입하기</button>
+        </form>
+        
+        <div class="links">
+            <p>이미 계정이 있으신가요?</p>
+            <a th:href="@{/login}">로그인</a>
+            <a th:href="@{/}">홈으로</a>
+        </div>
+    </div>
+    
+    <script>
+        // 비밀번호 표시/숨기기 토글
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        
+        // 아이디 유효성 검사
+        document.getElementById('username').addEventListener('input', function() {
+            const username = this.value;
+            const message = document.getElementById('username-message');
+            
+            if (username.length < 4) {
+                message.textContent = '아이디는 최소 4자 이상이어야 합니다.';
+                message.className = 'validate-message invalid';
+            } else if (!/^[A-Za-z0-9]+$/.test(username)) {
+                message.textContent = '아이디는 영문자와 숫자만 사용 가능합니다.';
+                message.className = 'validate-message invalid';
+            } else {
+                message.textContent = '사용 가능한 아이디입니다.';
+                message.className = 'validate-message valid';
+            }
+        });
+        
+        // 비밀번호 유효성 검사
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const message = document.getElementById('password-message');
+            
+            if (password.length < 8) {
+                message.textContent = '비밀번호는 최소 8자 이상이어야 합니다.';
+                message.className = 'validate-message invalid';
+            } else if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
+                message.textContent = '대문자, 소문자, 숫자를 모두 포함해야 합니다.';
+                message.className = 'validate-message invalid';
+            } else {
+                message.textContent = '안전한 비밀번호입니다.';
+                message.className = 'validate-message valid';
+            }
+            
+            // 비밀번호 확인 일치 여부 체크
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const confirmMessage = document.getElementById('confirmPassword-message');
+            
+            if (confirmPassword) {
+                if (password !== confirmPassword) {
+                    confirmMessage.textContent = '비밀번호가 일치하지 않습니다.';
+                    confirmMessage.className = 'validate-message invalid';
+                } else {
+                    confirmMessage.textContent = '비밀번호가 일치합니다.';
+                    confirmMessage.className = 'validate-message valid';
+                }
+            }
+        });
+        
+        // 비밀번호 확인
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const confirmPassword = this.value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('confirmPassword-message');
+            
+            if (password !== confirmPassword) {
+                message.textContent = '비밀번호가 일치하지 않습니다.';
+                message.className = 'validate-message invalid';
+            } else {
+                message.textContent = '비밀번호가 일치합니다.';
+                message.className = 'validate-message valid';
+            }
+        });
+        
+        // 이메일 유효성 검사
+        document.getElementById('email').addEventListener('input', function() {
+            const email = this.value;
+            const message = document.getElementById('email-message');
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            
+            if (!emailRegex.test(email)) {
+                message.textContent = '올바른 이메일 형식이 아닙니다.';
+                message.className = 'validate-message invalid';
+            } else {
+                message.textContent = '올바른 이메일 형식입니다.';
+                message.className = 'validate-message valid';
+            }
+        });
+        
+        // 폼 제출
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            // 비밀번호 일치 여부 확인
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            // 이용약관 동의 확인
+            if (!document.getElementById('agreeTerms').checked) {
+                e.preventDefault();
+                alert('이용약관에 동의해야 합니다.');
+                return;
+            }
+        });
+    </script>
 </body>
 </html>

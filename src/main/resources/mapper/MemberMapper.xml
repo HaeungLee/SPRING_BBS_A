@@ -8,8 +8,12 @@
         <result property="password" column="password"/>
         <result property="email" column="email"/>
         <result property="nickname" column="nickname"/>
+        <result property="phone" column="phone"/>
+        <result property="profileImg" column="profile_img"/>
+        <result property="agreeMarketing" column="agree_marketing"/>
         <result property="isManager" column="is_manager"/>
         <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
     <select id="getAllMembers" resultMap="MemberResultMap">
@@ -25,18 +29,23 @@
     </select>
 
     <insert id="insertMember" parameterType="com.bbs.demo.model.Member">
-        INSERT INTO Users (username, password, email, nickname, created_at, is_manager)
-        VALUES (#{username}, #{password}, #{email}, #{nickname}, NOW(), #{isManager})
+        INSERT INTO Users (username, password, email, nickname, phone, profile_img, agree_marketing, is_manager, created_at)
+        VALUES (#{username}, #{password}, #{email}, #{nickname}, #{phone}, #{profileImg}, #{agreeMarketing}, #{isManager}, NOW())
     </insert>
 
     <update id="updateMember" parameterType="com.bbs.demo.model.Member">
         UPDATE Users
-        SET username = #{username}, password = #{password}, email = #{email}, nickname = #{nickname}, is_manager = #{isManager}
+        SET username = #{username}, password = #{password}, email = #{email}, nickname = #{nickname}, 
+            phone = #{phone}, profile_img = #{profileImg}, agree_marketing = #{agreeMarketing}, is_manager = #{isManager}
         WHERE user_id = #{userId}
     </update>
     
     <delete id="deleteMember" parameterType="int">
         DELETE FROM Users WHERE user_id = #{userId}
     </delete>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM Users
+    </select>
     
 </mapper>

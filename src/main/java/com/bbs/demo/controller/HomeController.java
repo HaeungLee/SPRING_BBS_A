@@ -19,7 +19,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "home"; // home.html
+        return "home";
     }
 
     @Autowired
@@ -28,7 +28,7 @@ public class HomeController {
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("member", new Member());
-        return "login"; 
+        return "login";
     }
     
     @PostMapping("/login")
@@ -43,7 +43,7 @@ public class HomeController {
             //관리자 확인
             if ("Y".equals(loggedInMember.getIsManager())) {
                 session.setAttribute("isAdmin", true);
-            }            
+            }
             return "redirect:/";
         } else {
             redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -58,25 +58,39 @@ public class HomeController {
     
     // 회원가입 페이지
     @GetMapping("/register")
-    public String register() {
-        return "register"; // register.html
+    public String register(Model model) {
+        model.addAttribute("member", new Member());
+        return "register";
     }
 
     // 회원가입 처리
     @PostMapping("/register")
-    public String registerPost(@RequestParam String username,
-                               @RequestParam String password,
-                               @RequestParam String name,
-                               @RequestParam String email) {
-        // 실제 DB 저장 로직 생략 (UserService 등 필요)
-        // 저장 성공 후 로그인 페이지로 리디렉션
-        return "redirect:/login?registered";
+    public String registerPost(@ModelAttribute Member member, RedirectAttributes redirectAttributes) {
+        try {
+            // 아이디 중복
+            if (memberService.isUsernameDuplicated(member.getUsername())) {
+                redirectAttributes.addFlashAttribute("registerError", "이미 사용 중인 아이디입니다.");
+                return "redirect:/register";
+            }
+            boolean result = memberService.register(member);
+            
+            if (result) {
+                redirectAttributes.addFlashAttribute("registerSuccess", "회원가입이 완료되었습니다. 로그인해주세요.");
+                return "redirect:/login";
+            } else {
+                redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+                return "redirect:/register";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다: " + e.getMessage());
+            return "redirect:/register";
+        }
     }
 
-    // 접근 거부 페이지
+    // 접근 거부
     @GetMapping("/access-denied")
     public String accessDenied() {
-        return "access-denied"; // access-denied.html
+        return "access-denied";
     }
 
      @GetMapping("/ajax-error")
