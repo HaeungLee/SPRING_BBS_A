@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,13 +46,12 @@ public class FileController {
 	public ResponseEntity<?> uploadPost(@RequestParam("title") String title, @RequestParam("content") String content,
 			@RequestParam("userId") int userId,
 			@RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
-		
+
 		Post post = new Post();
 		post.setTitle(title);
 		post.setContent(content);
 
 		postService.createPost(post, userId, files);
-
 
 		return ResponseEntity.ok().body("파일 포함 게시글 등록 성공");
 	}

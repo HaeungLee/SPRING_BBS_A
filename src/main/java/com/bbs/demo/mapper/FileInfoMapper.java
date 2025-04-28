@@ -18,6 +18,11 @@ public interface FileInfoMapper {
 	void insert(FileInfo file);
 
 	List<FileInfo> findAll();
-
+	
+    List<FileInfo> findFilesByPostId(int postId);
+    
 	FileInfo findByStoredFileName(String storedFileName);
+
+
+	
 }
