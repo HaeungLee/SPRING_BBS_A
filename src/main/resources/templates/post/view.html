@@ -55,7 +55,17 @@
     .btn-back { background-color: #6c757d; }
     .btn-edit { background-color: #007bff; }
     .btn-delete { background-color: #dc3545; }
+    /* 지도 스타일 */
+    #post-map {
+      width: 100%;
+      height: 350px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.06);
+    }
   </style>
+  <!-- 카카오맵 API 스크립트 -->
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
   <div class="view-container">
@@ -70,6 +80,9 @@
 
     <div class="view-content" th:text="${post.content}">게시글 내용</div>
 
+    <!-- 지도 표시 영역 추가 -->
+    <div id="post-map"></div>
+
     <div class="attached-files" th:if="${post.files != null and !post.files.isEmpty()}">
       <strong>첨부파일:</strong>
       <ul>
@@ -81,11 +94,8 @@
     </div>
 
     <div class="btn-group">
-      <!-- 1) 목록으로 이동 -->
       <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
-      <!-- 2) 수정은 링크로만 처리 -->
       <a th:href="@{/post/edit/{id}(id=${post.post_id})}" class="btn btn-edit">수정</a>
-      <!-- 3) 삭제만 폼으로 처리 -->
       <form th:action="@{/post/delete/{id}(id=${post.post_id})}" method="post" style="display:inline;">
         <button type="submit" class="btn btn-delete"
                 onclick="return confirm('정말 삭제하시겠습니까?');">
@@ -94,5 +104,121 @@
       </form>
     </div>
   </div>
+
+  <!-- 지도 표시 JS (lat/lng 값이 없으면 지도 숨김) -->
+<script th:inline="javascript">
+window.onload = function() {
+  kakao.maps.load(function() {
+    var lat = /*[[${post.lat}]]*/ 0;
+    var lng = /*[[${post.lng}]]*/ 0;
+    
+    if (lat && lng) {
+      var mapContainer = document.getElementById('post-map');
+      var mapOption = {
+        center: new kakao.maps.LatLng(lat, lng),
+        level: 3
+      };
+      var map = new kakao.maps.Map(mapContainer, mapOption);
+      var marker = new kakao.maps.Marker({
+        map: map,
+        position: new kakao.maps.LatLng(lat, lng)
+      });
+
+      var places = new kakao.maps.services.Places();
+      var geocoder = new kakao.maps.services.Geocoder();
+      
+      // 1. 대형 랜드마크 검색을 위한 설정
+      places.keywordSearch('관광명소', function(data, status) {
+        var placeName = null;
+        
+        // 관광명소 검색 성공 시
+        if (status === kakao.maps.services.Status.OK && data.length > 0) {
+          var nearestPlace = findNearestPlace(data, lat, lng);
+          
+          // 1km 이내의 관광명소만 표시
+          if (calculateDistance(lat, lng, nearestPlace.y, nearestPlace.x) < 1000) {
+            placeName = nearestPlace.place_name;
+            
+            // 카테고리 확인 (테마파크/리조트 등)
+            if (nearestPlace.category_name.includes('관광명소') || 
+                nearestPlace.category_name.includes('테마파크') ||
+                nearestPlace.category_name.includes('리조트')) {
+              placeName = nearestPlace.place_name;
+            }
+          }
+        }
+
+        // 2. 관광명소가 없으면 일반 장소 검색
+        if (!placeName) {
+          places.keywordSearch('', function(generalData, generalStatus) {
+            if (generalStatus === kakao.maps.services.Status.OK && generalData.length > 0) {
+              var nearestGeneral = findNearestPlace(generalData, lat, lng);
+              if (calculateDistance(lat, lng, nearestGeneral.y, nearestGeneral.x) < 500) {
+                placeName = nearestGeneral.place_name;
+              }
+            }
+            
+            // 3. 최종적으로 주소 표시
+            if (!placeName) {
+              geocoder.coord2Address(lng, lat, function(result) {
+                var addr = result[0]?.road_address?.address_name || 
+                          result[0]?.address?.address_name || 
+                          "지정한 위치";
+                showInfoWindow(addr);
+              });
+            } else {
+              showInfoWindow(placeName);
+            }
+          }, {
+            location: new kakao.maps.LatLng(lat, lng),
+            radius: 2000,  // 반경 2km로 확대
+            sort: kakao.maps.services.SortBy.DISTANCE
+          });
+        } else {
+          showInfoWindow(placeName);
+        }
+      }, {
+        location: new kakao.maps.LatLng(lat, lng),
+        radius: 2000,  // 초기 검색 반경 2km
+        sort: kakao.maps.services.SortBy.DISTANCE
+      });
+
+      // 공통 함수
+      function showInfoWindow(text) {
+        new kakao.maps.InfoWindow({
+          content: `<div style="padding:5px;font-size:13px;font-weight:bold;">${text}</div>`
+        }).open(map, marker);
+      }
+
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371e3; // 미터 단위
+        const φ1 = lat1 * Math.PI/180;
+        const φ2 = lat2 * Math.PI/180;
+        const Δφ = (lat2-lat1) * Math.PI/180;
+        const Δλ = (lon2-lon1) * Math.PI/180;
+        
+        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      }
+
+      function findNearestPlace(places, targetLat, targetLng) {
+        return places.reduce((nearest, current) => {
+          const currentDist = calculateDistance(targetLat, targetLng, current.y, current.x);
+          const nearestDist = calculateDistance(targetLat, targetLng, nearest.y, nearest.x);
+          return currentDist < nearestDist ? current : nearest;
+        });
+      }
+    } else {
+      document.getElementById('post-map').style.display = 'none';
+    }  
+  });
+};
+</script>
+
+
+
+
 </body>
 </html>

@@ -2,69 +2,86 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbs.demo.mapper.PostMapper">
 
-	<resultMap id="PostResultMap" type="com.bbs.demo.model.Post">
-		<id property="post_id" column="post_id" />
-		<result property="title" column="title" />
-		<result property="content" column="content" />
-		<result property="region" column="region" />
-		<result property="views" column="views" />
-		<result property="created_at" column="created_at" />
-		<result property="updated_at" column="updated_at" />
-		<result property="user_id" column="user_id" />
-		<result property="isNotice" column="is_notice" />
-		<result property="username" column="username" />
-	</resultMap>
+    <!-- resultMap에 lat, lng 컬럼 매핑 추가 -->
+    <resultMap id="PostResultMap" type="com.bbs.demo.model.Post">
+        <id property="post_id" column="post_id" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="region" column="region" />
+        <result property="views" column="views" />
+        <result property="created_at" column="created_at" />
+        <result property="updated_at" column="updated_at" />
+        <result property="user_id" column="user_id" />
+        <result property="isNotice" column="is_notice" />
+        <result property="lat" column="lat" />      <!-- 추가: 위도 -->
+        <result property="lng" column="lng" />      <!-- 추가: 경도 -->
+        <result property="username" column="username" />
+    </resultMap>
 
-	<select id="getAllPosts" resultMap="PostResultMap">
-    	SELECT
-      		p.post_id, p.title, p.content, p.region, p.views,
-      		p.created_at, p.updated_at, p.user_id, p.is_notice,
-      		u.username
-    	FROM Posts p
-    	JOIN Users u ON p.user_id = u.user_id
-    	ORDER BY p.created_at DESC
- 	 </select>
+    <!-- 게시글 목록 조회: lat, lng 컬럼 포함 -->
+    <select id="getAllPosts" resultMap="PostResultMap">
+        SELECT
+            p.post_id, p.title, p.content, p.region, p.views,
+            p.created_at, p.updated_at, p.user_id, p.is_notice,
+            p.lat,                -- 추가: 위도
+            p.lng,                -- 추가: 경도
+            u.username
+        FROM Posts p
+        JOIN Users u ON p.user_id = u.user_id
+        ORDER BY p.created_at DESC
+    </select>
 
-	<select id="getPostById" parameterType="int" resultMap="PostResultMap">
-    	SELECT
-     		p.post_id, p.title, p.content, p.region, p.views,
-      		p.created_at, p.updated_at, p.user_id, p.is_notice,
-      		u.username
-    	FROM Posts p
-    	JOIN Users u ON p.user_id = u.user_id
-    	WHERE p.post_id = #{post_id}
-  </select>
+    <!-- 게시글 상세 조회: lat, lng 컬럼 포함 -->
+    <select id="getPostById" parameterType="int" resultMap="PostResultMap">
+        SELECT
+            p.post_id, p.title, p.content, p.region, p.views,
+            p.created_at, p.updated_at, p.user_id, p.is_notice,
+            p.lat,                -- 추가: 위도
+            p.lng,                -- 추가: 경도
+            u.username
+        FROM Posts p
+        JOIN Users u ON p.user_id = u.user_id
+        WHERE p.post_id = #{post_id}
+    </select>
 
-	<insert id="insertPost" parameterType="com.bbs.demo.model.Post">
-		INSERT INTO Posts(
-			title, content, region, views,
-			created_at, updated_at, user_id, is_notice
-		)
-		VALUES(
-			#{title}, #{content}, #{region}, #{views},
-			#{created_at}, #{updated_at}, #{user_id}, #{isNotice}
-		)
-	</insert>
+    <!-- 게시글 등록: lat, lng 컬럼 포함 -->
+    <insert id="insertPost" parameterType="com.bbs.demo.model.Post">
+        INSERT INTO Posts(
+            title, content, region, views,
+            created_at, updated_at, user_id, is_notice,
+            lat,              -- 추가: 위도
+            lng               -- 추가: 경도
+        )
+        VALUES(
+            #{title}, #{content}, #{region}, #{views},
+            #{created_at}, #{updated_at}, #{user_id}, #{isNotice},
+            #{lat},         -- 추가: 위도
+            #{lng}          -- 추가: 경도
+        )
+    </insert>
 
-	<update id="updatePost" parameterType="com.bbs.demo.model.Post">
-		UPDATE Posts SET
-			title = #{title},
-			content = #{content},
-			region = #{region},
-			updated_at = #{updated_at},
-			user_id = #{user_id},
-			is_notice = #{isNotice}
-		WHERE post_id = #{post_id}
-	</update>
+    <!-- 게시글 수정: lat, lng 컬럼 포함 -->
+    <update id="updatePost" parameterType="com.bbs.demo.model.Post">
+        UPDATE Posts SET
+            title = #{title},
+            content = #{content},
+            region = #{region},
+            updated_at = #{updated_at},
+            user_id = #{user_id},
+            is_notice = #{isNotice},
+            lat = #{lat},           -- 추가: 위도
+            lng = #{lng}            -- 추가: 경도
+        WHERE post_id = #{post_id}
+    </update>
 
-	<delete id="deletePost" parameterType="int">
-		DELETE FROM Posts WHERE post_id = #{post_id}
-	</delete>
+    <delete id="deletePost" parameterType="int">
+        DELETE FROM Posts WHERE post_id = #{post_id}
+    </delete>
 
-	<update id="incrementViewCount" parameterType="int">
-		UPDATE Posts
-		SET views = views + 1
-		WHERE post_id = #{post_id}
-	</update>
+    <update id="incrementViewCount" parameterType="int">
+        UPDATE Posts
+        SET views = views + 1
+        WHERE post_id = #{post_id}
+    </update>
 
 </mapper>
