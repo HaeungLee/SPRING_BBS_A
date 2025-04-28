@@ -29,6 +29,12 @@ public class FileServiceImpl implements FileService {
 		this.fileInfoMapper = fileInfoMapper;
 	}
 
+	//
+	@Override
+	public List<FileInfo> getFilesByPostId(int postId) {
+		return fileInfoMapper.findFilesByPostId(postId);
+	}
+
 	// 모든 파일 조회
 	public List<FileInfo> getAllFiles() {
 		return fileInfoMapper.findAll();

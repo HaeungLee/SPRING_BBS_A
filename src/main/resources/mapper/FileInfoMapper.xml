@@ -52,5 +52,11 @@
 		SELECT * FROM file_uploads WHERE file_store_name =
 		#{storedFileName} LIMIT 1
 	</select>
+	
+	<select id="findFilesByPostId"
+		resultType="com.bbs.demo.model.FileInfo">
+		SELECT * FROM file_uploads
+		WHERE post_id = #{postId}
+	</select>
 
 </mapper>

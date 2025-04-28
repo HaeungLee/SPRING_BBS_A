@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bbs.demo.model.FileInfo;
 import com.bbs.demo.model.Post;
+import com.bbs.demo.service.FileService;
 import com.bbs.demo.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +22,9 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    
+    @Autowired
+    private FileService fileService;
 
     /** 게시글 목록 조회 */
     @GetMapping("/list")
@@ -107,4 +112,16 @@ public class PostController {
         postService.deletePost(post_id, currentUserId);
         return "redirect:/post/list";
     }
+    
+    /* 상세 페이지 임시 코드 */
+    @GetMapping("/post/{postId}")
+    public String getPostDetail(@PathVariable("postId") int postId, Model model) {
+        Post post = postService.getPostById(postId);
+        List<FileInfo> files = fileService.getFilesByPostId(postId);
+
+        model.addAttribute("post", post);
+        model.addAttribute("files", files);
+        return "post/view";
+    }
+
 }
