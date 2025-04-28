@@ -45,8 +45,8 @@ public class PostController {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) currentUserId = 0;
 
- 
-        Post post = postService.getPostById(post_id);
+        // 조회수 증가 + 게시글 조회 (작성자가 아닐 때만 증가)
+        Post post = postService.getPostWithViewCount(post_id, currentUserId);
         model.addAttribute("post", post);
         return "post/view";
     }
