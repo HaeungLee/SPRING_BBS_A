@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글 작성</title>
+<title
+	th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글
+	작성</title>
 <style>
 body {
 	font-family: 'Arial', sans-serif;
@@ -130,67 +132,20 @@ header h1 {
 	text-decoration: none;
 }
 
-/* file css */
-.upload-container {
-	display: flex;
-	gap: 12px;
-	margin-top: 10px;
+input[type="file"]::file-selector-button {
+	margin-right: 0;
 }
 
-.upload-box {
-	position: relative;
-	width: 100px;
-	height: 100px;
-	border: 1px dashed #d1d1d1;
-	background-color: #fafafa;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	overflow: hidden;
-	border-radius: 8px;
+input[type="file"]::-webkit-file-upload-button {
+	margin-right: 0;
 }
 
-.preview {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.preview img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-
-.upload-box::before {
-	content: '+';
-	font-size: 24px;
-	color: #c0c0c0;
-	position: absolute;
-}
-
-.delete-icon {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	background: rgba(0, 0, 0, 0.5);
-	color: white;
-	border-radius: 50%;
-	padding: 3px 5px;
-	font-size: 14px;
-	display: none; /* 기본 숨김 */
-	z-index: 10;
-}
-
-.upload-box:hover .delete-icon {
-	display: block; /* hover 시만 보이게 */
+input[type="file"] {
+	color: transparent;
 }
 </style>
 
-
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
 	<header>
@@ -212,83 +167,43 @@ header h1 {
 				<label for="title">제목</label> <input type="text" id="title"
 					name="title" th:value="${post != null ? post.title : ''}" required>
 			</div>
-
-			<div class="form-group">
-				<label for="region">지역</label> <select id="region" name="region"
-					required>
-					<option value="">지역 선택</option>
-					<option value="서울"
-						th:selected="${post != null && post.region == '서울'}">서울</option>
-					<option value="경기"
-						th:selected="${post != null && post.region == '경기'}">경기</option>
-					<option value="인천"
-						th:selected="${post != null && post.region == '인천'}">인천</option>
-					<option value="강원"
-						th:selected="${post != null && post.region == '강원'}">강원</option>
-					<option value="충북"
-						th:selected="${post != null && post.region == '충북'}">충북</option>
-					<option value="충남"
-						th:selected="${post != null && post.region == '충남'}">충남</option>
-					<option value="대전"
-						th:selected="${post != null && post.region == '대전'}">대전</option>
-					<option value="경북"
-						th:selected="${post != null && post.region == '경북'}">경북</option>
-					<option value="경남"
-						th:selected="${post != null && post.region == '경남'}">경남</option>
-					<option value="대구"
-						th:selected="${post != null && post.region == '대구'}">대구</option>
-					<option value="울산"
-						th:selected="${post != null && post.region == '울산'}">울산</option>
-					<option value="부산"
-						th:selected="${post != null && post.region == '부산'}">부산</option>
-					<option value="전북"
-						th:selected="${post != null && post.region == '전북'}">전북</option>
-					<option value="전남"
-						th:selected="${post != null && post.region == '전남'}">전남</option>
-					<option value="광주"
-						th:selected="${post != null && post.region == '광주'}">광주</option>
-					<option value="제주"
-						th:selected="${post != null && post.region == '제주'}">제주</option>
-				</select>
+			
+			<div style="margin-bottom:10px;">
+			  <input type="text" id="keyword" placeholder="장소 또는 주소 검색" style="width:70%;">
+			  <button type="button" onclick="searchPlace(event)">검색</button>
 			</div>
+			<div id="map" style="width:100%;height:400px;margin-bottom:10px;"></div>
+			
+			<div class="form-group">
+			   <label for="region">지역</label>
+			   <input type="text" id="region" name="region" readonly required 
+			          placeholder="지도에서 위치를 선택하거나 검색하세요" class="form-control">
+			   <input type="hidden" id="lat" name="lat">
+			   <input type="hidden" id="lng" name="lng">
+			 </div>
 
 			<div class="form-group">
 				<label for="content">내용</label>
 				<textarea id="content" name="content" rows="10" required
 					th:text="${post != null ? post.content : ''}"></textarea>
 			</div>
-
-			<!-- 이미지 업로드 / 미리보기  -->
+  
 			<div class="form-group">
-				<label for="content">이미지 업로드</label>
-				<div class="upload-container">
-					<div class="upload-container">
-						<div class="upload-box" id="box0" onclick="triggerFileInput(0)">
-							<div class="preview" id="preview0"></div>
-							<div class="delete-icon" id="deleteIcon0"
-								onclick="deleteImage(event, 0)">🗑️</div>
-							<input type="file" id="fileInput0" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 0)">
-						</div>
-						<div class="upload-box" id="box1" onclick="triggerFileInput(1)">
-							<div class="preview" id="preview1"></div>
-							<div class="delete-icon" id="deleteIcon1"
-								onclick="deleteImage(event, 1)">🗑️</div>
-							<input type="file" id="fileInput1" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 1)">
-						</div>
-						<div class="upload-box" id="box2" onclick="triggerFileInput(2)">
-							<div class="preview" id="preview2"></div>
-							<div class="delete-icon" id="deleteIcon2"
-								onclick="deleteImage(event, 2)">🗑️</div>
-							<input type="file" id="fileInput2" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 2)">
-						</div>
-					</div>
+				<label for="files">파일 첨부</label><br>
+
+				<div style="display: flex; align-items: center; gap: 10px;">
+					<input type="file" id="files" name="files" multiple
+						accept="image/*"> <span id="file-count">선택된 파일 없음</span>
 				</div>
+
+				<div class="file-help">여러 파일을 선택하려면 Ctrl 키를 누른 상태에서 파일을 선택하세요.</div>
 			</div>
 
-			<!-- 게시글 등록, 취소 -->
+			<div class="form-group">
+				<label>첨부된 파일</label>
+				<ul id="file-name-list" class="attached-files"></ul>
+			</div>
+
 			<div class="form-actions">
 				<a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
 				<button type="submit" class="btn btn-primary"
@@ -296,68 +211,162 @@ header h1 {
 			</div>
 		</form>
 	</div>
-
+	
 	<script>
-let selectedImages = [];
+	// 전역 변수로 선언
+	var map, marker, geocoder;
+	
+	window.onload = function() {
+		  kakao.maps.load(function() {
+		    var mapContainer = document.getElementById('map'),
+		        mapOption = {
+		            center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본값: 서울
+		            level: 7
+		        };
 
-function triggerFileInput(index) {
-  event.stopPropagation();
-  document.getElementById('fileInput' + index).click();
-}
+		    // 전역 변수에 할당
+		    map = new kakao.maps.Map(mapContainer, mapOption);
+		    marker = new kakao.maps.Marker();
+		    geocoder = new kakao.maps.services.Geocoder();
 
-function handleFileChange(event, index) {
-  event.stopPropagation();
-  const files = Array.from(event.target.files);
-  files.forEach(file => {
-    if (selectedImages.length < 3) {
-      selectedImages.push(file);
-    }
-  });
-  updatePreview();
-  clearAllFileInputs();
-}
+		    // 1. 내 위치 자동 표시
+		    if (navigator.geolocation) {
+		      navigator.geolocation.getCurrentPosition(function(position) {
+		        var lat = position.coords.latitude;
+		        var lng = position.coords.longitude;
+		        var locPosition = new kakao.maps.LatLng(lat, lng);
 
-function updatePreview() {
-  // 모든 preview 초기화
-  for (let i = 0; i < 3; i++) {
-    const preview = document.getElementById('preview' + i);
-    const deleteIcon = document.getElementById('deleteIcon' + i);
-    preview.innerHTML = '';
-    preview.style.background = '';
-    deleteIcon.style.display = 'none';
-  }
+		        // 지도 중심 이동 및 마커 표시
+		        map.setCenter(locPosition);
+		        marker.setMap(null);
+		        marker = new kakao.maps.Marker({ position: locPosition });
+		        marker.setMap(map);
 
-  // selectedImages 순서대로 preview에 표시
-  selectedImages.forEach((file, i) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
-      const preview = document.getElementById('preview' + i);
-      const deleteIcon = document.getElementById('deleteIcon' + i);
-      preview.innerHTML = '';
-      preview.appendChild(img);
-      deleteIcon.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  });
-}
+		        // 주소 자동 입력
+		        geocoder.coord2Address(lng, lat, function(result, status) {
+		          if (status === kakao.maps.services.Status.OK) {
+		            var addr = result[0].address.address_name;
+		            document.getElementById('region').value = addr;
+		            document.getElementById('lat').value = lat;
+		            document.getElementById('lng').value = lng;
+		          }
+		        });
+		      });
+		    }
 
-function deleteImage(event, index) {
-  event.stopPropagation();
-  selectedImages.splice(index, 1); // 선택된 이미지 배열에서 삭제
-  updatePreview(); //왼쪽부터 정렬
-}
+		    // 2. 지도 클릭 시 위치/주소 설정(기존 코드)
+		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+		      var latlng = mouseEvent.latLng;
+		      marker.setMap(null);
+		      marker = new kakao.maps.Marker({ position: latlng });
+		      marker.setMap(map);
 
-function clearAllFileInputs() {
-  for (let i = 0; i < 3; i++) {
-    document.getElementById('fileInput' + i).value = '';
-  }
-}
+		      document.getElementById('lat').value = latlng.getLat();
+		      document.getElementById('lng').value = latlng.getLng();
+
+		      geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
+		        if (status === kakao.maps.services.Status.OK) {
+		          var addr = result[0].address.address_name;
+		          document.getElementById('region').value = addr;
+		        }
+		      });
+		    });
+		  });
+		};
+		
+		window.searchPlace = function(event) {
+		  if (event) event.preventDefault();
+		  
+		  var keyword = document.getElementById('keyword').value.trim();
+		  if (!keyword) {
+		    alert("검색어를 입력하세요!");
+		    return;
+		  }
+		  var ps = new kakao.maps.services.Places();
+		  ps.keywordSearch(keyword, function(data, status) {
+		    if (status === kakao.maps.services.Status.OK && data.length > 0) {
+		      var place = data[0];
+		      var lat = place.y;
+		      var lng = place.x;
+		      var locPosition = new kakao.maps.LatLng(lat, lng);
+
+		      map.setCenter(locPosition);
+		      marker.setMap(null);
+		      marker = new kakao.maps.Marker({ position: locPosition });
+		      marker.setMap(map);
+
+		      document.getElementById('lat').value = lat;
+		      document.getElementById('lng').value = lng;
+		      document.getElementById('region').value = place.address_name || place.road_address_name || place.place_name;
+		    } else {
+		      alert("검색 결과가 없습니다.");
+		    }
+		  });
+		};
+	</script>
+	
+	<script>
+	let fileArray = [];
+
+	window.addEventListener("DOMContentLoaded", function () {
+		const fileInput = document.getElementById("files");
+		const fileCountSpan = document.getElementById("file-count");
+		const fileList = document.getElementById("file-name-list");
+
+		// 파일 선택 시
+		fileInput.addEventListener("change", function (event) {
+			const selectedFiles = Array.from(event.target.files);
+			fileArray = fileArray.concat(selectedFiles);
+
+			updateFileListDisplay();
+
+			// 같은 파일 다시 선택 가능하게
+			fileInput.value = "";
+		});
+
+		// 파일 목록 갱신
+		function updateFileListDisplay() {
+			fileList.innerHTML = "";
+
+			fileArray.forEach((file, index) => {
+				const li = document.createElement("li");
+
+				// 파일명
+				const fileName = document.createElement("span");
+				fileName.textContent = file.name;
+
+				// 삭제 버튼
+				const deleteBtn = document.createElement("a");
+				deleteBtn.href = "#";
+				deleteBtn.textContent = "삭제";
+				deleteBtn.className = "file-delete";
+				deleteBtn.style.marginLeft = "10px";
+				deleteBtn.style.color = "red";
+
+				// 삭제 시 처리
+				deleteBtn.onclick = function (e) {
+					e.preventDefault();
+					fileArray.splice(index, 1); // 배열에서 제거
+					updateFileListDisplay();     // UI 갱신
+				};
+
+				li.appendChild(fileName);
+				li.appendChild(deleteBtn);
+				fileList.appendChild(li);
+			});
+
+			// 개수 표시
+			fileCountSpan.textContent = fileArray.length > 0
+				? `파일 ${fileArray.length}개`
+				: "선택된 파일 없음";
+
+			// input.files 덮어쓰기
+			const dataTransfer = new DataTransfer();
+			fileArray.forEach(file => dataTransfer.items.add(file));
+			fileInput.files = dataTransfer.files;
+		}
+	});
 </script>
+
 </body>
 </html>
-

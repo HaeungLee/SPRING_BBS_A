@@ -26,9 +26,16 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Post getPostById(int post_id) {
-        postMapper.incrementViewCount(post_id); // 조회수 증가
-        return postMapper.getPostById(post_id); // 게시글 조회
+    	return postMapper.getPostById(post_id); // 게시글 조회
     }
+    
+    @Override
+    @Transactional
+    public Post getPostWithViewCount(int post_id, int currentUserId) {
+        incrementViewCount(post_id, currentUserId);
+        return postMapper.getPostById(post_id);
+    }
+
 
     @Override
     public void createPost(Post post, int currentUserId) {
@@ -49,6 +56,9 @@ public class PostServiceImpl implements PostService {
         if (existing == null || existing.getUser_id() != currentUserId) {
             throw new RuntimeException("작성자만 수정할 수 있습니다.");
         }
+        
+        // ✅ user_id를 기존 값으로 강제 설정 (폼에서 전달되지 않아도 됨)
+        post.setUser_id(existing.getUser_id()); 
         post.setUpdated_at(LocalDateTime.now());
         postMapper.updatePost(post);
     }
@@ -70,10 +80,8 @@ public class PostServiceImpl implements PostService {
     @Override
     public void incrementViewCount(int post_id, int currentUserId) {
         Post post = postMapper.getPostById(post_id);
-        if(post != null && post.getUser_id() != currentUserId) {
+        if (post != null && post.getUser_id() != currentUserId) {
             postMapper.incrementViewCount(post_id);
         }
-        // 중복 호출 제거됨
-        // postMapper.incrementViewCount(post_id);
     }
 }
