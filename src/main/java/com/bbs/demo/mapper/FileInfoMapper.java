@@ -24,4 +24,7 @@ public interface FileInfoMapper {
 	List<FileInfo> findAll();
 
 	FileInfo findByStoredFileName(String storedFileName);
+
+	void saveFileInfo(FileInfo fileInfo);
+	
 }

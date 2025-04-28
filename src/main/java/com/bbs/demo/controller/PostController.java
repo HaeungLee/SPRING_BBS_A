@@ -1,11 +1,13 @@
 package com.bbs.demo.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bbs.demo.model.Post;
 import com.bbs.demo.service.PostService;
@@ -46,15 +48,21 @@ public class PostController {
         return "post/form";      // src/main/resources/templates/post/form.html
     }
 
-    /** 게시글 등록 처리 */
-    @PostMapping("/create")
-    public String createPost(@ModelAttribute Post post, HttpSession session) {
+    /** 게시글 등록 처리 
+     * @throws IOException */
+    @PostMapping(value = "/create", consumes = "multipart/form-data")
+    public String createPost(
+    		@ModelAttribute Post post,
+    		HttpSession session,
+    		@RequestParam("images") MultipartFile[] images
+    		) throws IOException { //파일 컨트롤러 추가
+    	
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        postService.createPost(post, currentUserId);
+        postService.createPost(post, currentUserId, images);
         return "redirect:/post/list";
     }
 

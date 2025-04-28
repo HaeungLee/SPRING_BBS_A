@@ -4,6 +4,7 @@ import com.bbs.demo.mapper.FileInfoMapper;
 import com.bbs.demo.model.FileInfo;
 import com.bbs.demo.service.FileService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,79 +19,87 @@ import java.util.*;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final FileInfoMapper fileInfoMapper;
+	@Autowired
+	private final FileInfoMapper fileInfoMapper;
 
-    @Value("${file.upload.dir}")
-    private String uploadDir;
+	@Value("${file.upload.dir}")
+	private String uploadDir;
 
-    public FileServiceImpl(FileInfoMapper fileInfoMapper) {
-        this.fileInfoMapper = fileInfoMapper;
-    }
+	public FileServiceImpl(FileInfoMapper fileInfoMapper) {
+		this.fileInfoMapper = fileInfoMapper;
+	}
 
-    // 모든 파일 조회
-    public List<FileInfo> getAllFiles() {
-        return fileInfoMapper.findAll();
-    }
+	// 모든 파일 조회
+	public List<FileInfo> getAllFiles() {
+		return fileInfoMapper.findAll();
+	}
 
-    // ID로 파일 조회
-    @Override
-    public FileInfo getFileById(int fileId) {
-        return fileInfoMapper.findById(fileId);
-    }
+	// ID로 파일 조회
+	@Override
+	public FileInfo getFileById(int fileId) {
+		return fileInfoMapper.findById(fileId);
+	}
 
-    // 파일 업로드
-    @Override
-    public List<FileInfo> uploadFiles(int postId, MultipartFile[] files) throws IOException {
-        List<FileInfo> fileInfoList = new ArrayList<>();
+	// 파일 업로드
+	@Override
+	public List<FileInfo> uploadFiles(int postId, MultipartFile[] files) throws IOException {
+		List<FileInfo> fileInfoList = new ArrayList<>();
 
-        File uploadDirectory = new File(uploadDir);
-        if (!uploadDirectory.exists()) {
-            uploadDirectory.mkdirs(); // 디렉토리 없으면 생성
-        }
+		System.out.println("[uploadFiles] 호출됨");
+		System.out.println("[uploadFiles] postId = " + postId);
 
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                String originalName = file.getOriginalFilename();
-                String storedName = UUID.randomUUID() + "_" + originalName;
-                String filePath = uploadDir + File.separator + storedName;
+		File uploadDirectory = new File(uploadDir);
+		if (!uploadDirectory.exists()) {
+			uploadDirectory.mkdirs(); // 디렉토리 없으면 생성
+		}
 
-                File dest = new File(filePath);
-                try {
-                    file.transferTo(dest);
-                } catch (IOException e) {
-                    throw new IOException("파일 저장 중 오류 발생", e);
-                }
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				System.out.println("[uploadFiles] 파일 이름 = " + file.getOriginalFilename());
 
-                FileInfo fileInfo = new FileInfo();
-                fileInfo.setPost_id(postId);
-                fileInfo.setFile_origin_name(originalName);
-                fileInfo.setFile_store_name(storedName);
-                fileInfo.setFile_path(filePath);
-                fileInfo.setFileSize(file.getSize());
-                fileInfo.setFileType(file.getContentType());
+				String originalName = file.getOriginalFilename();
+				String storedName = UUID.randomUUID() + "_" + originalName;
+				String filePath = uploadDir + File.separator + storedName;
 
-                fileInfoList.add(fileInfo);
-            }
-        }
+				File dest = new File(filePath);
+				file.transferTo(dest);
 
-        if (!fileInfoList.isEmpty()) {
-            fileInfoMapper.insertFileInfos(fileInfoList);
-        }
+				FileInfo fileInfo = new FileInfo();
+				fileInfo.setPost_id(postId);
+				fileInfo.setFile_origin_name(originalName);
+				fileInfo.setFile_store_name(storedName);
+				fileInfo.setFile_path(filePath);
+				fileInfo.setFileSize(file.getSize());
+				fileInfo.setFileType(file.getContentType());
 
-        return fileInfoList;
-    }
+				fileInfoList.add(fileInfo);
+			}
+		}
 
-    // 파일 다운로드용 정보 반환
-    @Override
-    public FileInfo downloadFile(int fileId) {
-        return fileInfoMapper.findById(fileId);
-    }
+		System.out.println("[uploadFiles] 저장할 파일 수 = " + fileInfoList.size());
 
-    // 이미지 파일 미리보기 (byte 배열 반환)
-    @Override
-    public byte[] previewFile(int fileId) throws IOException {
-        FileInfo fileInfo = fileInfoMapper.findById(fileId);
-        Path path = Paths.get(fileInfo.getFile_path());
-        return Files.readAllBytes(path);
-    }
+		if (!fileInfoList.isEmpty()) {
+			System.out.println("[uploadFiles] DB에 insert 시작!");
+			fileInfoMapper.insertFileInfos(fileInfoList);
+		} else {
+			System.out.println("[uploadFiles] 저장할 파일 없음. insert 안 함.");
+		}
+
+		return fileInfoList;
+	}
+
+	// 파일 다운로드용 정보 반환
+	@Override
+	public FileInfo downloadFile(int fileId) {
+		return fileInfoMapper.findById(fileId);
+	}
+
+	// 이미지 파일 미리보기 (byte 배열 반환)
+	@Override
+	public byte[] previewFile(int fileId) throws IOException {
+		FileInfo fileInfo = fileInfoMapper.findById(fileId);
+		Path path = Paths.get(fileInfo.getFile_path());
+		return Files.readAllBytes(path);
+	}
+
 }

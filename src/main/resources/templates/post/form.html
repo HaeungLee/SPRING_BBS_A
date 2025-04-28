@@ -264,29 +264,25 @@ header h1 {
 			<div class="form-group">
 				<label for="content">이미지 업로드</label>
 				<div class="upload-container">
-					<div class="upload-container">
-						<div class="upload-box" id="box0" onclick="triggerFileInput(0)">
-							<div class="preview" id="preview0"></div>
-							<div class="delete-icon" id="deleteIcon0"
-								onclick="deleteImage(event, 0)">🗑️</div>
-							<input type="file" id="fileInput0" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 0)">
-						</div>
-						<div class="upload-box" id="box1" onclick="triggerFileInput(1)">
-							<div class="preview" id="preview1"></div>
-							<div class="delete-icon" id="deleteIcon1"
-								onclick="deleteImage(event, 1)">🗑️</div>
-							<input type="file" id="fileInput1" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 1)">
-						</div>
-						<div class="upload-box" id="box2" onclick="triggerFileInput(2)">
-							<div class="preview" id="preview2"></div>
-							<div class="delete-icon" id="deleteIcon2"
-								onclick="deleteImage(event, 2)">🗑️</div>
-							<input type="file" id="fileInput2" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 2)">
-						</div>
+					<div class="upload-box" id="box0" onclick="triggerFileInput(event)">
+						<div class="preview" id="preview0"></div>
+						<div class="delete-icon" id="deleteIcon0"
+							onclick="deleteImage(event, 0)">🗑️</div>
 					</div>
+					<div class="upload-box" id="box1" onclick="triggerFileInput(event)">
+						<div class="preview" id="preview1"></div>
+						<div class="delete-icon" id="deleteIcon1"
+							onclick="deleteImage(event, 1)">🗑️</div>
+					</div>
+					<div class="upload-box" id="box2" onclick="triggerFileInput(event)">
+						<div class="preview" id="preview2"></div>
+						<div class="delete-icon" id="deleteIcon2"
+							onclick="deleteImage(event, 2)">🗑️</div>
+					</div>
+
+					<!-- input 하나만 -->
+					<input name="images" type="file" id="fileInput" accept="image/*"
+						hidden multiple onchange="handleFileChange(event)">
 				</div>
 			</div>
 
@@ -300,66 +296,72 @@ header h1 {
 	</div>
 
 	<script>
-let selectedImages = [];
+	let selectedImages = [];
 
-function triggerFileInput(index) {
-  event.stopPropagation();
-  document.getElementById('fileInput' + index).click();
-}
-
-function handleFileChange(event, index) {
-  event.stopPropagation();
-  const files = Array.from(event.target.files);
-  files.forEach(file => {
-    if (selectedImages.length < 3) {
-      selectedImages.push(file);
-    }
-  });
-  updatePreview();
-  clearAllFileInputs();
-}
-
-function updatePreview() {
-  // 모든 preview 초기화
-  for (let i = 0; i < 3; i++) {
-    const preview = document.getElementById('preview' + i);
-    const deleteIcon = document.getElementById('deleteIcon' + i);
-    preview.innerHTML = '';
-    preview.style.background = '';
-    deleteIcon.style.display = 'none';
-  }
-
-  // selectedImages 순서대로 preview에 표시
-  selectedImages.forEach((file, i) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
-      const preview = document.getElementById('preview' + i);
-      const deleteIcon = document.getElementById('deleteIcon' + i);
-      preview.innerHTML = '';
-      preview.appendChild(img);
-      deleteIcon.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-function deleteImage(event, index) {
-  event.stopPropagation();
-  selectedImages.splice(index, 1); // 선택된 이미지 배열에서 삭제
-  updatePreview(); //왼쪽부터 정렬
-}
-
-function clearAllFileInputs() {
-  for (let i = 0; i < 3; i++) {
-    document.getElementById('fileInput' + i).value = '';
-  }
-}
+	function triggerFileInput(index) {
+		event.stopPropagation();
+		// 삭제 아이콘 클릭했으면 무시
+		const target = event.target;
+		if (target.classList.contains('delete-icon')) {
+			return;
+		}
+		document.getElementById('fileInput').click(); // ✅ input 열기
+	}
+	
+	function handleFileChange(event, index) {
+	  event.stopPropagation();
+	  const files = Array.from(event.target.files);
+	  files.forEach(file => {
+	    if (selectedImages.length < 3) {
+	      selectedImages.push(file);
+	    }
+	  });
+	  updatePreview();
+	  clearAllFileInputs();
+	}
+	
+	function updatePreview() {
+	  // 모든 preview 초기화
+	  for (let i = 0; i < 3; i++) {
+	    const preview = document.getElementById('preview' + i);
+	    const deleteIcon = document.getElementById('deleteIcon' + i);
+	    preview.innerHTML = '';
+	    preview.style.background = '';
+	    deleteIcon.style.display = 'none';
+	  }
+	
+	  // selectedImages 순서대로 preview에 표시
+	  selectedImages.forEach((file, i) => {
+	    const reader = new FileReader();
+	    reader.onload = (e) => {
+	      const img = document.createElement('img');
+	      img.src = e.target.result;
+	      img.style.width = '100%';
+	      img.style.height = '100%';
+	      img.style.objectFit = 'cover';
+	      const preview = document.getElementById('preview' + i);
+	      const deleteIcon = document.getElementById('deleteIcon' + i);
+	      preview.innerHTML = '';
+	      preview.appendChild(img);
+	      deleteIcon.style.display = 'block';
+	    };
+	    reader.readAsDataURL(file);
+	  });
+	}
+	
+	function deleteImage(event, index) {
+	  event.stopPropagation();
+	  selectedImages.splice(index, 1); // 선택된 이미지 배열에서 삭제
+	  updatePreview(); //왼쪽부터 정렬
+	}
+	
+	function clearAllFileInputs() {
+	  for (let i = 0; i < 3; i++) {
+	    document.getElementById('fileInput' + i).value = '';
+	  }
+	}
 </script>
+
 </body>
 </html>
 

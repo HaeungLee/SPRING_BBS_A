@@ -18,16 +18,17 @@
 
 	<insert id="insertFileInfos">
 		INSERT INTO file_uploads (
-		post_id, file_origin_name, file_store_name,
-		file_path, file_size, uploaded_at,
-		is_thumbnail, file_type
+		post_id,
+		file_origin_name,
+		file_store_name,
+		file_path,
+		uploaded_at,
+		file_type
 		)
 		VALUES
 		<foreach collection="list" item="file" separator=",">
 			(#{file.post_id}, #{file.file_origin_name}, #{file.file_store_name},
-			#{file.file_path},
-			#{file.fileSize}, #{file.uploadedAt},
-			#{file.isThumbnail}, #{file.fileType})
+			#{file.file_path}, #{file.uploadedAt}, #{file.fileType})
 		</foreach>
 	</insert>
 
