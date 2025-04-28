@@ -1,6 +1,8 @@
 package com.bbs.demo.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,6 +19,12 @@ public class Post {
 	private LocalDateTime updated_at;
 	private Integer user_id;
 	private boolean isNotice;
+	private Double lat;   // 위도
+    private Double lng;   // 경도
 	
 	private String username;
+	
+	// 파일 리스트 추가
+	private List<FileInfo> files = new ArrayList<>();
 }
+   
