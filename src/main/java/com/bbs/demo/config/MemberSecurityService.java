@@ -1,5 +1,39 @@
 package com.bbs.demo.config;
 
-public class MemberSecurityService {
-    
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.bbs.demo.model.Users;
+import com.bbs.demo.service.UsersService;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class MemberSecurityService implements UserDetailsService {
+
+    @Lazy
+    private final UsersService usersService; // DB에서 사용자 정보를 가져오는 서비스
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users user = usersService.getUserByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
+        }
+
+        String role = "USER";
+        if ("Y".equals(user.getIsManager())) {
+            role = "ADMIN";
+        }
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword()) // BCrypt로 암호화된 비밀번호 그대로
+                .roles(role) // "USER" 또는 "ADMIN"
+                .build();
+    }
 }
