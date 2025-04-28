@@ -35,7 +35,6 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();  // 로그인한 사용자의 닉네임을 반환
     }
-    
     @GetMapping("/admin/index")
     // 관리자 홈 페이지로 이동
     public String adminHome(Model model) {

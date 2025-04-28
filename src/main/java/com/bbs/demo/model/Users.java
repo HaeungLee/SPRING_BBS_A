@@ -21,12 +21,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Users { // 클래스명 단수형으로 변경 (권장)
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id") // DB 컬럼명 명시적 지정
-    private Long user_Id; // Java 필드명 camelCase
+    private Integer user_Id; // Integer로 변경
 
     @Column(nullable = false, length = 50, unique = true)
     private String username;
@@ -46,10 +46,14 @@ public class Users { // 클래스명 단수형으로 변경 (권장)
     @Builder.Default
     @Column(name = "is_manager", columnDefinition = "CHAR(1) default 'N'") // ENUM → CHAR(1)
     private String is_Manager = "N";
+
     @Column(length = 20)
     private String phone;
+
+    @Builder.Default 
     @Column(nullable = false)
     private Boolean agreeMarketing = false;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime created_At;
 
@@ -67,17 +71,25 @@ public class Users { // 클래스명 단수형으로 변경 (권장)
         updated_At = LocalDateTime.now();
     }
 
+    // 관리자 여부 체크 메소드
     public boolean isAdmin() {
         return "Y".equalsIgnoreCase(this.is_Manager);
     }
 
-    // Lombok @Setter 대신 필요 시 수동 추가
+    // 비밀번호를 설정하는 메소드 (Lombok @Setter 대신)
     public void setPassword(String password) {
         this.password = password;
     }
 
-	public void updateFields(Users updatedUser) {
-		this.username = username;
-		this.email = email;
-	}
+    // updateFields 메소드 수정
+    public void updateFields(Users updatedUser) {
+        if (updatedUser.getUsername() != null) this.username = updatedUser.getUsername();
+        if (updatedUser.getEmail() != null) this.email = updatedUser.getEmail();
+        if (updatedUser.getNickname() != null) this.nickname = updatedUser.getNickname();
+        if (updatedUser.getProfile_Img() != null) this.profile_Img = updatedUser.getProfile_Img();
+        if (updatedUser.getPhone() != null) this.phone = updatedUser.getPhone();
+        if (updatedUser.getAgreeMarketing() != null) this.agreeMarketing = updatedUser.getAgreeMarketing();
+        if (updatedUser.getIs_Manager() != null) this.is_Manager = updatedUser.getIs_Manager();
+        // 필요 시 다른 필드들도 추가 가능
+    }
 }
