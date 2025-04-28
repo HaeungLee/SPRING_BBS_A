@@ -61,9 +61,10 @@
       height: 350px;
       margin: 20px 0;
       border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.06);
+      box-shadow: 0 0 8px rgba(0,0,0,0.06);   
     }
   </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- 카카오맵 API 스크립트 -->
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
@@ -103,7 +104,16 @@
         </button>
       </form>
     </div>
+    <div class="comment-section">
+      <h3>댓글</h3>
+
+      <textarea id="commentContent" placeholder="댓글을 입력하세요" style="width: 100%; height: 80px;"></textarea><br>
+      <button onclick="submitComment()">댓글 등록</button> <!-- 함수 이름 수정 -->
+
+      <div id="commentList" style="margin-top: 20px;"></div>
+    </div>
   </div>
+
 
   <!-- 지도 표시 JS (lat/lng 값이 없으면 지도 숨김) -->
 <script th:inline="javascript">
@@ -215,10 +225,76 @@ window.onload = function() {
     }  
   });
 };
-</script>
 
+const postId = [[${post.post_id}]];
 
+   function submitComment() {
+     const content = $('#commentContent').val();
+     if (!content.trim()) {
+       alert('댓글을 입력하세요.');
+       return;
+     }
 
+     $.ajax({
+       url: '/api/comments',
+       method: 'POST',
+       contentType: 'application/json',
+       data: JSON.stringify({ content: content, post_id: postId }),
+       success: function() {
+         $('#commentContent').val('');
+         loadComments();
+       },
+       error: function(xhr) {
+         if (xhr.status === 401) {
+           alert('로그인이 필요합니다.');
+           window.location.href = '/login';
+         } else {
+           alert('댓글 등록 실패');
+         }
+       }
+     });
+   }
 
+   function loadComments() {
+     $.ajax({
+       url: '/api/comments/' + postId,
+       method: 'GET',
+       success: function(comments) {
+         let html = '';
+         comments.forEach(comment => {
+           html += `
+             <div class="comment">
+               <strong>작성자: ${comment.nickname ? comment.nickname : '익명'}</strong><br>
+               ${comment.content}<br>
+               <small>${comment.created_at ? comment.created_at.replace('T', ' ').substring(0, 19) : ''}</small><br>
+               <button onclick="likeComment(${comment.comment_id})">좋아요 (${comment.like_count != null ? comment.like_count : 0})</button>
+             </div>
+           `;
+         });
+         $('#commentList').html(html);
+       },
+       error: function() {
+         alert('댓글 목록 불러오기 실패');
+       }
+     });
+   }
+
+   function likeComment(commentId) {
+     $.ajax({
+       url: '/api/comments/' + commentId + '/like',
+       method: 'POST',
+       success: function() {
+         loadComments();
+       },
+       error: function() {
+         alert('좋아요 실패');
+       }
+     });
+   }
+
+   $(document).ready(function() {
+     loadComments();
+   });
+ </script>
 </body>
 </html>
