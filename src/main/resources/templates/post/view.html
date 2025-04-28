@@ -64,6 +64,7 @@
       box-shadow: 0 0 8px rgba(0,0,0,0.06);   
     }
   </style>
+  <!-- jQuery 라이브러리 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- 카카오맵 API 스크립트 -->
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
@@ -113,188 +114,224 @@
       <div id="commentList" style="margin-top: 20px;"></div>
     </div>
   </div>
-
-
-  <!-- 지도 표시 JS (lat/lng 값이 없으면 지도 숨김) -->
-<script th:inline="javascript">
-window.onload = function() {
-  kakao.maps.load(function() {
-    var lat = /*[[${post.lat}]]*/ 0;
-    var lng = /*[[${post.lng}]]*/ 0;
+  <!-- 카카오맵과 댓글 기능을 위한 스크립트 -->
+  <script th:inline="javascript">
+    // 서버에서 받은 데이터를 전역 변수로 설정
+    const postId = [[${post.post_id}]];
+    const latitude = [[${post.lat}]];
+    const longitude = [[${post.lng}]];
+    const csrfToken = [[${_csrf != null ? _csrf.token : ''}]];
+    const csrfHeader = [[${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}]];
+    const isLoggedIn = [[${session.userId != null}]];
     
-    if (lat && lng) {
-      var mapContainer = document.getElementById('post-map');
-      var mapOption = {
-        center: new kakao.maps.LatLng(lat, lng),
-        level: 3
-      };
-      var map = new kakao.maps.Map(mapContainer, mapOption);
-      var marker = new kakao.maps.Marker({
-        map: map,
-        position: new kakao.maps.LatLng(lat, lng)
-      });
-
-      var places = new kakao.maps.services.Places();
-      var geocoder = new kakao.maps.services.Geocoder();
+    // AJAX 설정에 CSRF 토큰 추가
+    $.ajaxSetup({
+      beforeSend: function(xhr) {
+        if (csrfToken) {
+          xhr.setRequestHeader(csrfHeader, csrfToken);
+        }
+      }
+    });
+    
+    // 댓글 관련 함수
+    function submitComment() {
+      if (!isLoggedIn) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/login';
+        return;
+      }
       
-      // 1. 대형 랜드마크 검색을 위한 설정
-      places.keywordSearch('관광명소', function(data, status) {
-        var placeName = null;
-        
-        // 관광명소 검색 성공 시
-        if (status === kakao.maps.services.Status.OK && data.length > 0) {
-          var nearestPlace = findNearestPlace(data, lat, lng);
-          
-          // 1km 이내의 관광명소만 표시
-          if (calculateDistance(lat, lng, nearestPlace.y, nearestPlace.x) < 1000) {
-            placeName = nearestPlace.place_name;
-            
-            // 카테고리 확인 (테마파크/리조트 등)
-            if (nearestPlace.category_name.includes('관광명소') || 
-                nearestPlace.category_name.includes('테마파크') ||
-                nearestPlace.category_name.includes('리조트')) {
-              placeName = nearestPlace.place_name;
-            }
+      const content = $('#commentContent').val();
+      if (!content.trim()) {
+        alert('댓글을 입력하세요.');
+        return;
+      }
+
+      $.ajax({
+        url: '/api/comments',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ content: content, post_id: postId }),
+        success: function() {
+          $('#commentContent').val('');
+          loadComments();
+        },
+        error: function(xhr) {
+          console.error('Error:', xhr.status, xhr.responseText);
+          if (xhr.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/login';
+          } else {
+            alert('댓글 등록 실패: ' + (xhr.responseText || '알 수 없는 오류'));
           }
         }
+      });
+    }
 
-        // 2. 관광명소가 없으면 일반 장소 검색
-        if (!placeName) {
-          places.keywordSearch('', function(generalData, generalStatus) {
-            if (generalStatus === kakao.maps.services.Status.OK && generalData.length > 0) {
-              var nearestGeneral = findNearestPlace(generalData, lat, lng);
-              if (calculateDistance(lat, lng, nearestGeneral.y, nearestGeneral.x) < 500) {
-                placeName = nearestGeneral.place_name;
+    function loadComments() {
+      $.ajax({
+        url: '/api/comments/' + postId,
+        method: 'GET',
+        success: function(comments) {
+          if (comments && comments.length > 0) {
+            let html = '';
+            comments.forEach(comment => {
+              html += `
+                <div class="comment">
+                  <strong>작성자: ${comment.nickname ? comment.nickname : '익명'}</strong><br>
+                  ${comment.content}<br>
+                  <small>${comment.created_at ? comment.created_at.replace('T', ' ').substring(0, 19) : ''}</small><br>
+                  <button onclick="likeComment(${comment.comment_id})">좋아요 (${comment.like_count != null ? comment.like_count : 0})</button>
+                </div>
+              `;
+            });
+            $('#commentList').html(html);
+          } else {
+            $('#commentList').html('<p>댓글이 없습니다. 첫 댓글을 작성해보세요!</p>');
+          }
+        },
+        error: function(xhr) {
+          console.error('Error loading comments:', xhr.status, xhr.responseText);
+          $('#commentList').html('<p>댓글을 불러올 수 없습니다.</p>');
+        }
+      });
+    }
+
+    function likeComment(commentId) {
+      if (!isLoggedIn) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/login';
+        return;
+      }
+      
+      $.ajax({
+        url: '/api/comments/' + commentId + '/like',
+        method: 'POST',
+        success: function() {
+          loadComments();
+        },
+        error: function(xhr) {
+          console.error('Error liking comment:', xhr.status, xhr.responseText);
+          alert('좋아요 실패');
+        }
+      });
+    }
+
+    // 카카오맵 관련 함수
+    function initKakaoMap() {
+      kakao.maps.load(function() {
+        if (latitude && longitude) {
+          var mapContainer = document.getElementById('post-map');
+          var mapOption = {
+            center: new kakao.maps.LatLng(latitude, longitude),
+            level: 3
+          };
+          var map = new kakao.maps.Map(mapContainer, mapOption);
+          var marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(latitude, longitude)
+          });
+
+          var places = new kakao.maps.services.Places();
+          var geocoder = new kakao.maps.services.Geocoder();
+          
+          // 1. 대형 랜드마크 검색을 위한 설정
+          places.keywordSearch('관광명소', function(data, status) {
+            var placeName = null;
+            
+            // 관광명소 검색 성공 시
+            if (status === kakao.maps.services.Status.OK && data.length > 0) {
+              var nearestPlace = findNearestPlace(data, latitude, longitude);
+              
+              // 1km 이내의 관광명소만 표시
+              if (calculateDistance(latitude, longitude, nearestPlace.y, nearestPlace.x) < 1000) {
+                placeName = nearestPlace.place_name;
+                
+                // 카테고리 확인 (테마파크/리조트 등)
+                if (nearestPlace.category_name.includes('관광명소') || 
+                    nearestPlace.category_name.includes('테마파크') ||
+                    nearestPlace.category_name.includes('리조트')) {
+                  placeName = nearestPlace.place_name;
+                }
               }
             }
-            
-            // 3. 최종적으로 주소 표시
+
+            // 2. 관광명소가 없으면 일반 장소 검색
             if (!placeName) {
-              geocoder.coord2Address(lng, lat, function(result) {
-                var addr = result[0]?.road_address?.address_name || 
-                          result[0]?.address?.address_name || 
-                          "지정한 위치";
-                showInfoWindow(addr);
+              places.keywordSearch('', function(generalData, generalStatus) {
+                if (generalStatus === kakao.maps.services.Status.OK && generalData.length > 0) {
+                  var nearestGeneral = findNearestPlace(generalData, latitude, longitude);
+                  if (calculateDistance(latitude, longitude, nearestGeneral.y, nearestGeneral.x) < 500) {
+                    placeName = nearestGeneral.place_name;
+                  }
+                }
+                
+                // 3. 최종적으로 주소 표시
+                if (!placeName) {
+                  geocoder.coord2Address(longitude, latitude, function(result) {
+                    var addr = result[0]?.road_address?.address_name || 
+                              result[0]?.address?.address_name || 
+                              "지정한 위치";
+                    showInfoWindow(addr);
+                  });
+                } else {
+                  showInfoWindow(placeName);
+                }
+              }, {
+                location: new kakao.maps.LatLng(latitude, longitude),
+                radius: 2000,  // 반경 2km로 확대
+                sort: kakao.maps.services.SortBy.DISTANCE
               });
             } else {
               showInfoWindow(placeName);
             }
           }, {
-            location: new kakao.maps.LatLng(lat, lng),
-            radius: 2000,  // 반경 2km로 확대
+            location: new kakao.maps.LatLng(latitude, longitude),
+            radius: 2000,  // 초기 검색 반경 2km
             sort: kakao.maps.services.SortBy.DISTANCE
           });
+
+          // 공통 함수
+          function showInfoWindow(text) {
+            new kakao.maps.InfoWindow({
+              content: `<div style="padding:5px;font-size:13px;font-weight:bold;">${text}</div>`
+            }).open(map, marker);
+          }
+
+          function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // 미터 단위
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lon2-lon1) * Math.PI/180;
+            
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+          }
+
+          function findNearestPlace(places, targetLat, targetLng) {
+            return places.reduce((nearest, current) => {
+              const currentDist = calculateDistance(targetLat, targetLng, current.y, current.x);
+              const nearestDist = calculateDistance(targetLat, targetLng, nearest.y, nearest.x);
+              return currentDist < nearestDist ? current : nearest;
+            });
+          }
         } else {
-          showInfoWindow(placeName);
-        }
-      }, {
-        location: new kakao.maps.LatLng(lat, lng),
-        radius: 2000,  // 초기 검색 반경 2km
-        sort: kakao.maps.services.SortBy.DISTANCE
+          document.getElementById('post-map').style.display = 'none';
+        }  
       });
+    }
 
-      // 공통 함수
-      function showInfoWindow(text) {
-        new kakao.maps.InfoWindow({
-          content: `<div style="padding:5px;font-size:13px;font-weight:bold;">${text}</div>`
-        }).open(map, marker);
-      }
-
-      function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; // 미터 단위
-        const φ1 = lat1 * Math.PI/180;
-        const φ2 = lat2 * Math.PI/180;
-        const Δφ = (lat2-lat1) * Math.PI/180;
-        const Δλ = (lon2-lon1) * Math.PI/180;
-        
-        const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                  Math.cos(φ1) * Math.cos(φ2) *
-                  Math.sin(Δλ/2) * Math.sin(Δλ/2);
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      }
-
-      function findNearestPlace(places, targetLat, targetLng) {
-        return places.reduce((nearest, current) => {
-          const currentDist = calculateDistance(targetLat, targetLng, current.y, current.x);
-          const nearestDist = calculateDistance(targetLat, targetLng, nearest.y, nearest.x);
-          return currentDist < nearestDist ? current : nearest;
-        });
-      }
-    } else {
-      document.getElementById('post-map').style.display = 'none';
-    }  
-  });
-};
-
-const postId = [[${post.post_id}]];
-
-   function submitComment() {
-     const content = $('#commentContent').val();
-     if (!content.trim()) {
-       alert('댓글을 입력하세요.');
-       return;
-     }
-
-     $.ajax({
-       url: '/api/comments',
-       method: 'POST',
-       contentType: 'application/json',
-       data: JSON.stringify({ content: content, post_id: postId }),
-       success: function() {
-         $('#commentContent').val('');
-         loadComments();
-       },
-       error: function(xhr) {
-         if (xhr.status === 401) {
-           alert('로그인이 필요합니다.');
-           window.location.href = '/login';
-         } else {
-           alert('댓글 등록 실패');
-         }
-       }
-     });
-   }
-
-   function loadComments() {
-     $.ajax({
-       url: '/api/comments/' + postId,
-       method: 'GET',
-       success: function(comments) {
-         let html = '';
-         comments.forEach(comment => {
-           html += `
-             <div class="comment">
-               <strong>작성자: ${comment.nickname ? comment.nickname : '익명'}</strong><br>
-               ${comment.content}<br>
-               <small>${comment.created_at ? comment.created_at.replace('T', ' ').substring(0, 19) : ''}</small><br>
-               <button onclick="likeComment(${comment.comment_id})">좋아요 (${comment.like_count != null ? comment.like_count : 0})</button>
-             </div>
-           `;
-         });
-         $('#commentList').html(html);
-       },
-       error: function() {
-         alert('댓글 목록 불러오기 실패');
-       }
-     });
-   }
-
-   function likeComment(commentId) {
-     $.ajax({
-       url: '/api/comments/' + commentId + '/like',
-       method: 'POST',
-       success: function() {
-         loadComments();
-       },
-       error: function() {
-         alert('좋아요 실패');
-       }
-     });
-   }
-
-   $(document).ready(function() {
-     loadComments();
-   });
- </script>
+    // 페이지 로드 시 두 기능 모두 초기화
+    $(document).ready(function() {
+      // 댓글 로드
+      loadComments();
+      
+      // 카카오맵 초기화
+      initKakaoMap();
+    });
+  </script>
 </body>
 </html>
