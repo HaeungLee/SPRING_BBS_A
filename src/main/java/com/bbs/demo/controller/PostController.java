@@ -26,6 +26,9 @@ public class PostController {
 
 	@Autowired
 	private PostService postService;
+	
+	@Autowired
+	private FileService fileService;
 
 	@InitBinder("post")
 	public void initBinder(WebDataBinder binder) {
@@ -62,28 +65,32 @@ public class PostController {
 
 	/** 게시글 등록 처리 (중요 수정) */
 	@PostMapping("/create")
-	public String createPost(@ModelAttribute Post post,
-			@RequestParam(value = "files", required = false) List<MultipartFile> files, HttpSession session)
-			throws IOException {
+	public String createPost(
+	        @ModelAttribute Post post,
+	        @RequestParam(value = "files", required = false) List<MultipartFile> files,
+	        HttpSession session) throws IOException {
 
-		Integer currentUserId = (Integer) session.getAttribute("userId");
-		if (currentUserId == null) {
-			throw new RuntimeException("로그인이 필요합니다.");
-		}
-
-		// 1. 위도/경도 값 검증
-		if (post.getLat() == null || post.getLng() == null) {
-			throw new IllegalArgumentException("위치 정보가 없습니다.");
-		}
-
-		postService.createPost(post, currentUserId, files);
-
-	    // 2. postId를 사용해서 파일 업로드
-	    if (files != null && !files.isEmpty()) {
-	    	fileService.uploadFiles(post.getPost_id(), files);
+	    Integer currentUserId = (Integer) session.getAttribute("userId");
+	    if (currentUserId == null) {
+	        throw new RuntimeException("로그인이 필요합니다.");
 	    }
-		return "redirect:/post/list";
+
+	    // 1. 위도/경도 값 검증
+	    if (post.getLat() == null || post.getLng() == null) {
+	        throw new IllegalArgumentException("위치 정보가 없습니다.");
+	    }
+
+	    // 2. 게시글 등록
+	    postService.createPost(post, currentUserId, files);
+
+	    // 3. 파일 업로드 (post_id 사용)
+	    if (files != null && !files.isEmpty()) {
+	        fileService.uploadFiles(post.getPost_id(), files);
+	    }
+
+	    return "redirect:/post/list";
 	}
+
 
 	/** 게시글 수정 폼 (중요 수정) */
 	@GetMapping("/edit/{id}")

@@ -12,7 +12,7 @@ public interface FileService {
     
     FileInfo getFileById(int fileId);     // 파일 ID로 단일 파일 조회
     
-    List<FileInfo> uploadFiles(int postId, List<MultipartFile> files) throws IOException;     // 파일 업로드
+    List<FileInfo>uploadFiles(int postId, List<MultipartFile> files) throws IOException;     // 파일 업로드
 
     FileInfo downloadFile(int fileId);     // 파일 다운로드 (서버 저장 경로 반환 or 파일 스트림)
 

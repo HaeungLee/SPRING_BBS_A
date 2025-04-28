@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bbs.demo.mapper.PostMapper;
@@ -18,16 +17,16 @@ import com.bbs.demo.service.PostService;
 @Service
 public class PostServiceImpl implements PostService {
 
+    @Autowired
+    private PostMapper postMapper;
+    
 	@Autowired
-	private PostMapper postMapper;
-
+	private FileService fileService;
+	
 	@Override
 	public List<Post> getAllPosts() {
 		return postMapper.getAllPosts();
 	}
-
-	@Autowired
-	private FileService fileService; // FileService 주입
 
 	// ✅ 조회수 증가 + 게시글 조회 → 트랜잭션 처리
 	@Override
@@ -36,6 +35,7 @@ public class PostServiceImpl implements PostService {
 		postMapper.incrementViewCount(post_id); // 조회수 증가
 		return postMapper.getPostById(post_id); // 게시글 조회
 	}
+
 
 	// view
 	@Override

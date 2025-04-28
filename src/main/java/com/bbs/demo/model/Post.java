@@ -19,6 +19,8 @@ public class Post {
 	private LocalDateTime updated_at;
 	private Integer user_id;
 	private boolean isNotice;
+	private Double lat;   // 위도
+    private Double lng;   // 경도
 	
 	private String username;
 	

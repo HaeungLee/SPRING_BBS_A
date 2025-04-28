@@ -23,15 +23,10 @@ public class FileServiceImpl implements FileService {
 
 	@Value("${file.upload.dir}")
 	private String uploadDir;
-	
-	@Autowired
+
+
 	public FileServiceImpl(FileInfoMapper fileInfoMapper) {
 		this.fileInfoMapper = fileInfoMapper;
-	}
-
-	//
-	public List<FileInfo> getFilesByPostId(int postId) {
-		return fileInfoMapper.findFilesByPostId(postId);
 	}
 
 	// 모든 파일 조회
@@ -50,27 +45,24 @@ public class FileServiceImpl implements FileService {
 	public List<FileInfo> uploadFiles(int postId, List<MultipartFile> files) throws IOException {
 		List<FileInfo> fileInfoList = new ArrayList<>();
 
-		System.out.println("[uploadFiles] 호출됨");
-		System.out.println("[uploadFiles] postId = " + postId);
-
-		// 디렉토리 없으면 생성
 		File uploadDirectory = new File(uploadDir);
 		if (!uploadDirectory.exists()) {
-			uploadDirectory.mkdirs();
+			uploadDirectory.mkdirs(); // 디렉토리 없으면 생성
 		}
 
 		for (MultipartFile file : files) {
 			if (!file.isEmpty()) {
-				System.out.println("[uploadFiles] 파일 이름 = " + file.getOriginalFilename());
-
 				String originalName = file.getOriginalFilename();
 				String storedName = UUID.randomUUID() + "_" + originalName;
 				String filePath = uploadDir + File.separator + storedName;
 
 				File dest = new File(filePath);
-				file.transferTo(dest);
+				try {
+					file.transferTo(dest);
+				} catch (IOException e) {
+					throw new IOException("파일 저장 중 오류 발생", e);
+				}
 
-				// 파일 정보 객체 생성
 				FileInfo fileInfo = new FileInfo();
 				fileInfo.setPost_id(postId);
 				fileInfo.setFile_origin_name(originalName);
@@ -83,13 +75,13 @@ public class FileServiceImpl implements FileService {
 			}
 		}
 
-		System.out.println("[uploadFiles] 저장할 파일 수 = " + fileInfoList.size());
+		System.out.println("[FileServiceimpl] 저장할 파일 수 = " + fileInfoList.size());
 
 		if (!fileInfoList.isEmpty()) {
-			System.out.println("[uploadFiles] DB에 insert 시작!");
+			System.out.println("[FileServiceimpl] DB에 insert 시작");
 			fileInfoMapper.insertFileInfos(fileInfoList);
 		} else {
-			System.out.println("[uploadFiles] 저장할 파일 없음. insert 안 함.");
+			System.out.println("[FileServiceimpl] 저장할 파일 없음. insert 안 함.");
 		}
 
 		return fileInfoList;

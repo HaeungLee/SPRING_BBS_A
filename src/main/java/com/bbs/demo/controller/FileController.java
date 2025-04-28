@@ -46,7 +46,7 @@ public class FileController {
 	@PostMapping("/upload")
 	public ResponseEntity<?> uploadPost(@RequestParam("title") String title, @RequestParam("content") String content,
 			@RequestParam("userId") int userId,
-			@RequestParam(value = "images", required = false) List<MultipartFile> files) throws IOException {
+			@RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
 		
 		Post post = new Post();
 		post.setTitle(title);
