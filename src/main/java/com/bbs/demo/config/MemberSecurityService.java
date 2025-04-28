@@ -1,5 +1,6 @@
 package com.bbs.demo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +17,12 @@ import lombok.RequiredArgsConstructor;
 public class MemberSecurityService implements UserDetailsService {
 
     @Lazy
-    private final UsersService usersService; // DB에서 사용자 정보를 가져오는 서비스
-
+    private UsersService usersService; // DB에서 사용자 정보를 가져오는 서비스
+    
+    @Autowired
+    public void setUsersService(UsersService usersService) {
+        this.usersService = usersService;
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Users user = usersService.getUserByUsername(username);
@@ -26,7 +31,7 @@ public class MemberSecurityService implements UserDetailsService {
         }
 
         String role = "USER";
-        if ("Y".equals(user.getIsManager())) {
+        if ("Y".equals(user.getIs_Manager())) {
             role = "ADMIN";
         }
 

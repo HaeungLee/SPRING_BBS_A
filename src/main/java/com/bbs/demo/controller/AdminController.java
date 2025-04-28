@@ -18,7 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+// 파일업로드, comment 등록후 변경예정
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
@@ -91,7 +91,7 @@ public class AdminController {
         // 로그인한 사용자의 username으로부터 사용자 정보 가져오기
         String username = authentication.getName();
         Users user = usersService.getUserByUsername(username);  // 사용자 정보 가져오기
-        int currentUserId = user.getUser_id().intValue();       // user_id 추출
+        int currentUserId = user.getUser_Id().intValue();       // user_id 추출
 
         postService.deletePost(postId.intValue(), currentUserId);  // 게시글 삭제 호출
         return "redirect:/admin/posts";  // 게시글 목록 페이지로 리다이렉트
