@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -28,7 +29,6 @@ public class FileServiceImpl implements FileService {
 		this.fileInfoMapper = fileInfoMapper;
 	}
 
-	//
 	@Override
 	public List<FileInfo> getFilesByPostId(int postId) {
 		return fileInfoMapper.findFilesByPostId(postId);
@@ -44,23 +44,25 @@ public class FileServiceImpl implements FileService {
 	public FileInfo getFileById(int fileId) {
 		return fileInfoMapper.findById(fileId);
 	}
-
+	
 	@Override
 	public List<FileInfo> uploadFiles(int postId, List<MultipartFile> files) throws IOException {
 	    List<FileInfo> fileInfoList = new ArrayList<>();
+	    System.out.println("[uploadFiles] 호출됨! 파일 수: " + (files == null ? "null" : files.size() + "개"));
 
-	    System.out.println("[uploadFiles] 호출됨");
-	    System.out.println("[uploadFiles] postId = " + postId);
+	    if (files == null || files.isEmpty()) {
+	        return fileInfoList;
+	    }
 
 	    File uploadDirectory = new File(uploadDir);
 	    if (!uploadDirectory.exists()) {
-	        uploadDirectory.mkdirs(); // 디렉토리 없으면 생성
+	        uploadDirectory.mkdirs();
 	    }
+
+	    int fileIndex = 0; // ✅ 파일 순서 체크용
 
 	    for (MultipartFile file : files) {
 	        if (!file.isEmpty()) {
-	            System.out.println("[uploadFiles] 파일 이름 = " + file.getOriginalFilename());
-
 	            String originalName = file.getOriginalFilename();
 	            String storedName = UUID.randomUUID() + "_" + originalName;
 	            String filePath = Paths.get(uploadDir, storedName).toString();
@@ -69,28 +71,42 @@ public class FileServiceImpl implements FileService {
 	            file.transferTo(dest);
 
 	            FileInfo fileInfo = new FileInfo();
-	            fileInfo.setPost_id(postId);
-	            fileInfo.setFile_origin_name(originalName);
-	            fileInfo.setFile_store_name(storedName);
-	            fileInfo.setFile_path(filePath);
+	            fileInfo.setPostId(postId);
+	            fileInfo.setFileOriginName(originalName);
+	            fileInfo.setFileStoreName(storedName);
+	            fileInfo.setFilePath(filePath);
 	            fileInfo.setFileSize(file.getSize());
 	            fileInfo.setFileType(file.getContentType());
+	            fileInfo.setUploadedAt(LocalDateTime.now());
+
+	            // ✅ 썸네일 설정
+	            if (fileIndex == 0) {
+	                fileInfo.setIsThumbnail(true);
+	            } else {
+	                fileInfo.setIsThumbnail(false);
+	            }
 
 	            fileInfoList.add(fileInfo);
+	            fileIndex++;
 	        }
 	    }
 
-	    System.out.println("[uploadFiles] 저장할 파일 수 = " + fileInfoList.size());
+	    System.out.println("[uploadFiles] 저장할 fileInfoList 크기: " + fileInfoList.size());
+	    for (FileInfo fileInfo : fileInfoList) {
+	        System.out.println("- 저장할 파일: " + fileInfo.getFileOriginName()
+	                + ", 저장 파일명: " + fileInfo.getFileStoreName()
+	                + ", isThumbnail: " + fileInfo.getIsThumbnail());
+	    }
 
 	    if (!fileInfoList.isEmpty()) {
-	        System.out.println("[uploadFiles] DB에 insert 시작!");
+	        System.out.println("[uploadFiles] DB insert 시작!");
 	        fileInfoMapper.insertFileInfos(fileInfoList);
-	    } else {
-	        System.out.println("[uploadFiles] 저장할 파일 없음. insert 안 함.");
+	        System.out.println("[uploadFiles] DB insert 완료!");
 	    }
 
 	    return fileInfoList;
 	}
+
 
 	// 파일 다운로드용 정보 반환
 	@Override
@@ -102,7 +118,7 @@ public class FileServiceImpl implements FileService {
 	@Override
 	public byte[] previewFile(int fileId) throws IOException {
 		FileInfo fileInfo = fileInfoMapper.findById(fileId);
-		Path path = Paths.get(fileInfo.getFile_path());
+		Path path = Paths.get(fileInfo.getFilePath());
 		return Files.readAllBytes(path);
 	}
 

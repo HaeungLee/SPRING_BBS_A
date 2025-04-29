@@ -17,11 +17,14 @@
 
 	<select id="getAllPosts" resultMap="PostResultMap">
 		SELECT
-		p.post_id, p.title, p.content, p.region, p.views,
-		p.created_at, p.updated_at, p.user_id, p.is_notice,
+		p.post_id, p.title,
+		p.content, p.region, p.views,
+		p.created_at, p.updated_at, p.user_id,
+		p.is_notice,
 		u.username
 		FROM Posts p
-		JOIN Users u ON p.user_id = u.user_id
+		JOIN Users u ON p.user_id =
+		u.user_id
 		ORDER BY p.created_at DESC
 	</select>
 
@@ -31,15 +34,18 @@
 		p.post_id, p.title, p.content, p.region, p.views,
 		p.created_at, p.updated_at, p.user_id, p.is_notice,
 		u.username
-		FROM Posts p
+		FROM
+		Posts p
 		JOIN Users u ON p.user_id = u.user_id
-		WHERE p.post_id = #{post_id}
+		WHERE p.post_id =
+		#{post_id}
 	</select>
 
 	<insert id="insertPost" parameterType="com.bbs.demo.model.Post"
 		useGeneratedKeys="true" keyProperty="post_id">
 		INSERT INTO Posts(
-		title, content, region, views,
+		title, content,
+		region, views,
 		created_at, updated_at,
 		user_id, is_notice
 		)
@@ -52,13 +58,16 @@
 
 	<update id="updatePost" parameterType="com.bbs.demo.model.Post">
 		UPDATE Posts SET
-		title = #{title},
+		title =
+		#{title},
 		content = #{content},
 		region = #{region},
-		updated_at = #{updated_at},
+		updated_at =
+		#{updated_at},
 		user_id = #{user_id},
 		is_notice = #{isNotice}
-		WHERE post_id = #{post_id}
+		WHERE
+		post_id = #{post_id}
 	</update>
 
 	<delete id="deletePost" parameterType="int">

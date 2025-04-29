@@ -1,79 +1,99 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:fragment="title">
-    <title>게시글 목록</title>
-    <style>
-      .board-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 10px;
-      }
-      .board-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .btn-write {
-        background-color: #4CAF50;
-        color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        text-decoration: none;
-      }
-      .table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .table th, .table td {
-        padding: 10px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
-      .table tr:hover {
-        background-color: #f5f5f5;
-      }
-      .table th {
-        background-color: #f2f2f2;
-      }
-      .post-title {
-        color: #0066cc;
-        text-decoration: none;
-      }
-      .post-title:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
+<head th:fragment="title">
+<title>게시글 목록</title>
+<style>
+.board-container {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 10px;
+}
 
-  <body>
-    <section th:fragment="section">
-      <div class="board-container">
-        <div class="board-header">
-          <h2>게시글 목록</h2>
-          <a th:href="@{/post/create}" class="btn-write">글 작성</a>
-        </div>
-        
-        <table class="table">
-          <thead>
-            <tr>
-              <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="post : ${posts}">
-              <td th:text="${post?.post_id}"></td>
-              <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
-              <td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
-              <td th:text="${post?.region}"></td>
-              <td th:text="${post?.username}"></td>
-              <td th:text="${post?.views}"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-  </body>
+.board-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.btn-write {
+	background-color: #4CAF50;
+	color: white;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.table th, .table td {
+	padding: 10px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+}
+
+.table tr:hover {
+	background-color: #f5f5f5;
+}
+
+.table th {
+	background-color: #f2f2f2;
+}
+
+.post-title {
+	color: #0066cc;
+	text-decoration: none;
+}
+
+.post-title:hover {
+	text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+	<section th:fragment="section">
+		<div class="board-container">
+			<div class="board-header">
+				<h2>게시글 목록</h2>
+				<a th:href="@{/post/create}" class="btn-write">글 작성</a>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>글번호</th>
+						<th>제목</th>
+						<th>내용</th>
+						<th>지역</th>
+						<th>작성자</th>
+						<th>조회수</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="post : ${posts}">
+						<td th:text="${post?.post_id}"></td>
+						<td><a th:href="@{/post/view/{id}(id=${post?.post_id})}"
+							class="post-title" th:text="${post?.title}"></a>
+							
+							<!-- 썸네일 추가 할지 말지.. 
+							<img th:if="${post.thumbnailPath != null}" th:src="@{${post.thumbnailPath}}"
+							style="width: 50px; height: 50px; object-fit: cover; margin-top: 5px;" /> -->
+							
+						</td>
+						<td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
+						<td th:text="${post?.region}"></td>
+						<td th:text="${post?.username}"></td>
+						<td th:text="${post?.views}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</body>
 </html>

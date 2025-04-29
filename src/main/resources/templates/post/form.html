@@ -251,7 +251,6 @@ input[type="file"] {
 
 			<!-- 이미지 업로드 / 미리보기  -->
 			<div class="form-group">
-				<label for="content">이미지 업로드</label>
 				<div class="upload-container">
 					<!-- 이미지 업로드 / 미리보기 -->
 					<div class="form-group">
@@ -261,12 +260,11 @@ input[type="file"] {
 								<div class="preview" id="preview0"></div>
 								<div class="delete-icon" id="deleteIcon0"
 									onclick="deleteImage(event, 0)" style="display: none;">🗑️</div>
-								<input type="file" id="fileInput0" accept="image/*" hidden
-									onchange="handleFileChange(event, 0)">
+								<input type="file" id="fileInput0" name="files" accept="image/*"
+									hidden multiple onchange="handleFileChange(event, 0)">
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 
@@ -419,6 +417,7 @@ input[type="file"] {
 		  input.type = 'file';
 		  input.id = 'fileInput' + index;
 		  input.accept = 'image/*';
+		  input.name = 'files';
 		  input.hidden = true;
 		  input.setAttribute('onchange', `handleFileChange(event, ${index})`);
 
@@ -480,6 +479,33 @@ input[type="file"] {
 		    if (input) input.value = '';
 		  }
 		}
+		document.querySelector('form').addEventListener('submit', function(event) {
+		    event.preventDefault(); // 기본 form 제출 막기
+
+		    const formData = new FormData(this);
+
+		    // selectedImages 배열에 있는 파일들 추가
+		    selectedImages.forEach(file => {
+		        formData.append('files', file); // name="files" 로 추가
+		    });
+
+		    fetch(this.action, {
+		        method: 'POST',
+		        body: formData
+		    })
+		    .then(response => {
+		        if (response.ok) {
+		            alert('등록 성공!');
+		            window.location.href = '/post/list'; // 성공하면 목록으로 이동
+		        } else {
+		            alert('등록 실패...');
+		        }
+		    })
+		    .catch(error => {
+		        console.error('오류 발생:', error);
+		        alert('서버 오류');
+		    });
+		});
 
 </script>
 

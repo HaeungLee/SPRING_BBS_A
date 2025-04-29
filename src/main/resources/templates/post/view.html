@@ -1,98 +1,231 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>게시글 상세보기</title>
-  <style>
-    .view-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 5px;
-      font-family: Arial, sans-serif;
-    }
-    .view-header {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-    }
-    .view-header h2 {
-      margin: 0;
-    }
-    .view-meta {
-      font-size: 14px;
-      color: #666;
-      margin-top: 5px;
-    }
-    .view-content {
-      margin: 20px 0;
-      white-space: pre-wrap;
-    }
-    .attached-files {
-      background-color: #f9f9f9;
-      padding: 10px;
-      border-radius: 4px;
-      margin-top: 20px;
-    }
-    .attached-files li {
-      margin: 5px 0;
-    }
-    .btn-group {
-      margin-top: 30px;
-      display: flex;
-      gap: 10px;
-    }
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      text-decoration: none;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .btn-back { background-color: #6c757d; }
-    .btn-edit { background-color: #007bff; }
-    .btn-delete { background-color: #dc3545; }
-  </style>
+<meta charset="UTF-8">
+<title>게시글 상세보기</title>
+<style>
+.view-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
+	font-family: Arial, sans-serif;
+}
+
+.view-header {
+	margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+
+.view-header h2 {
+	margin: 0;
+}
+
+.view-meta {
+	font-size: 14px;
+	color: #666;
+	margin-top: 5px;
+}
+
+.view-content {
+	margin: 20px 0;
+	white-space: pre-wrap;
+}
+
+.attached-files {
+	background-color: #f9f9f9;
+	padding: 10px;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
+.attached-files li {
+	margin: 5px 0;
+}
+
+.btn-group {
+	margin-top: 30px;
+	display: flex;
+	gap: 10px;
+}
+
+.btn {
+	padding: 8px 16px;
+	border: none;
+	border-radius: 4px;
+	text-decoration: none;
+	color: white;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.btn-back {
+	background-color: #6c757d;
+}
+
+.btn-edit {
+	background-color: #007bff;
+}
+
+.btn-delete {
+	background-color: #dc3545;
+}
+
+/*file css*/
+.attached-files>div {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+}
+
+.attached-files>div>div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#imageModal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999;
+}
+
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+}
+
+.navigation {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.nav {
+	font-size: 50px;
+	color: white;
+	cursor: pointer;
+	user-select: none;
+}
+
+#modalImage {
+	max-width: 800px;
+	max-height: 600px;
+	object-fit: contain;
+}
+
+.close {
+	position: absolute;
+	top: 20px;
+	right: 30px;
+	font-size: 40px;
+	color: white;
+	cursor: pointer;
+}
+</style>
 </head>
 <body>
-  <div class="view-container">
-    <div class="view-header">
-      <h2 th:text="${post.title}">게시글 제목</h2>
-      <div class="view-meta">
-        작성자: <span th:text="${post.username}"></span> |
-        지역: <span th:text="${post.region}"></span> |
-        조회수: <span th:text="${post.views}"></span>
-      </div>
-    </div>
+	<div class="view-container">
 
-    <div class="view-content" th:text="${post.content}">게시글 내용</div>
+		<!-- 게시글 제목, 메타 -->
+		<div class="view-header">
+			<h2 th:text="${post.title}">게시글 제목</h2>
+			<div class="view-meta">
+				작성자: <span th:text="${post.username}"></span> | 지역: <span
+					th:text="${post.region}"></span> | 조회수: <span
+					th:text="${post.views}"></span>
+			</div>
+		</div>
 
-    <div class="attached-files" th:if="${post.files != null and !post.files.isEmpty()}">
-      <strong>첨부파일:</strong>
-      <ul>
-        <li th:each="file : ${post.files}">
-          <a th:href="@{|/files/${file.uuid}_${file.originalName}|}"
-             th:text="${file.originalName}" download></a>
-        </li>
-      </ul>
-    </div>
+		<!-- 게시글 본문 -->
+		<div class="view-content" th:text="${post.content}">게시글 내용</div>
 
-    <div class="btn-group">
-      <!-- 1) 목록으로 이동 -->
-      <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
-      <!-- 2) 수정은 링크로만 처리 -->
-      <a th:href="@{/post/edit/{id}(id=${post.post_id})}" class="btn btn-edit">수정</a>
-      <!-- 3) 삭제만 폼으로 처리 -->
-      <form th:action="@{/post/delete/{id}(id=${post.post_id})}" method="post" style="display:inline;">
-        <button type="submit" class="btn btn-delete"
-                onclick="return confirm('정말 삭제하시겠습니까?');">
-          삭제
-        </button>
-      </form>
-    </div>
-  </div>
+		<!-- 첨부파일 -->
+		<div class="attached-files"
+			th:if="${fileList != null and !fileList.isEmpty()}">
+			<strong>첨부파일:</strong>
+
+			<!-- ✅ 파일 목록 -->
+			<div>
+				<div th:each="file : ${fileList}">
+					<img th:src="@{|/file/preview/${file.fileId}|}" alt="첨부 이미지"
+						style="max-width: 200px; height: auto; display: block; margin-bottom: 5px;"
+						onclick="openModal(this)" /> <a
+						th:href="@{|/file/download/${file.fileId}|}"
+						th:text="${file.fileOriginName}" download></a>
+				</div>
+			</div>
+
+			<!-- 모달창 -->
+			<div id="imageModal" style="display: none;">
+				<span class="close" onclick="closeModal()">&times;</span>
+
+				<div class="modal-content">
+					<div class="navigation">
+						<span class="nav" onclick="prevImage()">&#10094;</span>
+						<!-- ◀ -->
+						<img id="modalImage" src=""> <span class="nav"
+							onclick="nextImage()">&#10095;</span>
+						<!-- ▶ -->
+					</div>
+				</div>
+			</div>
+
+
+			<!-- 버튼 영역 -->
+			<div class="btn-group">
+				<a th:href="@{/post/list}" class="btn btn-back">목록으로</a> <a
+					th:href="@{/post/edit/{id}(id=${post.post_id})}"
+					class="btn btn-edit">수정</a>
+				<form th:action="@{/post/delete/{id}(id=${post.post_id})}"
+					method="post" style="display: inline;">
+					<button type="submit" class="btn btn-delete"
+						onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		let currentIndex = 0;
+		let images = [];
+
+		window.onload = function() {
+			images = Array.from(document
+					.querySelectorAll(".attached-files img"));
+		}
+
+		function openModal(img) {
+			currentIndex = images.indexOf(img);
+			document.getElementById('modalImage').src = img.src;
+			document.getElementById('imageModal').style.display = 'flex';
+		}
+
+		function closeModal() {
+			document.getElementById('imageModal').style.display = 'none';
+		}
+
+		function prevImage() {
+			currentIndex = (currentIndex - 1 + images.length) % images.length;
+			document.getElementById('modalImage').src = images[currentIndex].src;
+		}
+
+		function nextImage() {
+			currentIndex = (currentIndex + 1) % images.length;
+			document.getElementById('modalImage').src = images[currentIndex].src;
+		}
+	</script>
+
 </body>
 </html>

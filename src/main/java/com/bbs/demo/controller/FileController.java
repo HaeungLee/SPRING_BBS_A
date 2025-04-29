@@ -36,23 +36,39 @@ import com.bbs.demo.service.FileService;
 import com.bbs.demo.service.PostService;
 
 @Controller
-@RequestMapping("/post")
+@RequestMapping("/file")
 public class FileController {
 
-	@Autowired
-	private PostService postService;
+    @Autowired
+    private FileService fileService;
 
-	@PostMapping("/upload")
-	public ResponseEntity<?> uploadPost(@RequestParam("title") String title, @RequestParam("content") String content,
-			@RequestParam("userId") int userId,
-			@RequestParam(value = "files", required = false) List<MultipartFile> files) throws IOException {
+    // 파일 미리보기
+    @GetMapping("/preview/{fileId}")
+    @ResponseBody
+    public ResponseEntity<byte[]> previewFile(@PathVariable("fileId") int fileId) throws IOException {
+        FileInfo fileInfo = fileService.getFileById(fileId);
+        Path path = Paths.get(fileInfo.getFilePath());
+        byte[] image = Files.readAllBytes(path);
 
-		Post post = new Post();
-		post.setTitle(title);
-		post.setContent(content);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, fileInfo.getFileType())
+                .body(image);
+    }
 
-		postService.createPost(post, userId, files);
+    // 파일 다운로드
+    @GetMapping("/download/{fileId}")
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@PathVariable("fileId") int fileId) throws IOException {
+        FileInfo fileInfo = fileService.getFileById(fileId);
+        Path path = Paths.get(fileInfo.getFilePath());
+        Resource resource = new UrlResource(path.toUri());
 
-		return ResponseEntity.ok().body("파일 포함 게시글 등록 성공");
-	}
+        String encodedFileName = URLEncoder.encode(fileInfo.getFileOriginName(), StandardCharsets.UTF_8);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
+                .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream")
+                .body(resource);
+    }
 }
+

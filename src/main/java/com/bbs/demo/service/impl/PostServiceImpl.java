@@ -56,10 +56,10 @@ public class PostServiceImpl implements PostService {
         post.setUpdated_at(now);
         post.setViews(0);
         postMapper.insertPost(post);
-
-        // 파일 업로드 처리
+        System.out.println("[createPost] files: " + (files == null ? "null" : files.size() + "개"));
+        // ✅ 파일 업로드 + DB 저장
         if (files != null && !files.isEmpty()) {
-        	fileService.uploadFiles(post.getPost_id(), files);
+            fileService.uploadFiles(post.getPost_id(), files);
         }
     }
 
@@ -83,6 +83,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("작성자만 삭제할 수 있습니다.");
         }
         postMapper.deletePost(post_id);
+        
     }
 
     // 조회수 증가

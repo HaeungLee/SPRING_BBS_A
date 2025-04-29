@@ -22,12 +22,14 @@
 		file_store_name,
 		file_path,
 		uploaded_at,
-		file_type
+		file_type,
+		is_thumbnail
 		)
 		VALUES
 		<foreach collection="list" item="file" separator=",">
-			(#{file.post_id}, #{file.file_origin_name}, #{file.file_store_name},
-			#{file.file_path}, #{file.uploadedAt}, #{file.fileType})
+			(#{file.postId}, #{file.fileOriginName}, #{file.fileStoreName},
+			#{file.filePath}, #{file.uploadedAt}, #{file.fileType},
+			#{file.isThumbnail})
 		</foreach>
 	</insert>
 
@@ -51,7 +53,7 @@
 		SELECT * FROM file_uploads WHERE file_store_name =
 		#{storedFileName} LIMIT 1
 	</select>
-	
+
 	<select id="findFilesByPostId"
 		resultType="com.bbs.demo.model.FileInfo">
 		SELECT * FROM file_uploads
