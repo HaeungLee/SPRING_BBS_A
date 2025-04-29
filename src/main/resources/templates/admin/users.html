@@ -6,127 +6,168 @@
     <title>회원 목록</title>
     <!-- FontAwesome 아이콘 CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        /* 기본 설정 */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-        }
+<style>
+    /* 기본 설정 */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* 헤더 스타일 */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #333;
-            color: white;
-            padding: 20px 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-        }
+    /* 헤더 스타일 */
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #333;
+      color: white;
+      padding: 20px 40px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    }
 
-        .admin-name {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    .btn-write {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
 
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    .btn-write:hover {
+      background-color: #45a049;
+    }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
+    /* 페이지 제목 */
+    h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-top: 40px;
+      color: #333;
+    }
 
-        /* 페이지 제목 */
-        h1 {
-            text-align: center;
-            font-size: 36px;
-            margin-top: 40px;
-            color: #333;
-        }
+    /* 테이블 스타일 */
+    .table {
+      width: 90%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
 
-        /* 테이블 스타일 */
-        table {
-            width: 90%;
-            margin: 30px auto;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
 
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
+    th {
+      background: linear-gradient(to bottom, #000066, #3333cc);
+      color: white;
+      font-weight: bold;
+    }
 
-        th {
-            background: linear-gradient(to bottom, #000066, #3333cc);
-            color: white;
-            font-weight: bold;
-        }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+    td a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+    }
 
-        td a {
-            text-decoration: none;
-            color: #3498db;
-            margin: 0 10px;
-            font-weight: bold;
-        }
+    td a:hover {
+      color: #2980b9;
+    }
 
-        td a:hover {
-            color: #2980b9;
-        }
+    td a.delete-btn {
+      color: #e74c3c;
+    }
 
-        td a.delete-btn {
-            color: #e74c3c;
-        }
+    td a.delete-btn:hover {
+      color: #c0392b;
+    }
 
-        td a.delete-btn:hover {
-            color: #c0392b;
-        }
+    /* 버튼 스타일 */
+    .delete-btn, .edit-btn {
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
 
-        /* 뒤로가기 링크 */
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 100px;
-            font-size: 18px;
-            text-decoration: none;
-            color: #3498db;
-        }
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
 
-        .back-link:hover {
-            color: #2980b9; 
-        }
+    .edit-btn {
+      background-color: #f39c12;
+    }
 
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            table {
-                width: 100%;
-            }
+    .edit-btn:hover {
+      background-color: #e67e22;
+    }
 
-            h1 {
-                font-size: 28px;
-            }
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+      .table {
+        width: 100%;
+      }
 
-            th, td {
-                padding: 10px;
-            }
-        }
-    </style>
+      h2 {
+        font-size: 28px;
+      }
+
+      th, td {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <div class="board-header">
+      <h2>게시글 목록</h2>
+      <a th:href="@{/post/create}" class="btn-write">글 작성</a>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>글번호</th>
+          <th>제목</th>
+          <th>내용</th>
+          <th>지역</th>
+          <th>작성자</th>
+          <th>조회수</th>
+          <th>설정</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="post : ${posts}">
+          <td th:text="${post.post_id}"></td>
+          <td class="post-title">
+            <a th:href="@{/post/view/{id}(id=${post.post_id})}" class="post-title" th:text="${post.title}"></a>
+          </td>
+          <td class="post-content" th:text="${#strings.abbreviate(post.content, 30)}"></td>
+          <td th:text="${post.region}"></td>
+          <td th:text="${post.username}"></td>
+          <td th:text="${post.views}"></td>
+          <td>
+            <a href="#" class="edit-btn" th:data-id="${post.post_id}" onclick="editPost(this)">수정</a> |
+            <a href="#" class="delete-btn" th:data-id="${post.post_id}" onclick="deletePost(this)">삭제</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </head>
 <body>
 
