@@ -2,72 +2,89 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bbs.demo.mapper.CommentMapper">
 
-    <resultMap id="CommentResultMap" type="com.bbs.demo.model.Comment">
-        <id property="comment_id" column="comment_id"/>
-        <result property="content" column="content"/>
-        <result property="created_at" column="created_at"/>
-        <result property="updated_at" column="updated_at"/>
-        <result property="user_id" column="user_id"/>
-        <result property="post_id" column="post_id"/>
-        <result property="is_deleted" column="is_deleted"/>
-        <result property="like_count" column="like_count"/>
-        <result property="parent_id" column="parent_id"/>
-        <result property="nickname" column="nickname"/>
-        <result property="profile_img" column="profile_img"/>
-    </resultMap>
+	<resultMap id="CommentResultMap"
+		type="com.bbs.demo.model.Comment">
+		<id property="comment_id" column="comment_id" />
+		<result property="content" column="content" />
+		<result property="created_at" column="created_at" />
+		<result property="updated_at" column="updated_at" />
+		<result property="user_id" column="user_id" />
+		<result property="post_id" column="post_id" />
+		<result property="is_deleted" column="is_deleted" />
+		<result property="like_count" column="like_count" />
+		<result property="parent_id" column="parent_id" />
+		<result property="nickname" column="nickname" />
+		<result property="profile_img" column="profile_img" />
+	</resultMap>
 
-    <select id="getCommentsByPostId" resultMap="CommentResultMap">
-        SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id, c.post_id, c.is_deleted,
-               c.like_count, c.parent_id, u.nickname, u.profile_img
-        FROM Comments c
-        LEFT JOIN Users u ON c.user_id = u.user_id
-        WHERE c.post_id = #{post_id} AND c.is_deleted = false
-        ORDER BY c.created_at ASC
-    </select>
+	<select id="getCommentsByPostId" resultMap="CommentResultMap">
+		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id, c.is_deleted,
+		c.like_count, c.parent_id, u.nickname, u.profile_img
+		FROM Comments c
+		LEFT JOIN Users u ON c.user_id = u.user_id
+		WHERE c.post_id = #{post_id} AND c.is_deleted = false
+		ORDER BY c.created_at ASC
+	</select>
 
-    <insert id="insertComment" parameterType="com.bbs.demo.model.Comment" useGeneratedKeys="true" keyProperty="comment_id">
-        INSERT INTO Comments (content, created_at, updated_at, user_id, post_id, parent_id, is_deleted, like_count)
-        VALUES (#{content}, NOW(), NOW(), #{user_id}, #{post_id}, #{parent_id}, false, 0)
-    </insert>
+	<insert id="insertComment"
+		parameterType="com.bbs.demo.model.Comment" useGeneratedKeys="true"
+		keyProperty="comment_id">
+		INSERT INTO Comments (content, created_at, updated_at, user_id, post_id,
+		parent_id, is_deleted, like_count)
+		VALUES (#{content}, NOW(), NOW(), #{user_id}, #{post_id}, #{parent_id},
+		false, 0)
+	</insert>
 
-    <update id="updateComment" parameterType="com.bbs.demo.model.Comment">
-        UPDATE Comments
-        SET content = #{content}, updated_at = NOW()
-        WHERE comment_id = #{comment_id}
-    </update>
+	<update id="updateComment"
+		parameterType="com.bbs.demo.model.Comment">
+		UPDATE Comments
+		SET content = #{content}, updated_at = NOW()
+		WHERE comment_id = #{comment_id}
+	</update>
 
-    <update id="markCommentAsDeleted">
-        UPDATE Comments
-        SET is_deleted = true, updated_at = NOW()
-        WHERE comment_id = #{id} AND user_id = #{user_id}
-    </update>
+	<update id="markCommentAsDeleted">
+		UPDATE Comments
+		SET is_deleted = true, updated_at = NOW()
+		WHERE comment_id = #{id} AND user_id = #{user_id}
+	</update>
 
-    <select id="getCommentById" resultMap="CommentResultMap">
-        SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id, c.post_id, c.is_deleted,
-               c.like_count, c.parent_id, u.nickname, u.profile_img
-        FROM Comments c
-        LEFT JOIN Users u ON c.user_id = u.user_id
-        WHERE c.comment_id = #{id}
-    </select>
+	<select id="getCommentById" resultMap="CommentResultMap">
+		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id, c.is_deleted,
+		c.like_count, c.parent_id, u.nickname, u.profile_img
+		FROM Comments c
+		LEFT JOIN Users u ON c.user_id = u.user_id
+		WHERE c.comment_id = #{id}
+	</select>
 
-    <update id="incrementLikeCount">
-        UPDATE Comments SET like_count = like_count + 1 WHERE comment_id = #{id}
-    </update>
+	<update id="incrementLikeCount">
+		UPDATE Comments SET like_count = like_count + 1 WHERE comment_id = #{id}
+	</update>
 
-    <update id="decrementLikeCount">
-        UPDATE Comments SET like_count = like_count - 1 WHERE comment_id = #{id} AND like_count > 0
-    </update>
+	<update id="decrementLikeCount">
+		UPDATE Comments SET like_count = like_count - 1 WHERE comment_id = #{id} AND
+		like_count > 0
+	</update>
 
-    <select id="hasLiked" resultType="boolean">
-        SELECT COUNT(*) > 0 FROM Comment_likes WHERE comment_id = #{commentId} AND user_id = #{userId}
-    </select>
+	<select id="hasLiked" resultType="boolean">
+		SELECT COUNT(*) > 0 FROM Comment_likes WHERE comment_id = #{commentId} AND
+		user_id = #{userId}
+	</select>
 
-    <insert id="insertLike">
-        INSERT INTO Comment_likes (comment_id, user_id) VALUES (#{commentId}, #{userId})
-    </insert>
+	<insert id="insertLike">
+		INSERT INTO Comment_likes (comment_id, user_id) VALUES (#{commentId},
+		#{userId})
+	</insert>
 
-    <delete id="deleteLike">
-        DELETE FROM Comment_likes WHERE comment_id = #{commentId} AND user_id = #{userId}
-    </delete>
+	<delete id="deleteLike">
+		DELETE FROM Comment_likes WHERE comment_id = #{commentId} AND user_id =
+		#{userId}
+	</delete>
+
+	<select id="getChildCommentIds" resultType="int">
+		SELECT comment_id FROM Comments
+		WHERE parent_id = #{parent_id} AND is_deleted = false
+	</select>
 
 </mapper>

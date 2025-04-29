@@ -31,6 +31,9 @@ public interface CommentMapper {
     void insertLike(@Param("commentId") int commentId, @Param("userId") int userId);
 
     void deleteLike(@Param("commentId") int commentId, @Param("userId") int userId);
+    
+    List<Integer> getChildCommentIds(@Param("parent_id") int parentId);
+
 }
 
 

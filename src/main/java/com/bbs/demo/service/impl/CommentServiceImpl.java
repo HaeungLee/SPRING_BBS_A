@@ -40,9 +40,18 @@ public class CommentServiceImpl implements CommentService {
         Comment existing = commentMapper.getCommentById(id);
         if (existing != null && existing.getUser_id().equals(userId)) {
             commentMapper.markCommentAsDeleted(id, userId);
+            deleteChildCommentsRecursively(id, userId);
             return true;
         }
         return false;
+    }
+    
+    private void deleteChildCommentsRecursively(int parentId, int userId) {
+        List<Integer> childIds = commentMapper.getChildCommentIds(parentId);
+        for (Integer childId : childIds) {
+            commentMapper.markCommentAsDeleted(childId, userId);
+            deleteChildCommentsRecursively(childId, userId);
+        }
     }
 
     @Override
