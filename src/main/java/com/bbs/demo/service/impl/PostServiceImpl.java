@@ -21,6 +21,11 @@ public class PostServiceImpl implements PostService {
     public List<Post> getPosts(int offset, int limit) {
         return postMapper.findPosts(offset, limit);
     }
+    
+    @Override
+    public List<Post> searchPosts(String type, String keyword, int offset, int limit) {
+        return postMapper.searchPosts(type, keyword, offset, limit);
+    }
 
     // ✅ 조회수 증가 + 게시글 조회 → 트랜잭션 처리
     @Override

@@ -12,6 +12,11 @@ public interface PostMapper {
     
 	List<Post> findPosts(@Param("offset") int offset, @Param("limit") int limit);                   // 게시글 전체 조회
     
+	List<Post> searchPosts(@Param("type") String type,   // 검색 포스트 조회
+            @Param("keyword") String keyword,
+            @Param("offset") int offset,
+            @Param("limit") int limit);
+	
     Post getPostById(Integer post_id);         // 특정 게시글 조회(상세보기)
     
     void insertPost(Post post);                 // 게시글 삽입

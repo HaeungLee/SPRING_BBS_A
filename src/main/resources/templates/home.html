@@ -93,7 +93,6 @@
         .auth-buttons {
             display: flex;
             gap: 10px;
-            align-items: center;
         }
         
         .btn {
@@ -329,6 +328,18 @@
             <p>여행 관련 게시판, 정보 공유, 소통의 장을 제공합니다. 여러분의 생각과 경험을 공유해보세요.</p>
         </div>
     </header>
+    
+    <!-- 검색창 섹션 -->
+<section class="main" style="margin-top: 2rem;">
+    <form th:action="@{/post/list}" method="get" style="text-align: center; margin-bottom: 2rem;">
+        <input type="text" name="keyword" placeholder="여행지를 검색해보세요!" 
+               style="padding: 12px; width: 60%; max-width: 500px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;">
+        <button type="submit" 
+                style="padding: 12px 20px; margin-left: 8px; background-color: #3a7bd5; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;">
+            검색
+        </button>
+    </form>
+</section>
 
     <!-- 메인 콘텐츠 -->
     <main class="main">

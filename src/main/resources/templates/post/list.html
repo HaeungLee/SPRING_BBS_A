@@ -59,10 +59,13 @@
 <body>
 <section th:fragment="section">
     <div class="board-container">
-        <div class="board-header">
-            <h2>게시글 목록</h2>
-            <a th:href="@{/post/create}" class="btn-write">글 작성</a>
-        </div>
+       <div class="board-header">
+    <h2>게시글 목록</h2>
+    <div th:if="${keyword != null}" style="margin-left: 20px; font-size: 16px;">
+        "<span th:text="${keyword}"></span>" 검색 결과
+    </div>
+    <a th:href="@{/post/create}" class="btn-write">글 작성</a>
+</div>
 
         <table class="table">
             <thead>
@@ -72,12 +75,12 @@
             </thead>
             <tbody id="post-tbody">
                 <tr th:each="post : ${posts}">
-                    <td th:utext="${post?.post_id}"></td>
-                    <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:utext="${post?.title}"></a></td>
-                    <td th:utext="${#strings.abbreviate(post?.content, 30)}"></td>
-                    <td th:utext="${post?.region}"></td>
-                    <td th:utext="${post?.username}"></td>
-                    <td th:utext="${post?.views}"></td>
+                    <td th:text="${post?.post_id}"></td>
+                    <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
+                    <td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
+                    <td th:text="${post?.region}"></td>
+                    <td th:text="${post?.username}"></td>
+                    <td th:text="${post?.views}"></td>
                 </tr>
             </tbody>
         </table>
@@ -94,6 +97,8 @@
         let offset = 10;
         let isLoading = false;
         let isEnd = false;
+        let keyword = new URLSearchParams(window.location.search).get('keyword');
+        let type = new URLSearchParams(window.location.search).get('type');
 
         // 처음 페이지가 로드될 때, 스크롤 위치를 제일 위로 설정
         $(window).scrollTop(0);
@@ -113,7 +118,9 @@
                     $.ajax({
                         url: '/post/list/more',
                         type: 'get',
-                        data: { offset: offset },
+                        data: { offset: offset,
+                        		keyword: keyword,
+                           		type: type},
                         success: function(fragment) {
                             if ($.trim(fragment) === '') {
                                 isEnd = true;  // 더 이상 데이터가 없으면 isEnd를 true로 설정

@@ -32,18 +32,40 @@ public class PostController {
     }
 
     /** 게시글 목록 조회 */
+    /** 게시글 목록 조회 */
     @GetMapping("/list")
-    public String postsPage(Model model) {
-        List<Post> posts = postService.getPosts(0, 15);  
+    public String postsPage(@RequestParam(value = "type", required = false) String type,
+                            @RequestParam(value = "keyword", required = false) String keyword,
+                            Model model) {
+        List<Post> posts;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            posts = postService.searchPosts(type, keyword, 0, 17);  // 검색어 + 타입
+        } else {
+            posts = postService.getPosts(0, 17);  // 검색어 없으면 전체 목록
+        }
+
         model.addAttribute("posts", posts);
-        return "post/list"; 
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
+        return "post/list";
     }
 
     @GetMapping("/list/more")
-    public String morePosts(@RequestParam("offset") int offset, Model model) {
-        List<Post> posts = postService.getPosts(offset, 10);  // offset을 기준으로 데이터 10개씩 가져오기
+    public String morePosts(@RequestParam("offset") int offset,
+                            @RequestParam(value = "type", required = false) String type,
+                            @RequestParam(value = "keyword", required = false) String keyword,
+                            Model model) {
+        List<Post> posts;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            posts = postService.searchPosts(type, keyword, offset, 10);  // 검색 내용 이어 받기
+        } else {
+            posts = postService.getPosts(offset, 10);  // 전체 목록 계속
+        }
+
         model.addAttribute("posts", posts);
-        return "post/fragments :: postListFragment";  // fragment 형식으로 응답
+        return "post/fragments :: postListFragment";
     }
 
     /** 게시글 상세 조회 + 조회수 증가 (중요 수정) */

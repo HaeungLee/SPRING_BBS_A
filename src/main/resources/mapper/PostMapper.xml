@@ -31,6 +31,33 @@
         ORDER BY p.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
+    
+    <select id="searchPosts" resultMap="PostResultMap">
+        SELECT
+        	p.post_id, p.title, p.content, p.region, p.views,
+            p.created_at, p.updated_at, p.user_id, p.is_notice,
+            p.lat,                -- 추가: 위도
+            p.lng,                -- 추가: 경도
+            u.username
+        FROM Posts p
+        JOIN Users u ON p.user_id = u.user_id
+        WHERE 
+        <choose>
+            <when test="type == 'title'">
+                title LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="type == 'content'">
+                content LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <otherwise>
+                (title LIKE CONCAT('%', #{keyword}, '%')
+                OR content LIKE CONCAT('%', #{keyword}, '%'))
+            </otherwise>
+        </choose>
+        ORDER BY p.created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
 
     <!-- 게시글 상세 조회: lat, lng 컬럼 포함 -->
     <select id="getPostById" parameterType="int" resultMap="PostResultMap">
