@@ -96,15 +96,19 @@
     </div>
 
     <div class="btn-group">
-      <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
-      <a th:href="@{/post/edit/{id}(id=${post.post_id})}" class="btn btn-edit">수정</a>
-      <form th:action="@{/post/delete/{id}(id=${post.post_id})}" method="post" style="display:inline;">
-        <button type="submit" class="btn btn-delete"
-                onclick="return confirm('정말 삭제하시겠습니까?');">
-          삭제
-        </button>
-      </form>
-    </div>
+	  <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
+	
+	
+	 <th:block th:if="${post.user_id} == ${sessionUserId}">
+	    <a th:href="@{/post/edit/{id}(id=${post.post_id})}" class="btn btn-edit">수정</a>
+	    <form th:action="@{/post/delete/{id}(id=${post.post_id})}"
+	          method="post" style="display:inline;">
+	      <button type="submit" class="btn btn-delete"
+	              onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+	    </form>
+	  </th:block>
+	</div>
+
     <div class="comment-section">
       <h3>댓글</h3>
 

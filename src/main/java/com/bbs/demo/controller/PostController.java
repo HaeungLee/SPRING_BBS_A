@@ -55,6 +55,7 @@ public class PostController {
         // 조회수 증가 + 게시글 조회 (작성자가 아닐 때만 증가)
         Post post = postService.getPostWithViewCount(post_id, currentUserId);
         model.addAttribute("post", post);
+        model.addAttribute("sessionUserId", currentUserId);
         return "post/view";
     }
     
