@@ -15,19 +15,15 @@
 		<result property="fileType" column="file_type" />
 	</resultMap>
 
-	<insert id="insertFileInfos">
-		INSERT INTO file_uploads (
-		post_id, file_origin_name, file_store_name,
-		file_path, file_size, uploaded_at,
-		is_thumbnail, file_type
+	<insert id="insertPost" parameterType="com.bbs.demo.model.Post"
+		useGeneratedKeys="true" keyProperty="post_id">
+		INSERT INTO post (
+		title, content,
+		user_id, created_at, updated_at, views
+		) VALUES (
+		#{title}, #{content},
+		#{user_id}, #{created_at}, #{updated_at}, #{views}
 		)
-		VALUES
-		<foreach collection="list" item="file" separator=",">
-			(#{file.post_id}, #{file.file_origin_name}, #{file.file_store_name},
-			#{file.file_path},
-			#{file.fileSize}, #{file.uploadedAt},
-			#{file.isThumbnail}, #{file.fileType})
-		</foreach>
 	</insert>
 
 	<select id="findByPostId" resultMap="FileInfoResultMap"
@@ -50,5 +46,37 @@
 		SELECT * FROM file_uploads WHERE file_store_name =
 		#{storedFileName} LIMIT 1
 	</select>
+
+	<select id="findFilesByPostId"
+		resultType="com.bbs.demo.model.FileInfo">
+		SELECT * FROM file_uploads
+		WHERE post_id = #{postId}
+	</select>
+	
+	<insert id="insertFileInfos" parameterType="list">
+		INSERT INTO file_uploads (
+		post_id,
+		file_origin_name,
+		file_store_name,
+		file_path,
+		file_size,
+		uploaded_at,
+		is_thumbnail,
+		file_type
+		)
+		VALUES
+		<foreach collection="list" item="file" separator=",">
+			(
+			#{file.postId},
+			#{file.fileOriginName},
+			#{file.fileStoreName},
+			#{file.filePath},
+			#{file.fileSize},
+			NOW(),
+			#{file.isThumbnail},
+			#{file.fileType}
+			)
+		</foreach>
+	</insert>
 
 </mapper>

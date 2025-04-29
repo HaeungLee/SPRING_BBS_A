@@ -38,9 +38,14 @@ public class FileServiceImpl implements FileService {
         return fileInfoMapper.findById(fileId);
     }
 
+    @Override
+    public List<FileInfo> getFilesByPostId(int postId) {
+        return fileInfoMapper.findFilesByPostId(postId);
+    }
+
     // 파일 업로드
     @Override
-    public List<FileInfo> uploadFiles(int postId, MultipartFile[] files) throws IOException {
+    public List<FileInfo> uploadFiles(int postId, List<MultipartFile> files) throws IOException {
         List<FileInfo> fileInfoList = new ArrayList<>();
 
         File uploadDirectory = new File(uploadDir);
@@ -62,10 +67,10 @@ public class FileServiceImpl implements FileService {
                 }
 
                 FileInfo fileInfo = new FileInfo();
-                fileInfo.setPost_id(postId);
-                fileInfo.setFile_origin_name(originalName);
-                fileInfo.setFile_store_name(storedName);
-                fileInfo.setFile_path(filePath);
+                fileInfo.setPostId(postId);
+                fileInfo.setFileOriginName(originalName);
+                fileInfo.setFileStoreName(storedName);
+                fileInfo.setFilePath(filePath);
                 fileInfo.setFileSize(file.getSize());
                 fileInfo.setFileType(file.getContentType());
 
@@ -90,7 +95,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public byte[] previewFile(int fileId) throws IOException {
         FileInfo fileInfo = fileInfoMapper.findById(fileId);
-        Path path = Paths.get(fileInfo.getFile_path());
+        Path path = Paths.get(fileInfo.getFilePath());
         return Files.readAllBytes(path);
     }
 }
