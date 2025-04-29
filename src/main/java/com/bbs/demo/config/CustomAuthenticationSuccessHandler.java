@@ -1,30 +1,38 @@
 package com.bbs.demo.config;
 
+import com.bbs.demo.mapper.MemberMapper;
+import com.bbs.demo.model.Member;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+    @Autowired
+    private MemberMapper memberMapper;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        // 로그인한 사용자의 권한을 확인합니다
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+        String username = authentication.getName();
+        Member member = memberMapper.findByUsername(username);  // 또는 login(username)
 
-        // 관리자인 경우 /admin/index로 리디렉션
-        if (isAdmin) {
+        HttpSession session = request.getSession();
+        session.setAttribute("userId", member.getUserId());
+        session.setAttribute("username", member.getUsername());
+        session.setAttribute("nickname", member.getNickname());
+
+        if ("Y".equals(member.getIsManager())) {
+            session.setAttribute("isAdmin", true);
             response.sendRedirect("/admin/index");
         } else {
-            // 일반 사용자는 /로 리디렉션
             response.sendRedirect("/");
         }
-        
     }
 }

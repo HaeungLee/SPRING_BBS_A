@@ -1,6 +1,7 @@
 package com.bbs.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,31 +26,15 @@ public class HomeController {
     @Autowired
     private MemberService memberService;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("member", new Member());
         return "login";
     }
-    
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute Member member, HttpSession session, RedirectAttributes redirectAttributes) {
-        Member loggedInMember = memberService.login(member.getUsername(), member.getPassword());
-        
-        if (loggedInMember != null) {
-            session.setAttribute("userId", loggedInMember.getUserId());
-            session.setAttribute("username", loggedInMember.getUsername());
-            session.setAttribute("nickname", loggedInMember.getNickname());
-            
-            //관리자 확인
-            if ("Y".equals(loggedInMember.getIsManager())) {
-                session.setAttribute("isAdmin", true);
-            }
-            return "redirect:/";
-        } else {
-            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "redirect:/login";
-        }
-    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -72,6 +57,9 @@ public class HomeController {
                 redirectAttributes.addFlashAttribute("registerError", "이미 사용 중인 아이디입니다.");
                 return "redirect:/register";
             }
+            // 비밀번호 암호화
+            member.setPassword(passwordEncoder.encode(member.getPassword()));
+
             boolean result = memberService.register(member);
             
             if (result) {

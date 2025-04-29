@@ -28,7 +28,7 @@ public class MemberSecurityService implements UserDetailsService {
         Users user = usersService.getUserByUsername(username);
 
         if (user == null) {
-        	System.out.println("로그인 안되요2");
+        	System.out.println("로그인 안되요");
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);
         }
 

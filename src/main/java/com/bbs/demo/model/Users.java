@@ -80,6 +80,7 @@ public class Users {
     public void setPassword(String password) {
         this.password = password;
     }
+    
 
     // updateFields 메소드 수정
     public void updateFields(Users updatedUser) {
