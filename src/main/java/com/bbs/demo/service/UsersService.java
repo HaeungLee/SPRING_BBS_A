@@ -12,7 +12,7 @@ import com.bbs.demo.repository.UsersRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service     
 @RequiredArgsConstructor
 public class UsersService {
 
@@ -26,7 +26,7 @@ public class UsersService {
         user.setPassword(encodedPassword);  // 암호화된 비밀번호로 설정
         usersRepository.save(user);  // 사용자 저장
     }
-
+  
     // 사용자 ID로 조회
     @Transactional
     public Users getUserById(Long userId) {

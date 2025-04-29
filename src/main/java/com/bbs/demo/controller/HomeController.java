@@ -24,7 +24,7 @@ public class HomeController {
     }
 
     @Autowired
-    private MemberService memberService;
+    private MemberService memberService;  
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -68,7 +68,7 @@ public class HomeController {
             } else {
                 redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
                 return "redirect:/register";
-            }
+            } 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다: " + e.getMessage());
             return "redirect:/register";

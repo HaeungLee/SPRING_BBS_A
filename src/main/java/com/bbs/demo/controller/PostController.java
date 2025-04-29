@@ -30,7 +30,7 @@ public class PostController {
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("files");
     }
-
+ 
     /** 게시글 목록 조회 */
     @GetMapping("/list")
     public String listPosts(Model model) {

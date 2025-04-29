@@ -22,7 +22,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
-	
+	 
 	// 생성자 주입 - final
     private final UsersService usersService;
     private final PostService postService;
@@ -31,7 +31,7 @@ public class AdminController {
     
     // 다른 페이지에 닉네임 나오게 하기
     @ModelAttribute("nickname")
-    public String getAdminNickname() {
+    public String getAdminNickname() {  
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();  // 로그인한 사용자의 닉네임을 반환
     }

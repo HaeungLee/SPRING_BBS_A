@@ -19,7 +19,7 @@ public class MemberSecurityService implements UserDetailsService {
     @Lazy
     private UsersService usersService; // DB에서 사용자 정보를 가져오는 서비스
     
-    @Autowired
+    @Autowired  
     public void setUsersService(UsersService usersService) {
         this.usersService = usersService;
     }
