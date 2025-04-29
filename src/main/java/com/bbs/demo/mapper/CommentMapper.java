@@ -9,20 +9,28 @@ import com.bbs.demo.model.Comment;
 
 @Mapper
 public interface CommentMapper {
-	
-	List<Comment> getCommentsByPostId(@Param("post_id") int postId);
 
-	List<Comment> getRepliesByParentId(@Param("parent_id") int parentId);
+    List<Comment> getCommentsByPostId(@Param("post_id") int postId);
 
-	int insertComment(Comment comment);
+    List<Comment> getRepliesByParentId(@Param("parent_id") int parentId);
 
-	int updateComment(Comment comment);
+    int insertComment(Comment comment);
 
-	int markCommentAsDeleted(@Param("id") int id, @Param("user_id") int userId);
+    int updateComment(Comment comment);
 
-	Comment getCommentById(@Param("id") int id);
+    int markCommentAsDeleted(@Param("id") int id, @Param("user_id") int userId);
 
-	int incrementLikeCount(@Param("id") int id);
+    Comment getCommentById(@Param("id") int id);
 
-	int decrementLikeCount(@Param("id") int id);
+    int incrementLikeCount(@Param("id") int id);
+
+    int decrementLikeCount(@Param("id") int id);
+
+    boolean hasLiked(@Param("commentId") int commentId, @Param("userId") int userId);
+
+    void insertLike(@Param("commentId") int commentId, @Param("userId") int userId);
+
+    void deleteLike(@Param("commentId") int commentId, @Param("userId") int userId);
 }
+
+

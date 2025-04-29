@@ -109,19 +109,18 @@
 	  </th:block>
 	</div>
 
-    <div class="comment-section">
-      <h3>댓글</h3>
-
-      <textarea id="commentContent" placeholder="댓글을 입력하세요" style="width: 100%; height: 80px;"></textarea><br>
-      <button onclick="submitComment()">댓글 등록</button> <!-- 함수 이름 수정 -->
-
-      <div id="commentList" style="margin-top: 20px;"></div>
-    </div>
+<div class="comment-section">
+    <h3>댓글</h3>
+    <textarea id="commentContent" placeholder="댓글을 입력하세요" style="width: 100%; height: 80px;"></textarea><br>
+    <button onclick="submitComment()">댓글 등록</button>
+    <div id="commentList" style="margin-top: 20px;"></div>
   </div>
+</div>
   <!-- 카카오맵과 댓글 기능을 위한 스크립트 -->
   <script th:inline="javascript">
     // 서버에서 받은 데이터를 전역 변수로 설정
     const postId = [[${post.post_id}]];
+    const currentUserId = [[${user_id}]];
     const latitude = [[${post.lat}]];
     const longitude = [[${post.lng}]];
     const csrfToken = [[${_csrf != null ? _csrf.token : ''}]];
@@ -138,87 +137,151 @@
     });
     
     // 댓글 관련 함수
-    function submitComment() {
-      if (!isLoggedIn) {
-        alert('로그인이 필요합니다.');
-        window.location.href = '/login';
-        return;
-      }
-      
-      const content = $('#commentContent').val();
-      if (!content.trim()) {
-        alert('댓글을 입력하세요.');
-        return;
-      }
-
-      $.ajax({
-        url: '/api/comments',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ content: content, post_id: postId }),
-        success: function() {
-          $('#commentContent').val('');
-          loadComments();
-        },
-        error: function(xhr) {
-          console.error('Error:', xhr.status, xhr.responseText);
-          if (xhr.status === 401) {
-            alert('로그인이 필요합니다.');
-            window.location.href = '/login';
-          } else {
-            alert('댓글 등록 실패: ' + (xhr.responseText || '알 수 없는 오류'));
-          }
-        }
-      });
+   function submitComment() {
+    const content = $('#commentContent').val();
+    if (!content.trim()) {
+      alert('댓글을 입력하세요.');
+      return;
     }
 
-    function loadComments() {
-      $.ajax({
-        url: '/api/comments/' + postId,
-        method: 'GET',
-        success: function(comments) {
-          if (comments && comments.length > 0) {
-            let html = '';
-            comments.forEach(comment => {
-              html += `
-                <div class="comment">
-                  <strong>작성자: ${comment.nickname ? comment.nickname : '익명'}</strong><br>
-                  ${comment.content}<br>
-                  <small>${comment.created_at ? comment.created_at.replace('T', ' ').substring(0, 19) : ''}</small><br>
-                  <button onclick="likeComment(${comment.comment_id})">좋아요 (${comment.like_count != null ? comment.like_count : 0})</button>
-                </div>
-              `;
-            });
-            $('#commentList').html(html);
-          } else {
-            $('#commentList').html('<p>댓글이 없습니다. 첫 댓글을 작성해보세요!</p>');
-          }
-        },
-        error: function(xhr) {
-          console.error('Error loading comments:', xhr.status, xhr.responseText);
-          $('#commentList').html('<p>댓글을 불러올 수 없습니다.</p>');
+    $.ajax({
+      url: '/api/comments',
+      method: 'POST',
+      contentType: 'application/json',
+      xhrFields: { withCredentials: true },
+      data: JSON.stringify({ content: content, post_id: postId }),
+      success: function() {
+        $('#commentContent').val('');
+        loadComments();
+      },
+      error: function(xhr) {
+        if (xhr.status === 401) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/login';
+        } else {
+          alert('댓글 등록 실패');
         }
-      });
-    }
-
-    function likeComment(commentId) {
-      if (!isLoggedIn) {
-        alert('로그인이 필요합니다.');
-        window.location.href = '/login';
-        return;
       }
-      
-      $.ajax({
-        url: '/api/comments/' + commentId + '/like',
-        method: 'POST',
-        success: function() {
-          loadComments();
-        },
-        error: function(xhr) {
-          console.error('Error liking comment:', xhr.status, xhr.responseText);
+    });
+  }
+
+  function loadComments() {
+    $.ajax({
+      url: '/api/comments/' + postId,
+      method: 'GET',
+      success: function(comments) {
+        let html = '';
+        const commentMap = {};
+        comments.forEach(comment => {
+          commentMap[comment.comment_id] = comment;
+          comment.replies = [];
+        });
+
+        const roots = [];
+        comments.forEach(comment => {
+          if (comment.parent_id) {
+            const parent = commentMap[comment.parent_id];
+            if (parent) parent.replies.push(comment);
+          } else {
+            roots.push(comment);
+          }
+        });
+
+        function renderComments(commentList, depth) {
+          commentList.forEach(comment => {
+            const marginLeft = depth * 20;
+            html += `<div style="margin-left:${marginLeft}px; margin-bottom:10px;">`;
+            html += `<strong>${comment.nickname || '익명'}</strong><br>`;
+            html += `${comment.content}<br>`;
+            html += `<small>${comment.created_at?.replace('T', ' ').substring(0,19) || ''}</small><br>`;
+            html += `<button onclick="toggleLike(${comment.comment_id})">좋아요 (${comment.like_count || 0})</button>`;
+            console.log("currentUserId =", currentUserId);
+
+            if (currentUserId && comment.user_id === currentUserId) {
+              html += `<button onclick="editComment(${comment.comment_id}, '${comment.content}')">수정</button>`;
+              html += `<button onclick="deleteComment(${comment.comment_id})">삭제</button>`;
+            }
+            if (currentUserId) {
+              html += `<button onclick="replyComment(${comment.comment_id})">답글</button>`;
+            }
+            html += `</div>`;
+            if (comment.replies.length > 0) {
+              renderComments(comment.replies, depth + 1);
+            }
+          });
+        }
+
+        renderComments(roots, 0);
+        $('#commentList').html(html);
+      },
+      error: function() {
+        alert('댓글 불러오기 실패');
+      }
+    });
+  }
+
+  function toggleLike(commentId) {
+    $.ajax({
+      url: '/api/comments/' + commentId + '/like',
+      method: 'POST',
+      xhrFields: { withCredentials: true },
+      success: loadComments,
+      error: function(xhr) {
+        if (xhr.status === 401) {
+          alert('로그인이 필요합니다.');
+          window.location.href = '/login';
+        } else {
           alert('좋아요 실패');
         }
-      });
+      }
+    });
+  }
+
+  function deleteComment(commentId) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    $.ajax({
+      url: '/api/comments/' + commentId,
+      method: 'DELETE',
+      xhrFields: { withCredentials: true },
+      success: loadComments,
+      error: function() {
+        alert('댓글 삭제 실패');
+      }
+    });
+  }
+
+  function editComment(commentId, oldContent) {
+    const newContent = prompt('댓글 수정:', oldContent);
+    if (!newContent || newContent.trim() === '') return;
+
+    $.ajax({
+      url: '/api/comments/' + commentId,
+      method: 'PUT',
+      contentType: 'application/json',
+      xhrFields: { withCredentials: true },
+      data: JSON.stringify({ content: newContent }),
+      success: loadComments,
+      error: function() {
+        alert('댓글 수정 실패');
+      }
+    });
+  }
+
+  function replyComment(parentId) {
+    const reply = prompt('답글 작성:');
+    if (!reply || reply.trim() === '') return;
+
+    $.ajax({
+      url: '/api/comments',
+      method: 'POST',
+      contentType: 'application/json',
+      xhrFields: { withCredentials: true },
+      data: JSON.stringify({ content: reply, post_id: postId, parent_id: parentId }),
+      success: loadComments,
+      error: function() {
+        alert('답글 작성 실패');
+      }
+    });
     }
 
     // 카카오맵 관련 함수

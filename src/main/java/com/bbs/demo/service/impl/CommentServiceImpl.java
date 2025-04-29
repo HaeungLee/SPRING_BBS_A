@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean updateComment(Comment comment, int userId) {
         Comment existing = commentMapper.getCommentById(comment.getComment_id());
-        if (existing != null && userId == existing.getUser_id()) {
+        if (existing != null && existing.getUser_id().equals(userId)) {
             commentMapper.updateComment(comment);
             return true;
         }
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean deleteComment(int id, int userId) {
         Comment existing = commentMapper.getCommentById(id);
-        if (existing != null && userId == existing.getUser_id()) {
+        if (existing != null && existing.getUser_id().equals(userId)) {
             commentMapper.markCommentAsDeleted(id, userId);
             return true;
         }
@@ -46,17 +46,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getRepliesByParentId(int parentId) {
-        return commentMapper.getRepliesByParentId(parentId);
-    }
-
-    @Override
-    public boolean likeComment(int commentId) {
-        return commentMapper.incrementLikeCount(commentId) > 0;
-    }
-
-    @Override
-    public boolean unlikeComment(int commentId) {
-        return commentMapper.decrementLikeCount(commentId) > 0;
+    public void toggleLike(int commentId, int userId) {
+        boolean liked = commentMapper.hasLiked(commentId, userId);
+        if (liked) {
+            commentMapper.deleteLike(commentId, userId);
+            commentMapper.decrementLikeCount(commentId);
+        } else {
+            commentMapper.insertLike(commentId, userId);
+            commentMapper.incrementLikeCount(commentId);
+        }
     }
 }

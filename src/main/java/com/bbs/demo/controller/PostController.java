@@ -56,6 +56,12 @@ public class PostController {
         Post post = postService.getPostWithViewCount(post_id, currentUserId);
         model.addAttribute("post", post);
         model.addAttribute("sessionUserId", currentUserId);
+        
+        Integer userId = (Integer) session.getAttribute("userId"); // 주의! user_id
+        if (userId != null) {
+            model.addAttribute("user_id", userId); // 뷰에 user_id 넘겨줌
+        }
+        
         return "post/view";
     }
     
