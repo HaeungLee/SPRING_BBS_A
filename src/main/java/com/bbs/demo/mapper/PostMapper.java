@@ -3,13 +3,14 @@ package com.bbs.demo.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.bbs.demo.model.Post;
 
 @Mapper
 public interface PostMapper {
     
-    List<Post> getAllPosts();                   // 게시글 전체 조회
+	List<Post> findPosts(@Param("offset") int offset, @Param("limit") int limit);                   // 게시글 전체 조회
     
     Post getPostById(Integer post_id);         // 특정 게시글 조회(상세보기)
     

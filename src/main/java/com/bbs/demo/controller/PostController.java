@@ -33,10 +33,17 @@ public class PostController {
 
     /** 게시글 목록 조회 */
     @GetMapping("/list")
-    public String listPosts(Model model) {
-        List<Post> posts = postService.getAllPosts();
+    public String postsPage(Model model) {
+        List<Post> posts = postService.getPosts(0, 15);  
         model.addAttribute("posts", posts);
-        return "post/list";
+        return "post/list"; 
+    }
+
+    @GetMapping("/list/more")
+    public String morePosts(@RequestParam("offset") int offset, Model model) {
+        List<Post> posts = postService.getPosts(offset, 10);  // offset을 기준으로 데이터 10개씩 가져오기
+        model.addAttribute("posts", posts);
+        return "post/fragments :: postListFragment";  // fragment 형식으로 응답
     }
 
     /** 게시글 상세 조회 + 조회수 증가 (중요 수정) */

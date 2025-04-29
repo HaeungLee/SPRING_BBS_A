@@ -1,79 +1,142 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:fragment="title">
+<head th:fragment="title">
     <title>게시글 목록</title>
     <style>
-      .board-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 10px;
-      }
-      .board-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-      }
-      .btn-write {
-        background-color: #4CAF50;
-        color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        text-decoration: none;
-      }
-      .table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .table th, .table td {
-        padding: 10px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
-      .table tr:hover {
-        background-color: #f5f5f5;
-      }
-      .table th {
-        background-color: #f2f2f2;
-      }
-      .post-title {
-        color: #0066cc;
-        text-decoration: none;
-      }
-      .post-title:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
+        .board-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .btn-write {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;        
+        }
+        .table th, .table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+       
+        .table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .post-title {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .post-title:hover {
+            text-decoration: underline;
+        }
+        #loading {
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
 
-  <body>
-    <section th:fragment="section">
-      <div class="board-container">
+		
+    </style>
+</head>
+
+<body>
+<section th:fragment="section">
+    <div class="board-container">
         <div class="board-header">
-          <h2>게시글 목록</h2>
-          <a th:href="@{/post/create}" class="btn-write">글 작성</a>
+            <h2>게시글 목록</h2>
+            <a th:href="@{/post/create}" class="btn-write">글 작성</a>
         </div>
-        
+
         <table class="table">
-          <thead>
-            <tr>
-              <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="post : ${posts}">
-              <td th:text="${post?.post_id}"></td>
-              <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
-              <td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
-              <td th:text="${post?.region}"></td>
-              <td th:text="${post?.username}"></td>
-              <td th:text="${post?.views}"></td>
-            </tr>
-          </tbody>
+            <thead>
+                <tr>
+                    <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
+                </tr>
+            </thead>
+            <tbody id="post-tbody">
+                <tr th:each="post : ${posts}">
+                    <td th:text="${post?.post_id}"></td>
+                    <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
+                    <td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
+                    <td th:text="${post?.region}"></td>
+                    <td th:text="${post?.username}"></td>
+                    <td th:text="${post?.views}"></td>
+                </tr>
+            </tbody>
         </table>
-      </div>
-    </section>
-  </body>
+
+        <div id="loading" style="display: none;">Loading...</div>
+    </div>
+</section>
+
+<!-- jQuery CDN을 body 끝에 위치 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        let offset = 10;
+        let isLoading = false;
+        let isEnd = false;
+
+        // 처음 페이지가 로드될 때, 스크롤 위치를 제일 위로 설정
+        $(window).scrollTop(0);
+
+        // 스크롤 이벤트
+        $(window).scroll(function() {
+            if (isEnd) return; // 더 이상 데이터가 없으면 요청 안함
+
+            // document.body.scrollHeight를 사용하여 전체 페이지 높이를 구하고,
+            // 현재 스크롤 위치와 화면 높이를 비교합니다.
+            if ($(window).scrollTop() + $(window).height() >= document.body.scrollHeight - 100) {
+                if (!isLoading) {
+                    isLoading = true;
+                    $("#loading").show();
+
+                    // AJAX 요청을 보내 데이터를 가져옴
+                    $.ajax({
+                        url: '/post/list/more',
+                        type: 'get',
+                        data: { offset: offset },
+                        success: function(fragment) {
+                            if ($.trim(fragment) === '') {
+                                isEnd = true;  // 더 이상 데이터가 없으면 isEnd를 true로 설정
+                                $("#loading").text("더 이상 글이 없습니다.");
+                            } else {                          
+                                $('#post-tbody').append(fragment);  // 가져온 데이터를 테이블에 추가
+                                
+                                offset += 10;  // offset을 10씩 증가시켜야 다음 데이터가 추가됨
+                                isLoading = false;
+                                $("#loading").hide();  // 로딩 메시지 숨김
+                            }
+                        },
+                        error: function() {
+                            alert('글을 불러오는데 실패했습니다.');
+                            isLoading = false;
+                            $("#loading").hide();
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+</body>
 </html>
