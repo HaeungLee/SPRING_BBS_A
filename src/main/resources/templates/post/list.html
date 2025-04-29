@@ -75,12 +75,12 @@
             </thead>
             <tbody id="post-tbody">
                 <tr th:each="post : ${posts}">
-                    <td th:text="${post?.post_id}"></td>
+                    <td th:utext="${post?.post_id}"></td>
                     <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
-                    <td th:text="${#strings.abbreviate(post?.content, 30)}"></td>
-                    <td th:text="${post?.region}"></td>
-                    <td th:text="${post?.username}"></td>
-                    <td th:text="${post?.views}"></td>
+                    <td th:utext="${#strings.abbreviate(post?.content, 30)}"></td>
+                    <td th:utext="${post?.region}"></td>
+                    <td th:utext="${post?.username}"></td>
+                    <td th:utext="${post?.views}"></td>
                 </tr>
             </tbody>
         </table>
