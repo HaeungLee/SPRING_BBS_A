@@ -26,6 +26,10 @@ public class PostServiceImpl implements PostService {
     public List<Post> searchPosts(String type, String keyword, int offset, int limit) {
         return postMapper.searchPosts(type, keyword, offset, limit);
     }
+    @Override
+    public List<String> suggestTitles(String keyword) {
+        return postMapper.suggestTitles(keyword);
+    }
 
     // ✅ 조회수 증가 + 게시글 조회 → 트랜잭션 처리
     @Override

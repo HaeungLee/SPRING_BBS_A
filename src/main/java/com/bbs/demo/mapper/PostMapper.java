@@ -16,6 +16,7 @@ public interface PostMapper {
             @Param("keyword") String keyword,
             @Param("offset") int offset,
             @Param("limit") int limit);
+    List<String> suggestTitles(String keyword);
 	
     Post getPostById(Integer post_id);         // 특정 게시글 조회(상세보기)
     
