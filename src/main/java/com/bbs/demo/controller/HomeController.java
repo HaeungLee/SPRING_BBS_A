@@ -31,25 +31,6 @@ public class HomeController {
         return "login";
     }
     
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute Member member, HttpSession session, RedirectAttributes redirectAttributes) {
-        Member loggedInMember = memberService.login(member.getUsername(), member.getPassword());
-        
-        if (loggedInMember != null) {
-            session.setAttribute("userId", loggedInMember.getUserId());
-            session.setAttribute("username", loggedInMember.getUsername());
-            session.setAttribute("nickname", loggedInMember.getNickname());
-            
-            //관리자 확인
-            if ("Y".equals(loggedInMember.getIsManager())) {
-                session.setAttribute("isAdmin", true);
-            }
-            return "redirect:/";
-        } else {
-            redirectAttributes.addFlashAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
-            return "redirect:/login";
-        }
-    }
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -72,6 +53,10 @@ public class HomeController {
                 redirectAttributes.addFlashAttribute("registerError", "이미 사용 중인 아이디입니다.");
                 return "redirect:/register";
             }
+            
+            // 디버깅: 회원가입 전 Member 객체 상태 확인
+            System.out.println("회원가입 데이터: " + member.toString());
+            
             boolean result = memberService.register(member);
             
             if (result) {
@@ -82,7 +67,16 @@ public class HomeController {
                 return "redirect:/register";
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다: " + e.getMessage());
+            // 상세한 에러 메시지 출력
+            e.printStackTrace();
+            String errorMessage = e.getMessage();
+            Throwable cause = e.getCause();
+            while (cause != null) {
+                errorMessage += " | Caused by: " + cause.getMessage();
+                cause = cause.getCause();
+            }
+            
+            redirectAttributes.addFlashAttribute("registerError", "회원가입 처리 중 오류가 발생했습니다: " + errorMessage);
             return "redirect:/register";
         }
     }

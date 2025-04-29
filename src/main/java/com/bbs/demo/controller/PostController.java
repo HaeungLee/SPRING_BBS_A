@@ -183,8 +183,8 @@ public class PostController {
     /** 게시글 수정 처리 (중요 수정) */
     @PostMapping("/edit/{id}")
     public String updatePost(
-            @PathVariable("id") int post_id, 
-            @ModelAttribute Post post, 
+            @PathVariable("id") int post_id,
+            @ModelAttribute Post post,
             @RequestParam(value="files", required=false) List<MultipartFile> files,
             HttpSession session) throws IOException {
         

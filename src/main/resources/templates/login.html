@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- CSRF 토큰을 위한 메타 태그 추가 -->
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"/>
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}"/>
     <style>
         * {
             margin: 0;
@@ -175,17 +178,20 @@
     <div class="login-container">
         <h1>로그인</h1>
         
+        <!-- Spring Security의 인증 실패 메시지 표시 -->
+        <div class="error-message" th:if="${param.error}">아이디 또는 비밀번호가 일치하지 않습니다.</div>
+        <div class="error-message" th:if="${param.logout}">로그아웃 되었습니다.</div>
         <div class="error-message" th:if="${loginError}" th:text="${loginError}"></div>
         
-        <form method="post" id="loginform" th:action="@{/login}" th:object="${member}">
+        <form method="post" id="loginform" th:action="@{/login}">
             <div class="form-group">
                 <label for="username">아이디</label>
-                <input type="text" id="username" th:field="*{username}" required placeholder="아이디를 입력하세요">
+                <input type="text" id="username" name="username" required placeholder="아이디를 입력하세요">
             </div>
             
             <div class="form-group">
                 <label for="password">비밀번호</label>
-                <input type="password" id="password" th:field="*{password}" required placeholder="비밀번호를 입력하세요">
+                <input type="password" id="password" name="password" required placeholder="비밀번호를 입력하세요">
             </div>
             
             <button type="submit" class="btn-login">로그인</button>
@@ -211,7 +217,7 @@
     <script>
         document.getElementById("loginform").addEventListener("submit", function(e){
             // e.preventDefault();  // 실제 로그인 테스트를 위해 주석 처리
-            alert("로그인 완료");
+            // alert("로그인 완료"); // Spring Security가 처리하므로 주석 처리
         });
         
         // 소셜 로그인 버튼 이벤트

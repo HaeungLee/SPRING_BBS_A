@@ -1,10 +1,179 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>게시글 관리 - 관리자</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 게시글 조회</title>
+    <!-- FontAwesome 아이콘 CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 설정 */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333; 
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* 페이지 제목 */
+        #title-admin {
+            text-align: center;
+            font-size: 36px;
+            color: #333;
+            margin-top: 40px;
+        }
+
+        /* 게시글 조회 테이블 스타일 */
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        th, td {
+            padding: 12px 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(to bottom, #000066, #3333cc);
+
+
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        td a:hover {
+            color: #2980b9;
+        }
+
+        td a.delete-btn {
+            color: #e74c3c;
+        }
+
+        td a.delete-btn:hover {
+            color: #c0392b;
+        }
+
+        /* 하단 링크 스타일 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        .back-link:hover {
+            color: #2980b9;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            table {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            #title-admin {
+                font-size: 28px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
+
+    <!-- 헤더 섹션 -->
+    <div class="header">
+        <div class="admin-name" th:text="${nickname}">관리자</div>
+        <a href="/logout" class="logout-btn">로그아웃</a>
+    </div>
+
+    <!-- 페이지 제목 -->
+    <h1 id="title-admin">전체 게시글 조회</h1>
+
+    <!-- 게시글 조회 테이블 -->
+    <table>
+        <thead>
+            <tr>
+                <th>게시글 ID</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="post : ${posts}">
+                <td th:text="${post.id}"></td>
+                <td th:text="${post.title}"></td>
+                <td th:text="${post.username}"></td>
+                <td th:text="${post.createdAt}"></td>
+                <td>
+                    <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}">수정</a> |
+                    <a th:href="@{/posts/delete/{id}(id=${post.id})}" class="delete-btn" 
+                       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/admin/index" class="back-link">관리자 페이지</a></p>
 
 </body>
 </html>
