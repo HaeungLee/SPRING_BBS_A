@@ -58,6 +58,14 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
     
+    <select id="suggestTitles" resultType="string">
+    SELECT title 
+    FROM Posts 
+    WHERE title LIKE CONCAT('%', #{keyword}, '%')
+    ORDER BY created_at DESC
+    LIMIT 10
+	</select>
+    
 
     <!-- 게시글 상세 조회: lat, lng 컬럼 포함 -->
     <select id="getPostById" parameterType="int" resultMap="PostResultMap">

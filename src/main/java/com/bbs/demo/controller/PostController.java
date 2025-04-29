@@ -67,6 +67,12 @@ public class PostController {
         model.addAttribute("posts", posts);
         return "post/fragments :: postListFragment";
     }
+    
+    @GetMapping("/suggest")
+    @ResponseBody
+    public List<String> suggestTitles(@RequestParam("keyword") String keyword) {
+        return postService.suggestTitles(keyword);
+    }
 
     /** 게시글 상세 조회 + 조회수 증가 (중요 수정) */
     @GetMapping("/view/{id}")
