@@ -63,6 +63,18 @@
       border-radius: 8px;
       box-shadow: 0 0 8px rgba(0,0,0,0.06);   
     }
+    /* 메인 이미지 스타일 */
+    .main-image-container {
+      width: 100%;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .main-image {
+      max-width: 100%;
+      max-height: 500px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
   </style>
   <!-- jQuery 라이브러리 추가 -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -80,6 +92,11 @@
       </div>
     </div>
 
+    <!-- 메인 이미지 표시 (썸네일 이미지를 크게 표시) -->
+    <div th:if="${mainImage != null}" class="main-image-container">
+      <img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}" class="main-image" th:alt="${mainImage.fileOriginName}">
+    </div>
+
     <div class="view-content" th:utext="${post.content}">게시글 내용</div>
 
     <!-- 지도 표시 영역 추가 -->
@@ -89,8 +106,9 @@
       <strong>첨부파일:</strong>
       <ul>
         <li th:each="file : ${post.files}">
-          <a th:href="@{|/files/${file.uuid}_${file.originalName}|}"
-             th:utext="${file.originalName}" download></a>
+          <a th:href="@{/file/download/{fileId}(fileId=${file.fileId})}" 
+             th:text="${file.fileOriginName}"></a>
+          <span th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA')} + ' KB'"></span>
         </li>
       </ul>
     </div>

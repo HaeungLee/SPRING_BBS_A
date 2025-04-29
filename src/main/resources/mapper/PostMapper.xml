@@ -80,8 +80,8 @@
         WHERE p.post_id = #{post_id}
     </select>
 
-    <!-- 게시글 등록: lat, lng 컬럼 포함 -->
-    <insert id="insertPost" parameterType="com.bbs.demo.model.Post">
+    <!-- 게시글 등록: lat, lng 컬럼 포함-->
+    <insert id="insertPost" parameterType="com.bbs.demo.model.Post" useGeneratedKeys="true" keyProperty="post_id">
         INSERT INTO Posts(
             title, content, region, views,
             created_at, updated_at, user_id, is_notice,

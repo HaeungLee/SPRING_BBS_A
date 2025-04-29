@@ -14,7 +14,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bbs.demo.model.FileInfo;
 import com.bbs.demo.model.Post;
+import com.bbs.demo.service.FileService;
 import com.bbs.demo.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,12 +28,14 @@ public class PostController {
     @Autowired
     private PostService postService;
     
+    @Autowired
+    private FileService fileService;
+    
     @InitBinder("post")
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("files");
     }
 
-    /** 게시글 목록 조회 */
     /** 게시글 목록 조회 */
     @GetMapping("/list")
     public String postsPage(@RequestParam(value = "type", required = false) String type,
@@ -43,6 +47,14 @@ public class PostController {
             posts = postService.searchPosts(type, keyword, 0, 17);  // 검색어 + 타입
         } else {
             posts = postService.getPosts(0, 17);  // 검색어 없으면 전체 목록
+        }
+
+        // 각 게시글의 썸네일 이미지 ID 설정
+        for (Post post : posts) {
+            FileInfo thumbnail = fileService.getThumbnailByPostId(post.getPost_id());
+            if (thumbnail != null) {
+                post.setThumbnailId(thumbnail.getFileId());
+            }
         }
 
         model.addAttribute("posts", posts);
@@ -64,6 +76,14 @@ public class PostController {
             posts = postService.getPosts(offset, 10);  // 전체 목록 계속
         }
 
+        // 각 게시글의 썸네일 이미지 ID 설정
+        for (Post post : posts) {
+            FileInfo thumbnail = fileService.getThumbnailByPostId(post.getPost_id());
+            if (thumbnail != null) {
+                post.setThumbnailId(thumbnail.getFileId());
+            }
+        }
+
         model.addAttribute("posts", posts);
         return "post/fragments :: postListFragment";
     }
@@ -82,7 +102,16 @@ public class PostController {
 
         // 조회수 증가 + 게시글 조회 (작성자가 아닐 때만 증가)
         Post post = postService.getPostWithViewCount(post_id, currentUserId);
+        
+        // 게시글에 첨부된 파일 목록 가져오기
+        List<FileInfo> files = fileService.getFilesByPostId(post_id);
+        post.setFiles(files);
+        
+        // 메인 이미지(썸네일) 가져오기
+        FileInfo mainImage = fileService.getThumbnailByPostId(post_id);
+        
         model.addAttribute("post", post);
+        model.addAttribute("mainImage", mainImage); // 메인 이미지 모델에 추가
         model.addAttribute("sessionUserId", currentUserId);
         
         Integer userId = (Integer) session.getAttribute("userId"); // 주의! user_id
@@ -117,24 +146,16 @@ public class PostController {
             throw new IllegalArgumentException("위치 정보가 없습니다.");
         }
 
-        // 2. 파일 처리 로직 개선
-        if (files != null && !files.isEmpty()) {
-            Path uploadPath = Paths.get("upload-dir");
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            
-            for (MultipartFile file : files) {
-                if (!file.isEmpty()) {
-                    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                    Files.copy(file.getInputStream(), uploadPath.resolve(fileName));
-                    // DB에 파일 정보 저장 로직 추가 필요
-                }
-            }
+        // 2. 게시글 생성
+        postService.createPost(post, currentUserId);
+        
+        // 3. 게시글이 성공적으로 생성된 후 post_id가 세팅되었는지 확인
+        Integer postId = post.getPost_id();
+        if (postId != null && files != null && !files.isEmpty()) {
+            // 파일 업로드 처리
+            fileService.uploadFiles(postId, files);
         }
 
-        // 3. 서비스 계층 호출
-        postService.createPost(post, currentUserId);
         return "redirect:/post/list";
     }
 
@@ -150,6 +171,10 @@ public class PostController {
         if (post == null || post.getUser_id() != currentUserId) {
             throw new RuntimeException("수정 권한이 없습니다.");
         }
+
+        // 게시글에 첨부된 파일 목록 가져오기
+        List<FileInfo> files = fileService.getFilesByPostId(post_id);
+        post.setFiles(files);
 
         model.addAttribute("post", post);
         return "post/form";
@@ -173,14 +198,15 @@ public class PostController {
             throw new IllegalArgumentException("위치 정보가 없습니다.");
         }
 
-        // 2. 파일 처리 (예시)
-        if (files != null) {
-            // 파일 업로드 및 DB 저장 로직 구현
-        }
-
-        // 3. 서비스 계층 호출
+        // 2. 서비스 계층 호출
         post.setPost_id(post_id);
         postService.updatePost(post, currentUserId);
+        
+        // 3. 파일 업로드 처리
+        if (files != null && !files.isEmpty()) {
+            fileService.uploadFiles(post_id, files);
+        }
+
         return "redirect:/post/view/" + post_id;
     }
 

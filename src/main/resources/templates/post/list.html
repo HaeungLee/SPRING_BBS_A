@@ -25,7 +25,7 @@
         }
         .table {
             width: 100%;
-            border-collapse: collapse;        
+            border-collapse: collapse;
         }
         .table th, .table td {
             padding: 10px;
@@ -42,6 +42,8 @@
         .post-title {
             color: #0066cc;
             text-decoration: none;
+            display: flex;
+            align-items: center;
         }
         .post-title:hover {
             text-decoration: underline;
@@ -51,8 +53,13 @@
             margin-top: 10px;
             display: none;
         }
-
-		
+        .thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
@@ -70,14 +77,18 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>글번호</th><th>제목</th><th>내용</th><th>지역</th><th>작성자</th><th>조회수</th>
+                    <th>글번호</th><th>제목</th><th>지역</th><th>작성자</th><th>조회수</th>
                 </tr>
             </thead>
             <tbody id="post-tbody">
                 <tr th:each="post : ${posts}">
                     <td th:utext="${post?.post_id}"></td>
-                    <td><a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title" th:text="${post?.title}"></a></td>
-                    <td th:utext="${#strings.abbreviate(post?.content, 30)}"></td>
+                    <td>
+                        <a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title">
+                            <img th:if="${post.thumbnailId != null}" th:src="@{/file/preview/{fileId}(fileId=${post.thumbnailId})}" class="thumbnail" alt="썸네일">
+                            <span th:text="${post?.title}"></span>
+                        </a>
+                    </td>
                     <td th:utext="${post?.region}"></td>
                     <td th:utext="${post?.username}"></td>
                     <td th:utext="${post?.views}"></td>
@@ -125,7 +136,7 @@
                             if ($.trim(fragment) === '') {
                                 isEnd = true;  // 더 이상 데이터가 없으면 isEnd를 true로 설정
                                 $("#loading").text("더 이상 글이 없습니다.");
-                            } else {                          
+                            } else {
                                 $('#post-tbody').append(fragment);  // 가져온 데이터를 테이블에 추가
                                 
                                 offset += 10;  // offset을 10씩 증가시켜야 다음 데이터가 추가됨

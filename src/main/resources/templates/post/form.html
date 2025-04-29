@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글 작성</title>
 <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 body {
 	font-family: 'Arial', sans-serif;
@@ -200,6 +201,16 @@ input[type="file"] {
 .upload-box:hover .delete-icon {
 	display: block; /* hover 시만 보이게 */
 }
+
+/* 실제 파일 입력 필드 숨기기 */
+.file-input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
 </style>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
@@ -216,7 +227,7 @@ input[type="file"] {
 <div class="form-container">
 	<h2 class="form-title" th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글 작성</h2>
 
-	<form th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}" method="post" enctype="multipart/form-data">
+	<form th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}" method="post" enctype="multipart/form-data" id="postForm">
 
 		<!-- 제목 입력 -->
 		<div class="form-group">
@@ -249,13 +260,38 @@ input[type="file"] {
 
 		<!-- 이미지 업로드 -->
 		<div class="form-group">
-			<label for="file">이미지 업로드</label>
-			<div class="upload-container">
-				<!-- 업로드 박스들 -->
-				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
-				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
-				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
+				<label>이미지 업로드</label>
+				<div class="upload-container">
+					<!-- 파일 입력 필드들 (숨겨진) -->
+					<input type="file" name="files" class="file-input" id="file1" accept="image/*">
+					<input type="file" name="files" class="file-input" id="file2" accept="image/*">
+					<input type="file" name="files" class="file-input" id="file3" accept="image/*">
+					
+					<!-- 업로드 박스들 -->
+					<div class="upload-box" data-index="1">
+						<span class="delete-icon" onclick="deleteImage(1)">×</span>
+						<div class="preview"></div>
+					</div>
+					<div class="upload-box" data-index="2">
+						<span class="delete-icon" onclick="deleteImage(2)">×</span>
+						<div class="preview"></div>
+					</div>
+					<div class="upload-box" data-index="3">
+						<span class="delete-icon" onclick="deleteImage(3)">×</span>
+						<div class="preview"></div>
+					</div>
+				</div>
 			</div>
+
+		<!-- 기존 파일 목록 (수정시) -->
+		<div class="form-group" th:if="${post != null && post.files != null && !post.files.empty}">
+			<label>첨부된 파일</label>
+			<ul class="attached-files">
+				<li th:each="file : ${post.files}">
+					<span th:text="${file.fileOriginName}"></span>
+					<span th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA') + ' KB'}"></span>
+				</li>
+			</ul>
 		</div>
 
 		<!-- 버튼 -->
@@ -324,7 +360,58 @@ input[type="file"] {
 
 		// ✅ CKEditor 적용
 		CKEDITOR.replace('content');
+		
+		// 파일 업로드 박스 이벤트 설정
+		setupFileUpload();
 	};
+
+	// 파일 업로드 박스 설정
+	function setupFileUpload() {
+		// 각 업로드 박스에 클릭 이벤트 추가
+		document.querySelectorAll('.upload-box').forEach(box => {
+			box.addEventListener('click', function(e) {
+				if (e.target.classList.contains('delete-icon')) return; // 삭제 버튼 클릭 시 무시
+				
+				const index = this.getAttribute('data-index');
+				document.getElementById('file' + index).click();
+			});
+		});
+
+		// 파일 선택 시 미리보기 표시
+		document.querySelectorAll('.file-input').forEach(input => {
+			input.addEventListener('change', function() {
+				const index = this.id.replace('file', '');
+				const previewDiv = document.querySelector(`.upload-box[data-index="${index}"] .preview`);
+				const deleteIcon = document.querySelector(`.upload-box[data-index="${index}"] .delete-icon`);
+
+				if (this.files && this.files[0]) {
+					const reader = new FileReader();
+					
+					reader.onload = function(e) {
+						previewDiv.innerHTML = `<img src="${e.target.result}" alt="미리보기">`;
+						deleteIcon.style.display = 'block'; // 삭제 아이콘 표시
+					}
+					
+					reader.readAsDataURL(this.files[0]);
+				}
+			});
+		});
+	}
+
+	// 이미지 삭제
+	function deleteImage(index) {
+		// 파일 입력 초기화
+		const fileInput = document.getElementById('file' + index);
+		fileInput.value = '';
+		
+		// 미리보기 초기화
+		const previewDiv = document.querySelector(`.upload-box[data-index="${index}"] .preview`);
+		previewDiv.innerHTML = '';
+		
+		// 삭제 아이콘 숨기기
+		const deleteIcon = document.querySelector(`.upload-box[data-index="${index}"] .delete-icon`);
+		deleteIcon.style.display = 'none';
+	}
 
 	function searchPlace(event) {
 		if (event) event.preventDefault();

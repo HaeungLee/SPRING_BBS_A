@@ -26,5 +26,7 @@ public class Post {
 	
 	// 파일 리스트 추가
 	private List<FileInfo> files = new ArrayList<>();
+	
+	// 썸네일 이미지 ID (DB 컬럼 아님, 뷰에서 표시용)
+	private Integer thumbnailId;
 }
-   
