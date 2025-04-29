@@ -72,15 +72,15 @@
 <body>
   <div class="view-container">
     <div class="view-header">
-      <h2 th:text="${post.title}">게시글 제목</h2>
+      <h2 th:utext="${post.title}">게시글 제목</h2>
       <div class="view-meta">
-        작성자: <span th:text="${post.username}"></span> |
-        지역: <span th:text="${post.region}"></span> |
-        조회수: <span th:text="${post.views}"></span>
+        작성자: <span th:utext="${post.username}"></span> |
+        지역: <span th:utext="${post.region}"></span> |
+        조회수: <span th:utext="${post.views}"></span>
       </div>
     </div>
 
-    <div class="view-content" th:text="${post.content}">게시글 내용</div>
+    <div class="view-content" th:utext="${post.content}">게시글 내용</div>
 
     <!-- 지도 표시 영역 추가 -->
     <div id="post-map"></div>
@@ -90,7 +90,7 @@
       <ul>
         <li th:each="file : ${post.files}">
           <a th:href="@{|/files/${file.uuid}_${file.originalName}|}"
-             th:text="${file.originalName}" download></a>
+             th:utext="${file.originalName}" download></a>
         </li>
       </ul>
     </div>

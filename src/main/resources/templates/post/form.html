@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title
-	th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글
-	작성</title>
+<title th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '게시글 작성'">게시글 작성</title>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <style>
 body {
 	font-family: 'Arial', sans-serif;
@@ -39,8 +38,7 @@ body {
 	font-weight: bold;
 }
 
-.form-group input[type="text"], .form-group select, .form-group textarea
-	{
+.form-group input[type="text"], .form-group select, .form-group textarea {
 	width: 100%;
 	padding: 10px;
 	border: 1px solid #ddd;
@@ -204,244 +202,160 @@ input[type="file"] {
 }
 </style>
 
-<script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
-	<header>
-		<h1>게시판</h1>
-		<div class="nav-links">
-			<a th:href="@{/}">홈</a> <a th:href="@{/post/list}">게시글 목록</a>
-		</div>
-	</header>
-
-	<div class="form-container">
-		<h2 class="form-title"
-			th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글
-			작성</h2>
-		<!-- | 이거는 일부 특수문자가 있을때나, 여러개의 변수를 포함하는 URL을 전달할때, 하나의 탬플릿으로 인식하게 해줌. 근데 @{} 이거랑 작동 방식은 같음-->
-		<form
-			th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}"
-			method="post" enctype="multipart/form-data">
-			<div class="form-group">
-				<label for="title">제목</label> <input type="text" id="title"
-					name="title" th:value="${post != null ? post.title : ''}" required>
-			</div>
-
-			<div style="margin-bottom: 10px;">
-				<input type="text" id="keyword" placeholder="장소 또는 주소 검색"
-					style="width: 70%;">
-				<button type="button" onclick="searchPlace(event)">검색</button>
-			</div>
-			<div id="map"
-				style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
-
-			<div class="form-group">
-				<label for="region">지역</label> <input type="text" id="region"
-					name="region" readonly required placeholder="지도에서 위치를 선택하거나 검색하세요"
-					class="form-control"> <input type="hidden" id="lat"
-					name="lat"> <input type="hidden" id="lng" name="lng">
-			</div>
-
-			<div class="form-group">
-				<label for="content">내용</label>
-				<textarea id="content" name="content" rows="10" required
-					th:text="${post != null ? post.content : ''}"></textarea>
-			</div>
-
-			<!-- 이미지 업로드 / 미리보기  -->
-			<div class="form-group">
-				<label for="content">이미지 업로드</label>
-				<div class="upload-container">
-					<div class="upload-container">
-						<div class="upload-box" id="box0" onclick="triggerFileInput(0)">
-							<div class="preview" id="preview0"></div>
-							<div class="delete-icon" id="deleteIcon0"
-								onclick="deleteImage(event, 0)">🗑️</div>
-							<input type="file" id="fileInput0" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 0)">
-						</div>
-						<div class="upload-box" id="box1" onclick="triggerFileInput(1)">
-							<div class="preview" id="preview1"></div>
-							<div class="delete-icon" id="deleteIcon1"
-								onclick="deleteImage(event, 1)">🗑️</div>
-							<input type="file" id="fileInput1" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 1)">
-						</div>
-						<div class="upload-box" id="box2" onclick="triggerFileInput(2)">
-							<div class="preview" id="preview2"></div>
-							<div class="delete-icon" id="deleteIcon2"
-								onclick="deleteImage(event, 2)">🗑️</div>
-							<input type="file" id="fileInput2" accept="image/*" hidden
-								multiple onchange="handleFileChange(event, 2)">
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="form-actions">
-				<a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
-				<button type="submit" class="btn btn-primary"
-					th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">등록하기</button>
-			</div>
-		</form>
+<header>
+	<h1>게시판</h1>
+	<div class="nav-links">
+		<a th:href="@{/}">홈</a>
+		<a th:href="@{/post/list}">게시글 목록</a>
 	</div>
+</header>
 
-	<script>
-	// 전역 변수로 선언
+<div class="form-container">
+	<h2 class="form-title" th:text="${post.post_id != null && post.post_id > 0} ? '게시글 수정' : '새 게시글 작성'">게시글 작성</h2>
+
+	<form th:action="${post.post_id != null && post.post_id > 0} ? @{|/post/edit/${post.post_id}|} : @{/post/create}" method="post" enctype="multipart/form-data">
+
+		<!-- 제목 입력 -->
+		<div class="form-group">
+			<label for="title">제목</label>
+			<input type="text" id="title" name="title" th:value="${post != null ? post.title : ''}" required>
+		</div>
+
+		<!-- 검색창 -->
+		<div style="margin-bottom: 10px;">
+			<input type="text" id="keyword" placeholder="장소 또는 주소 검색" style="width: 70%;">
+			<button type="button" onclick="searchPlace(event)">검색</button>
+		</div>
+
+		<!-- 지도 영역 -->
+		<div id="map" style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
+
+		<!-- 지역 자동 입력 -->
+		<div class="form-group">
+			<label for="region">지역</label>
+			<input type="text" id="region" name="region" readonly required placeholder="지도에서 위치를 선택하거나 검색하세요" class="form-control">
+			<input type="hidden" id="lat" name="lat">
+			<input type="hidden" id="lng" name="lng">
+		</div>
+
+		<!-- 내용 작성 (CKEditor 적용) -->
+		<div class="form-group">
+			<label for="content">내용</label>
+			<textarea id="content" name="content" rows="10" required th:text="${post != null ? post.content : ''}"></textarea>
+		</div>
+
+		<!-- 이미지 업로드 -->
+		<div class="form-group">
+			<label for="file">이미지 업로드</label>
+			<div class="upload-container">
+				<!-- 업로드 박스들 -->
+				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
+				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
+				<div class="upload-box"><span class="delete-icon">×</span><div class="preview"></div></div>
+			</div>
+		</div>
+
+		<!-- 버튼 -->
+		<div class="form-actions">
+			<a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
+			<button type="submit" class="btn btn-primary" th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">등록하기</button>
+		</div>
+	</form>
+</div>
+
+<!-- 스크립트 영역 -->
+<script>
 	var map, marker, geocoder;
 	
 	window.onload = function() {
-		  kakao.maps.load(function() {
-		    var mapContainer = document.getElementById('map'),
-		        mapOption = {
-		            center: new kakao.maps.LatLng(37.5665, 126.9780), // 기본값: 서울
-		            level: 7
-		        };
+		kakao.maps.load(function() {
+			var mapContainer = document.getElementById('map'),
+				mapOption = {
+					center: new kakao.maps.LatLng(37.5665, 126.9780),
+					level: 7
+				};
 
-		    // 전역 변수에 할당
-		    map = new kakao.maps.Map(mapContainer, mapOption);
-		    marker = new kakao.maps.Marker();
-		    geocoder = new kakao.maps.services.Geocoder();
+			map = new kakao.maps.Map(mapContainer, mapOption);
+			marker = new kakao.maps.Marker();
+			geocoder = new kakao.maps.services.Geocoder();
 
-		    // 1. 내 위치 자동 표시
-		    if (navigator.geolocation) {
-		      navigator.geolocation.getCurrentPosition(function(position) {
-		        var lat = position.coords.latitude;
-		        var lng = position.coords.longitude;
-		        var locPosition = new kakao.maps.LatLng(lat, lng);
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(function(position) {
+					var lat = position.coords.latitude;
+					var lng = position.coords.longitude;
+					var locPosition = new kakao.maps.LatLng(lat, lng);
 
-		        // 지도 중심 이동 및 마커 표시
-		        map.setCenter(locPosition);
-		        marker.setMap(null);
-		        marker = new kakao.maps.Marker({ position: locPosition });
-		        marker.setMap(map);
+					map.setCenter(locPosition);
+					marker.setMap(null);
+					marker = new kakao.maps.Marker({ position: locPosition });
+					marker.setMap(map);
 
-		        // 주소 자동 입력
-		        geocoder.coord2Address(lng, lat, function(result, status) {
-		          if (status === kakao.maps.services.Status.OK) {
-		            var addr = result[0].address.address_name;
-		            document.getElementById('region').value = addr;
-		            document.getElementById('lat').value = lat;
-		            document.getElementById('lng').value = lng;
-		          }
-		        });
-		      });
-		    }
+					geocoder.coord2Address(lng, lat, function(result, status) {
+						if (status === kakao.maps.services.Status.OK) {
+							var addr = result[0].address.address_name;
+							document.getElementById('region').value = addr;
+							document.getElementById('lat').value = lat;
+							document.getElementById('lng').value = lng;
+						}
+					});
+				});
+			}
 
-		    // 2. 지도 클릭 시 위치/주소 설정(기존 코드)
-		    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-		      var latlng = mouseEvent.latLng;
-		      marker.setMap(null);
-		      marker = new kakao.maps.Marker({ position: latlng });
-		      marker.setMap(map);
+			kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+				var latlng = mouseEvent.latLng;
+				marker.setMap(null);
+				marker = new kakao.maps.Marker({ position: latlng });
+				marker.setMap(map);
 
-		      document.getElementById('lat').value = latlng.getLat();
-		      document.getElementById('lng').value = latlng.getLng();
+				document.getElementById('lat').value = latlng.getLat();
+				document.getElementById('lng').value = latlng.getLng();
 
-		      geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
-		        if (status === kakao.maps.services.Status.OK) {
-		          var addr = result[0].address.address_name;
-		          document.getElementById('region').value = addr;
-		        }
-		      });
-		    });
-		  });
-		};
-		
-		window.searchPlace = function(event) {
-		  if (event) event.preventDefault();
-		  
-		  var keyword = document.getElementById('keyword').value.trim();
-		  if (!keyword) {
-		    alert("검색어를 입력하세요!");
-		    return;
-		  }
-		  var ps = new kakao.maps.services.Places();
-		  ps.keywordSearch(keyword, function(data, status) {
-		    if (status === kakao.maps.services.Status.OK && data.length > 0) {
-		      var place = data[0];
-		      var lat = place.y;
-		      var lng = place.x;
-		      var locPosition = new kakao.maps.LatLng(lat, lng);
+				geocoder.coord2Address(latlng.getLng(), latlng.getLat(), function(result, status) {
+					if (status === kakao.maps.services.Status.OK) {
+						var addr = result[0].address.address_name;
+						document.getElementById('region').value = addr;
+					}
+				});
+			});
+		});
 
-		      map.setCenter(locPosition);
-		      marker.setMap(null);
-		      marker = new kakao.maps.Marker({ position: locPosition });
-		      marker.setMap(map);
+		// ✅ CKEditor 적용
+		CKEDITOR.replace('content');
+	};
 
-		      document.getElementById('lat').value = lat;
-		      document.getElementById('lng').value = lng;
-		      document.getElementById('region').value = place.address_name || place.road_address_name || place.place_name;
-		    } else {
-		      alert("검색 결과가 없습니다.");
-		    }
-		  });
-		};
+	function searchPlace(event) {
+		if (event) event.preventDefault();
 
-		
-	// file script
-	
-	let selectedImages = [];
-	
-	function triggerFileInput(index) {
-	  event.stopPropagation();
-	  document.getElementById('fileInput' + index).click();
-	}
-	
-	function handleFileChange(event, index) {
-	  event.stopPropagation();
-	  const files = Array.from(event.target.files);
-	  files.forEach(file => {
-	    if (selectedImages.length < 3) {
-	      selectedImages.push(file);
-	    }
-	  });
-	  updatePreview();
-	  clearAllFileInputs();
-	}
-	
-	function updatePreview() {
-	  // 모든 preview 초기화
-	  for (let i = 0; i < 3; i++) {
-	    const preview = document.getElementById('preview' + i);
-	    const deleteIcon = document.getElementById('deleteIcon' + i);
-	    preview.innerHTML = '';
-	    preview.style.background = '';
-	    deleteIcon.style.display = 'none';
-	  }
-	
-	  // selectedImages 순서대로 preview에 표시
-	  selectedImages.forEach((file, i) => {
-	    const reader = new FileReader();
-	    reader.onload = (e) => {
-	      const img = document.createElement('img');
-	      img.src = e.target.result;
-	      img.style.width = '100%';
-	      img.style.height = '100%';
-	      img.style.objectFit = 'cover';
-	      const preview = document.getElementById('preview' + i);
-	      const deleteIcon = document.getElementById('deleteIcon' + i);
-	      preview.innerHTML = '';
-	      preview.appendChild(img);
-	      deleteIcon.style.display = 'block';
-	    };
-	    reader.readAsDataURL(file);
-	  });
-	}
-	
-	function deleteImage(event, index) {
-	  event.stopPropagation();
-	  selectedImages.splice(index, 1); // 선택된 이미지 배열에서 삭제
-	  updatePreview(); //왼쪽부터 정렬
-	}
-	
-	function clearAllFileInputs() {
-	  for (let i = 0; i < 3; i++) {
-	    document.getElementById('fileInput' + i).value = '';
-	  }
+		var keyword = document.getElementById('keyword').value.trim();
+		if (!keyword) {
+			alert("검색어를 입력하세요!");
+			return;
+		}
+
+		var ps = new kakao.maps.services.Places();
+		ps.keywordSearch(keyword, function(data, status) {
+			if (status === kakao.maps.services.Status.OK && data.length > 0) {
+				var place = data[0];
+				var lat = place.y;
+				var lng = place.x;
+				var locPosition = new kakao.maps.LatLng(lat, lng);
+
+				map.setCenter(locPosition);
+				marker.setMap(null);
+				marker = new kakao.maps.Marker({ position: locPosition });
+				marker.setMap(map);
+
+				document.getElementById('lat').value = lat;
+				document.getElementById('lng').value = lng;
+				document.getElementById('region').value = place.address_name || place.road_address_name || place.place_name;
+			} else {
+				alert("검색 결과가 없습니다.");
+			}
+		});
 	}
 </script>
-
 </body>
 </html>
