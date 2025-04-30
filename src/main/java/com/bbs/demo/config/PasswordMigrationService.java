@@ -27,7 +27,7 @@ public class PasswordMigrationService {
             if (isPlainTextPassword(member.getPassword())) {
                 String encodedPassword = passwordEncoder.encode(member.getPassword());
                 member.setPassword(encodedPassword);
-                memberMapper.updateMember(null, member); // Post 객체는 null로 전달
+                memberMapper.updateMember(member); // MemberMapper 인터페이스에 맞게 수정
             }
         }
     }

@@ -53,6 +53,17 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
             }
         }
         
+        // returnUrl 매개변수가 있는지 확인
+        String returnUrl = request.getParameter("returnUrl");
+        if (returnUrl != null && !returnUrl.isEmpty() && !returnUrl.contains("?continue")) {
+            // 안전한 URL인지 확인 (상대 경로이고 같은 도메인의 URL인지)
+            if (returnUrl.startsWith("/") && !returnUrl.contains("://")) {
+                response.sendRedirect(returnUrl);
+                return;
+            }
+        }
+        
+        // 지정된 returnUrl이 없거나 안전하지 않은 경우 기본 동작 수행
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

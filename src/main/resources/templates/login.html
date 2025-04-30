@@ -15,11 +15,6 @@
             box-sizing: border-box;
             font-family: 'Noto Sans KR', sans-serif;
         }
-        
-        /* body {
-            background: linear-gradient(120deg, #a1c4fd, #c2e9fb);
-            
-        } */
 
         body {
             background-image: url('images/canadapark.jpg');
@@ -184,6 +179,9 @@
         <div class="error-message" th:if="${loginError}" th:text="${loginError}"></div>
         
         <form method="post" id="loginform" th:action="@{/login}">
+            <!-- returnUrl이 있으면 숨겨진 필드로 전달 -->
+            <input type="hidden" name="returnUrl" th:if="${returnUrl != null}" th:value="${returnUrl}" />
+            
             <div class="form-group">
                 <label for="username">아이디</label>
                 <input type="text" id="username" name="username" required placeholder="아이디를 입력하세요">

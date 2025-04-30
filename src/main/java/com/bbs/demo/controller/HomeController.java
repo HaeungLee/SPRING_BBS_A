@@ -26,8 +26,11 @@ public class HomeController {
     private MemberService memberService;
     
     @GetMapping("/login")
-    public String showLoginForm(Model model) {
+    public String showLoginForm(@RequestParam(value = "returnUrl", required = false) String returnUrl, Model model) {
         model.addAttribute("member", new Member());
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            model.addAttribute("returnUrl", returnUrl);
+        }
         return "login";
     }
     

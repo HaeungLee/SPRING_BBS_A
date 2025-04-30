@@ -159,7 +159,7 @@
 			</div>
 			<div th:unless="${user_id != null}">
 				<p>
-					댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
+					댓글을 작성하려면 <a th:href="@{/login(returnUrl=${'/post/view/' + post.post_id})}">로그인</a>이 필요합니다.
 				</p>
 			</div>
 			<div id="commentList" style="margin-top: 20px;"></div>

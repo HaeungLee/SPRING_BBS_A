@@ -27,9 +27,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 // 정적 리소스 접근 허용
-                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
                 // 누구나 접근 가능한 페이지
-                .requestMatchers("/", "/login", "/register", "/logout", "/post/list", "/post/view/**").permitAll()
+                .requestMatchers("/", "/login", "/register", "/logout", "/access-denied", "/ajax-error").permitAll()
+                // 게시판 관련 조회 페이지 허용
+                .requestMatchers("/post/list", "/post/list/more", "/post/view/**", "/post/suggest").permitAll()
+                // 파일 조회 관련 허용
+                .requestMatchers("/file/download/**", "/file/view/**").permitAll()
                 // API 요청 - 댓글 조회는 누구나 가능하지만 등록/수정/삭제는 인증 필요
                 .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/comments/**").authenticated()
@@ -57,8 +61,10 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex
                 .accessDeniedPage("/access-denied")
             )
-            // CSRF 보호 비활성화 (AJAX 요청에 영향 없게)
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+            // CSRF 보호 설정
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+            );
         
         return http.build();
     }
