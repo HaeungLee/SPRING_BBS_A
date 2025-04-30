@@ -77,6 +77,15 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deletePost(int post_id, int currentUserId) {
         Post post = postMapper.getPostById(post_id);
+        
+        // 관리자(currentUserId=0)는 모든 게시글 삭제 가능
+        if (currentUserId == 0) {
+            // 향후 commentMapper.deleteByPostId(post_id); 등 추가 가능
+            postMapper.deletePost(post_id);
+            return;
+        }
+        
+        // 일반 사용자는 자신의 게시글만 삭제 가능
         if(post == null || post.getUser_id() != currentUserId) {
             throw new RuntimeException("작성자만 삭제할 수 있습니다.");
         }
