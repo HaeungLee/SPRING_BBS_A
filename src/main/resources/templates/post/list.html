@@ -3,62 +3,152 @@
 <head th:fragment="title">
     <title>게시글 목록</title>
     <style>
-        .board-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 10px;
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-family: 'Pretendard', 'Segoe UI', Arial, sans-serif;
+            color: #222;
         }
+
+        .board-container {
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(33, 150, 243, 0.10), 0 1.5px 6px rgba(33, 150, 243, 0.08);
+            padding: 36px 36px 28px 36px;
+        }
+
         .board-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 24px;
         }
+
+        .board-header h2 {
+            color: #1565c0;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
         .btn-write {
-            background-color: #4CAF50;
-            color: white;
-            padding: 5px 10px;
+            background: linear-gradient(90deg, #2196f3 0%, #1565c0 100%);
+            color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 999px;
+            padding: 10px 28px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            text-decoration: none;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-       
-        .table tr:hover {
-            background-color: #f5f5f5;
-        }
-        .table th {
-            background-color: #f2f2f2;
-        }
-        .post-title {
-            color: #0066cc;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.10);
+            transition: background .2s, transform .1s;
             text-decoration: none;
             display: flex;
             align-items: center;
+            gap: 8px;
+        }
+        .btn-write::before {
+            content: '✈️';
+            font-size: 1.2em;
+        }
+        .btn-write:hover {
+            background: linear-gradient(90deg, #1565c0 0%, #2196f3 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(33, 150, 243, 0.04);
+        }
+
+        .table th {
+            background: #e3f2fd;
+            color: #1565c0;
+            font-weight: 700;
+            padding: 15px 8px;
+            border-bottom: 2px solid #bbdefb;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            padding: 14px 8px;
+            color: #1976d2;
+            font-size: 1rem;
+            border-bottom: 1px solid #e3eaf2;
+            background: #fff;
+            transition: background .2s;
+        }
+
+        .table tr:nth-child(even) td {
+            background: #f7fbff;
+        }
+
+        .table tr:hover td {
+            background: #e3f2fd;
+        }
+
+        .post-title {
+            color: #1976d2;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color .2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .post-title:hover {
+            color: #0d47a1;
             text-decoration: underline;
         }
+
+        .thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 6px;
+            border-radius: 8px;
+            border: 1.5px solid #bbdefb;
+            box-shadow: 0 1px 4px rgba(33, 150, 243, 0.08);
+        }
+
         #loading {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 18px;
+            color: #1976d2;
+            font-weight: 500;
             display: none;
         }
-        .thumbnail {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            margin-right: 10px;
-            border-radius: 4px;
+
+        /* 모바일 반응형 */
+        @media (max-width: 600px) {
+            .board-container {
+                padding: 10px 2vw 18px 2vw;
+            }
+            .board-header h2 {
+                font-size: 1.2rem;
+            }
+            .btn-write {
+                padding: 8px 14px;
+                font-size: 0.95rem;
+            }
+            .thumbnail {
+                width: 26px;
+                height: 26px;
+            }
+            .table th, .table td {
+                padding: 7px 3px;
+                font-size: 0.95rem;
+            }
         }
     </style>
 </head>
@@ -67,12 +157,12 @@
 <section th:fragment="section">
     <div class="board-container">
        <div class="board-header">
-    <h2>게시글 목록</h2>
-    <div th:if="${keyword != null}" style="margin-left: 20px; font-size: 16px;">
-        "<span th:text="${keyword}"></span>" 검색 결과
-    </div>
-    <a th:href="@{/post/create}" class="btn-write">글 작성</a>
-</div>
+            <h2>게시글 목록</h2>
+            <div th:if="${keyword != null}" style="margin-left: 20px; font-size: 16px;">
+                "<span th:text="${keyword}"></span>" 검색 결과
+            </div>
+            <a th:href="@{/post/create}" class="btn-write">글 작성</a>
+        </div>
 
         <table class="table">
             <thead>
@@ -130,15 +220,15 @@
                         url: '/post/list/more',
                         type: 'get',
                         data: { offset: offset,
-                        		keyword: keyword,
-                           		type: type},
+                                keyword: keyword,
+                                type: type},
                         success: function(fragment) {
                             if ($.trim(fragment) === '') {
                                 isEnd = true;  // 더 이상 데이터가 없으면 isEnd를 true로 설정
                                 $("#loading").text("더 이상 글이 없습니다.");
                             } else {
                                 $('#post-tbody').append(fragment);  // 가져온 데이터를 테이블에 추가
-                                
+
                                 offset += 10;  // offset을 10씩 증가시켜야 다음 데이터가 추가됨
                                 isLoading = false;
                                 $("#loading").hide();  // 로딩 메시지 숨김
