@@ -54,4 +54,21 @@
 		DELETE FROM file_uploads WHERE file_id = #{fileId}
 	</delete>
 
+	<!-- 여러 게시글의 썸네일을 한 번에 조회 -->
+	<select id="findThumbnailsByPostIds" resultMap="FileInfoResultMap">
+		SELECT f.*
+		FROM file_uploads f
+		INNER JOIN (
+			SELECT post_id, MIN(file_id) as min_file_id
+			FROM file_uploads
+			WHERE post_id IN
+			<foreach collection="postIds" item="postId" open="(" separator="," close=")">
+				#{postId}
+			</foreach>
+			AND is_thumbnail = true
+			GROUP BY post_id
+		) t ON f.post_id = t.post_id AND f.file_id = t.min_file_id
+		ORDER BY f.post_id
+	</select>
+
 </mapper>

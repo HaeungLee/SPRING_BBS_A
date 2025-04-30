@@ -1,13 +1,19 @@
 package com.bbs.demo.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bbs.demo.mapper.FileInfoMapper;
 import com.bbs.demo.mapper.PostMapper;
+import com.bbs.demo.model.FileInfo;
 import com.bbs.demo.model.Post;
 import com.bbs.demo.service.PostService;
 
@@ -16,16 +22,76 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostMapper postMapper;
+    
+    @Autowired
+    private FileInfoMapper fileInfoMapper;
 
     @Override
     public List<Post> getPosts(int offset, int limit) {
-        return postMapper.findPosts(offset, limit);
+        // 1. 게시글 목록 조회
+        List<Post> posts = postMapper.findPosts(offset, limit);
+        
+        // 게시글이 없으면 바로 반환
+        if (posts == null || posts.isEmpty()) {
+            return posts;
+        }
+        
+        // 2. 게시글 ID 목록 추출
+        List<Integer> postIds = posts.stream()
+                .map(Post::getPost_id)
+                .collect(Collectors.toList());
+        
+        // 3. 게시글 ID 목록으로 모든 썸네일을 한 번에 조회
+        List<FileInfo> thumbnails = fileInfoMapper.findThumbnailsByPostIds(postIds);
+        
+        // 4. 썸네일 정보를 게시글 객체에 매핑
+        Map<Integer, Integer> postIdToThumbnailId = new HashMap<>();
+        for (FileInfo thumbnail : thumbnails) {
+            postIdToThumbnailId.put(thumbnail.getPostId(), thumbnail.getFileId());
+        }
+        
+        // 5. 각 게시글에 썸네일 ID 설정
+        for (Post post : posts) {
+            Integer thumbnailId = postIdToThumbnailId.get(post.getPost_id());
+            post.setThumbnailId(thumbnailId);
+        }
+        
+        return posts;
     }
     
     @Override
     public List<Post> searchPosts(String type, String keyword, int offset, int limit) {
-        return postMapper.searchPosts(type, keyword, offset, limit);
+        // 1. 검색 결과 조회
+        List<Post> posts = postMapper.searchPosts(type, keyword, offset, limit);
+        
+        // 게시글이 없으면 바로 반환
+        if (posts == null || posts.isEmpty()) {
+            return posts;
+        }
+        
+        // 2. 게시글 ID 목록 추출
+        List<Integer> postIds = posts.stream()
+                .map(Post::getPost_id)
+                .collect(Collectors.toList());
+        
+        // 3. 게시글 ID 목록으로 모든 썸네일을 한 번에 조회
+        List<FileInfo> thumbnails = fileInfoMapper.findThumbnailsByPostIds(postIds);
+        
+        // 4. 썸네일 정보를 게시글 객체에 매핑
+        Map<Integer, Integer> postIdToThumbnailId = new HashMap<>();
+        for (FileInfo thumbnail : thumbnails) {
+            postIdToThumbnailId.put(thumbnail.getPostId(), thumbnail.getFileId());
+        }
+        
+        // 5. 각 게시글에 썸네일 ID 설정
+        for (Post post : posts) {
+            Integer thumbnailId = postIdToThumbnailId.get(post.getPost_id());
+            post.setThumbnailId(thumbnailId);
+        }
+        
+        return posts;
     }
+    
     @Override
     public List<String> suggestTitles(String keyword) {
         return postMapper.suggestTitles(keyword);
