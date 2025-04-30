@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -154,24 +156,28 @@ public class PostController {
         return "redirect:/post/view/" + post_id;
     }
 
-    /** 게시글 삭제 처리 */
-    @PostMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") int post_id, HttpSession session) {
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deletePost(@PathVariable("id") int post_id, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) {
-            throw new RuntimeException("로그인이 필요합니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
         boolean isAdmin = checkIfUserIsAdmin(currentUserId);
 
-        postService.deletePost(post_id, currentUserId, isAdmin);
-        return "redirect:/post/list";
+        try {
+            postService.deletePost(post_id, currentUserId, isAdmin);
+            return ResponseEntity.ok("삭제 성공");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("삭제 권한이 없습니다.");
+        }
+    }
+ // 관리자 여부 확인 메서드
+    private boolean checkIfUserIsAdmin(int userId) {
+        // userService를 사용하여 userId에 해당하는 사용자 객체를 가져옴
+        Users user = userService.getUserById(userId);
+        return "ADMIN".equals(user.getRole());  // "ADMIN" 역할 확인
     }
 
-    // 관리자 여부 확인 메서드
-    private boolean checkIfUserIsAdmin(int userId) {
-        // UserService를 사용하여 userId에 해당하는 Users 객체를 가져옴
-        Users user = userService.getUserById(userId);
-        return "ADMIN".equals(user.getRole());  // ADMIN 역할 확인
-    }
 }

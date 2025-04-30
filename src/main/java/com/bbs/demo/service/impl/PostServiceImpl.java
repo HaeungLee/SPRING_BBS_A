@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
         // 향후 댓글 삭제 로직 등을 추가 가능 (예: commentMapper.deleteByPostId(post_id);)
         postMapper.deletePost(post_id); // 게시글 DB 삭제
     }
-
+   
     /** 조회수 증가 */
     @Override
     public void incrementViewCount(int post_id, int currentUserId) {

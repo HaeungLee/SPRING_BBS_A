@@ -94,15 +94,17 @@ public class AdminController {
         return "admin/posts";
     }
 
-    @GetMapping("/posts/delete/{id}")
-    public String deletePost(@PathVariable("id") Long postId, Authentication authentication) {
+    @DeleteMapping("/posts/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deletePost(@PathVariable("id") Long postId, Authentication authentication) {
         String username = authentication.getName();
         Users user = usersService.getUserByUsername(username);
         int currentUserId = user.getUser_Id().intValue();
 
         postService.deletePost(postId.intValue(), currentUserId, true); // 관리자 삭제이므로 true
-        return "redirect:/admin/posts";
+        return ResponseEntity.ok("삭제 성공");
     }
+
 
     private String saveImage(MultipartFile file) throws IOException {
         String uploadDir = "src/main/resources/static/images/profile/";

@@ -5,68 +5,33 @@
 
   <!-- 비동기 삭제 및 수정 스크립트 -->
   <script>
-    // 게시글 삭제
-    function deletePost(button) {
-      const postId = button.getAttribute("data-id");
+  function deletePost(button) {
+	  const postId = button.getAttribute("data-id");
 
-      if (!confirm("정말 삭제하시겠습니까?")) return;
+	  if (!confirm("정말 삭제하시겠습니까?")) return;
 
-      fetch(`/posts/delete/${postId}`, {
-        method: "DELETE",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest"
-        }
-      })
-      .then(response => {
-        if (response.ok) {
-          const row = button.closest("tr");
-          row.remove();
-        } else {
-          alert("삭제에 실패했습니다.");
-        }
-      })
-      .catch(error => {
-        console.error("삭제 중 오류:", error);
-        alert("오류가 발생했습니다.");
-      });
-    }
+	  fetch(`/posts/delete/${postId}`, {
+	    method: "DELETE",
+	    headers: {
+	      "X-Requested-With": "XMLHttpRequest"
+	    }
+	  })
+	  .then(response => {
+	    if (response.ok) {
+	      const row = button.closest("tr");
+	      row.remove(); // 게시글 삭제 성공 시 UI에서 삭제
+	    } else {
+	      response.text().then(message => {
+	        alert(message); // 실패 시 메시지 표시
+	      });
+	    }
+	  })
+	  .catch(error => {
+	    console.error("삭제 중 오류:", error);
+	    alert("오류가 발생했습니다.");
+	  });
+	}
 
-    // 게시글 수정
-    function editPost(button) {
-      const postId = button.getAttribute("data-id");
-      const title = prompt("새로운 제목을 입력하세요:");
-      const content = prompt("새로운 내용을 입력하세요:");
-
-      if (!title || !content) {
-        alert("제목과 내용을 모두 입력해야 합니다.");
-        return;
-      }
-
-      fetch(`/posts/edit/${postId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
-        },
-        body: JSON.stringify({
-          title: title,
-          content: content
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          // 제목과 내용 업데이트
-          button.closest("tr").querySelector(".post-title").textContent = title;
-          button.closest("tr").querySelector(".post-content").textContent = content;
-        } else {
-          alert("수정에 실패했습니다.");
-        }
-      })
-      .catch(error => {
-        console.error("수정 중 오류:", error);
-        alert("오류가 발생했습니다.");
-      });
-    }
   </script>
 
 <style>
