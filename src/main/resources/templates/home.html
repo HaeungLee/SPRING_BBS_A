@@ -404,7 +404,7 @@
                 <a th:href="@{/register}" class="btn btn-register">회원가입</a>
             </div>
             <div class="auth-buttons" th:unless="${session.userId == null}">
-                <span th:text="${session.username}"></span>님 환영합니다!
+                <span th:text="${session.nickname}"></span>님 환영합니다!
                 <a href="#" class="btn btn-login">내 정보</a>
                 <a th:href="@{/logout}" class="btn btn-register">로그아웃</a>
                 <a th:if="${session.isAdmin}" th:href="@{/admin/index}" class="btn-admin">관리자</a>
