@@ -58,7 +58,7 @@ public class HomeController {
             }
             
             // 디버깅: 회원가입 전 Member 객체 상태 확인
-            System.out.println("회원가입 데이터: " + member.toString());
+            // System.out.println("회원가입 데이터: " + member.toString());
             
             boolean result = memberService.register(member);
             

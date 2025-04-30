@@ -82,7 +82,7 @@ public class MemberServiceImpl implements MemberService {
             // agree_marketing 필드 처리 (Y/N 문자열로 변환 필요할 경우 대비)
             // 현재는 boolean → int/char로 자동 변환되지만, 명시적으로 처리
             
-            System.out.println("회원가입 전 데이터 확인: " + member.toString());
+            // System.out.println("회원가입 전 데이터 확인: " + member.toString());
             
             // 회원 등록
             memberMapper.insertMember(member);
