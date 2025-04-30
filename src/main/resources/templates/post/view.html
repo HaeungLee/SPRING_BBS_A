@@ -4,169 +4,287 @@
 <meta charset="UTF-8">
 <title>게시글 상세보기</title>
 <style>
-.view-container {
-	max-width: 800px;
-	margin: 0 auto;
-	padding: 20px;
-	background-color: #fff;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	border-radius: 5px;
-	font-family: Arial, sans-serif;
-}
-
-.view-header {
-	margin-bottom: 20px;
-	border-bottom: 1px solid #eee;
-}
-
-.view-header h2 {
-	margin: 0;
-}
-
-.view-meta {
-	font-size: 14px;
-	color: #666;
-	margin-top: 5px;
-}
-
-.view-content {
-	margin: 20px 0;
-	white-space: pre-wrap;
-}
-
-.attached-files {
-	background-color: #f9f9f9;
-	padding: 10px;
-	border-radius: 4px;
-	margin-top: 20px;
-}
-
-.attached-files li {
-	margin: 5px 0;
-}
-
-.btn-group {
-	margin-top: 30px;
-	display: flex;
-	gap: 10px;
-}
-
-.btn {
-	padding: 8px 16px;
-	border: none;
-	border-radius: 4px;
-	text-decoration: none;
-	color: white;
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.btn-back {
-	background-color: #6c757d;
-}
-
-.btn-edit {
-	background-color: #007bff;
-}
-
-.btn-delete {
-	background-color: #dc3545;
-}
-/* 지도 스타일 */
-#post-map {
-	width: 100%;
-	height: 350px;
-	margin: 20px 0;
-	border-radius: 8px;
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
-}
-/* 메인 이미지 스타일 */
-.main-image-container {
-	width: 100%;
-	margin: 20px 0;
-	text-align: center;
-}
-
-.main-image {
-	max-width: 100%;
-	max-height: 500px;
-	border-radius: 8px;
-	box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        font-family: 'Pretendard', 'Segoe UI', Arial, sans-serif;
+        color: #222;
+    }
+    .view-container {
+        max-width: 900px;
+        margin: 48px auto 0 auto;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(33,150,243,0.10), 0 1.5px 6px rgba(33,150,243,0.08);
+        padding: 36px 36px 28px 36px;
+    }
+    .view-header {
+        margin-bottom: 24px;
+        border-bottom: 2px solid #e3f2fd;
+        padding-bottom: 12px;
+    }
+    .view-header h2 {
+        margin: 0;
+        color: #1565c0;
+        font-weight: 800;
+        font-size: 2rem;
+        letter-spacing: 1px;
+    }
+    .view-meta {
+        font-size: 1rem;
+        color: #1976d2;
+        margin-top: 8px;
+        font-weight: 500;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+    .main-image-container {
+        width: 100%;
+        margin: 26px 0 18px 0;
+        text-align: center;
+    }
+    .main-image {
+        max-width: 100%;
+        max-height: 420px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(33,150,243,0.10);
+        background: #f7fbff;
+    }
+    .view-content {
+        margin: 28px 0 24px 0;
+        white-space: pre-wrap;
+        font-size: 1.08rem;
+        color: #222;
+        line-height: 1.7;
+    }
+    #post-map {
+        width: 100%;
+        height: 320px;
+        margin: 18px 0 28px 0;
+        border-radius: 12px;
+        box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
+        background: #f7fbff;
+    }
+    .attached-files {
+        background-color: #f0f6fb;
+        padding: 14px 18px;
+        border-radius: 8px;
+        margin-top: 18px;
+        font-size: 1rem;
+        color: #1565c0;
+        box-shadow: 0 1px 4px rgba(33,150,243,0.04);
+    }
+    .attached-files ul {
+        padding-left: 18px;
+        margin: 8px 0 0 0;
+    }
+    .attached-files li {
+        margin: 4px 0;
+        font-size: 0.98rem;
+    }
+    .attached-files a {
+        color: #1976d2;
+        text-decoration: underline;
+        font-weight: 500;
+        transition: color .2s;
+    }
+    .attached-files a:hover {
+        color: #0d47a1;
+    }
+    .btn-group {
+        margin-top: 34px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .btn {
+        padding: 10px 28px;
+        border: none;
+        border-radius: 999px;
+        text-decoration: none;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+        transition: background .2s, transform .1s;
+        display: inline-block;
+    }
+    .btn-back {
+        background: linear-gradient(90deg, #90caf9 0%, #42a5f5 100%);
+        color: #1565c0;
+    }
+    .btn-back:hover {
+        background: linear-gradient(90deg, #42a5f5 0%, #90caf9 100%);
+        color: #0d47a1;
+    }
+    .btn-edit {
+        background: linear-gradient(90deg, #2196f3 0%, #1565c0 100%);
+    }
+    .btn-edit:hover {
+        background: linear-gradient(90deg, #1565c0 0%, #2196f3 100%);
+    }
+    .btn-delete {
+        background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
+    }
+    .btn-delete:hover {
+        background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
+    }
+    /* 댓글 영역 */
+    .comment-section {
+        margin-top: 48px;
+        background: #f7fbff;
+        border-radius: 14px;
+        padding: 28px 22px 22px 22px;
+        box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
+    }
+    .comment-section h3 {
+        margin-top: 0;
+        color: #1565c0;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
+    }
+    .comment-section textarea {
+        width: 100%;
+        height: 80px;
+        border-radius: 8px;
+        border: 1.5px solid #bbdefb;
+        padding: 10px;
+        font-size: 1rem;
+        resize: vertical;
+        background: #fff;
+        margin-bottom: 8px;
+        transition: border .2s;
+    }
+    .comment-section textarea:focus {
+        border: 1.5px solid #42a5f5;
+        outline: none;
+    }
+    .comment-section button {
+        background: linear-gradient(90deg, #42a5f5 0%, #1976d2 100%);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 7px 22px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .2s, transform .1s;
+        margin-top: 4px;
+    }
+    .comment-section button:hover {
+        background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
+        transform: translateY(-2px) scale(1.04);
+    }
+    .comment-section a {
+        color: #1976d2;
+        text-decoration: underline;
+        font-weight: 500;
+    }
+    .comment-section a:hover {
+        color: #0d47a1;
+    }
+    /* 댓글 리스트 스타일 */
+    #commentList {
+        margin-top: 22px;
+        font-size: 0.97rem;
+        color: #1565c0;
+    }
+    .deleted-comment {
+        color: #aaa;
+        font-style: italic;
+    }
+    /* 모바일 반응형 */
+    @media (max-width: 600px) {
+        .view-container {
+            padding: 10px 2vw 18px 2vw;
+        }
+        .view-header h2 {
+            font-size: 1.2rem;
+        }
+        .main-image {
+            max-height: 220px;
+        }
+        .btn, .btn-group .btn {
+            padding: 8px 14px;
+            font-size: 0.98rem;
+        }
+        .attached-files {
+            padding: 10px 8px;
+            font-size: 0.95rem;
+        }
+        .comment-section {
+            padding: 16px 6px 12px 6px;
+        }
+    }
 </style>
 <!-- jQuery 라이브러리 추가 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- 카카오맵 API 스크립트 -->
 <script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
-	<div class="view-container">
-		<div class="view-header">
-			<h2 th:utext="${post.title}">게시글 제목</h2>
-			<div class="view-meta">
-				작성자: <span th:utext="${post.username}"></span> | 지역: <span
-					th:utext="${post.region}"></span> | 조회수: <span
-					th:utext="${post.views}"></span>
-			</div>
-		</div>
-
-		<!-- 메인 이미지 표시 (썸네일 이미지를 크게 표시) -->
-		<div th:if="${mainImage != null}" class="main-image-container">
-			<img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}"
-				class="main-image" th:alt="${mainImage.fileOriginName}">
-		</div>
-
-		<div class="view-content" th:utext="${post.content}">게시글 내용</div>
-
-		<!-- 지도 표시 영역 추가 -->
-		<div id="post-map"></div>
-
-		<div class="attached-files"
-			th:if="${post.files != null and !post.files.isEmpty()}">
-			<strong>첨부파일:</strong>
-			<ul>
-				<li th:each="file : ${post.files}"><a
-					th:href="@{/file/download/{fileId}(fileId=${file.fileId})}"
-					th:text="${file.fileOriginName}"></a> <span
-					th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA')} + ' KB'"></span>
-				</li>
-			</ul>
-		</div>
-
-		<div class="btn-group">
-			<a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
-
-
-			<th:block th:if="${post.user_id} == ${sessionUserId}">
-				<a th:href="@{/post/edit/{id}(id=${post.post_id})}"
-					class="btn btn-edit">수정</a>
-				<form th:action="@{/post/delete/{id}(id=${post.post_id})}"
-					method="post" style="display: inline;">
-					<button type="submit" class="btn btn-delete"
-						onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-				</form>
-			</th:block>
-		</div>
-
-		<div class="comment-section">
-			<h3>댓글</h3>
-			<div th:if="${user_id != null}">
-				<textarea id="commentContent" placeholder="댓글을 입력하세요"
-					style="width: 100%; height: 80px;"></textarea>
-				<br>
-				<button onclick="submitComment()">댓글 등록</button>
-			</div>
-			<div th:unless="${user_id != null}">
-				<p>
-					댓글을 작성하려면 <a th:href="@{/login(returnUrl=${'/post/view/' + post.post_id})}">로그인</a>이 필요합니다.
-				</p>
-			</div>
-			<div id="commentList" style="margin-top: 20px;"></div>
-		</div>
-	</div>
-	<!-- 카카오맵과 댓글 기능을 위한 스크립트 -->
-	<script th:inline="javascript">
+    <div class="view-container">
+        <div class="view-header">
+            <h2 th:utext="${post.title}">게시글 제목</h2>
+            <div class="view-meta">
+                <span>작성자: <span th:utext="${post.username}"></span></span>
+                <span>지역: <span th:utext="${post.region}"></span></span>
+                <span>조회수: <span th:utext="${post.views}"></span></span>
+            </div>
+        </div>
+        <!-- 메인 이미지 표시 (썸네일 이미지를 크게 표시) -->
+        <div th:if="${mainImage != null}" class="main-image-container">
+            <img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}"
+                class="main-image" th:alt="${mainImage.fileOriginName}">
+        </div>
+        <div class="view-content" th:utext="${post.content}">게시글 내용</div>
+        <!-- 지도 표시 영역 추가 -->
+        <div id="post-map"></div>
+        <div class="attached-files"
+            th:if="${post.files != null and !post.files.isEmpty()}">
+            <strong>첨부파일:</strong>
+            <ul>
+                <li th:each="file : ${post.files}">
+                    <a th:href="@{/file/download/{fileId}(fileId=${file.fileId})}"
+                        th:text="${file.fileOriginName}"></a>
+                    <span th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA')} + ' KB'"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
+            <th:block th:if="${post.user_id} == ${sessionUserId}">
+                <a th:href="@{/post/edit/{id}(id=${post.post_id})}"
+                    class="btn btn-edit">수정</a>
+                <form th:action="@{/post/delete/{id}(id=${post.post_id})}"
+                    method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-delete"
+                        onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                </form>
+            </th:block>
+        </div>
+        <div class="comment-section">
+            <h3>댓글</h3>
+            <div th:if="${user_id != null}">
+                <textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
+                <br>
+                <button onclick="submitComment()">댓글 등록</button>
+            </div>
+            <div th:unless="${user_id != null}">
+                <p>
+                    댓글을 작성하려면 <a th:href="@{/login(returnUrl=${'/post/view/' + post.post_id})}">로그인</a>이 필요합니다.
+                </p>
+            </div>
+            <div id="commentList"></div>
+        </div>
+    </div>
+    <!-- 카카오맵과 댓글 기능을 위한 스크립트 -->
+    <script th:inline="javascript">
     // 서버에서 받은 데이터를 전역 변수로 설정
     const postId = [[${post.post_id}]];
     const currentUserId = [[${user_id}]];
@@ -175,7 +293,7 @@
     const csrfToken = [[${_csrf != null ? _csrf.token : ''}]];
     const csrfHeader = [[${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}]];
     const isLoggedIn = [[${session.userId != null}]];
-    
+
     // AJAX 설정에 CSRF 토큰 추가
     $.ajaxSetup({
       beforeSend: function(xhr) {
@@ -184,170 +302,164 @@
         }
       }
     });
-    
+
     // 댓글 관련 함수
-   function submitComment() {
-    const content = $('#commentContent').val();
-    if (!content.trim()) {
-      alert('댓글을 입력하세요.');
-      return;
+    function submitComment() {
+      const content = $('#commentContent').val();
+      if (!content.trim()) {
+        alert('댓글을 입력하세요.');
+        return;
+      }
+      $.ajax({
+        url: '/api/comments',
+        method: 'POST',
+        contentType: 'application/json',
+        xhrFields: { withCredentials: true },
+        data: JSON.stringify({ content: content, post_id: postId }),
+        success: function() {
+          $('#commentContent').val('');
+          loadComments();
+        },
+        error: function(xhr) {
+          if (xhr.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/login';
+          } else {
+            alert('댓글 등록 실패');
+          }
+        }
+      });
     }
 
-    $.ajax({
-      url: '/api/comments',
-      method: 'POST',
-      contentType: 'application/json',
-      xhrFields: { withCredentials: true },
-      data: JSON.stringify({ content: content, post_id: postId }),
-      success: function() {
-        $('#commentContent').val('');
-        loadComments();
-      },
-      error: function(xhr) {
-        if (xhr.status === 401) {
-          alert('로그인이 필요합니다.');
-          window.location.href = '/login';
-        } else {
-          alert('댓글 등록 실패');
-        }
-      }
-    });
-  }
-
-  function loadComments() {
-    $.ajax({
-      url: '/api/comments/' + postId,
-      method: 'GET',
-      success: function(comments) {
-        let html = '';
-        const commentMap = {};
-        comments.forEach(comment => {
-          commentMap[comment.comment_id] = comment;
-          comment.replies = [];
-        });
-
-        const roots = [];
-        comments.forEach(comment => {
-          if (comment.parent_id) {
-            const parent = commentMap[comment.parent_id];
-            if (parent) parent.replies.push(comment);
-          } else {
-            roots.push(comment);
-          }
-        });
-
-        function renderComments(commentList, depth) {
-          commentList.forEach(comment => {
-            const marginLeft = depth * 20;
-            html += `<div style="margin-left:${marginLeft}px; margin-bottom:10px;">`;
-            html += `<strong>${comment.nickname || '익명'}</strong><br>`;
-            if (comment.is_deleted) {
-                html += `<em class="deleted-comment">삭제된 댓글입니다.</em><br>`;
-            } else {     
-            html += `${comment.content}<br>`;
-            }
-            html += `<small>${comment.created_at?.replace('T', ' ').substring(0,19) || ''}</small><br>`;
-            if (!comment.is_deleted) {
-            html += `<button onclick="toggleLike(${comment.comment_id})">좋아요 (${comment.like_count || 0})</button>`;
-            //console.log("currentUserId =", currentUserId);
-            if (currentUserId && comment.user_id === currentUserId) {
-              html += `<button onclick="editComment(${comment.comment_id}, '${comment.content}')">수정</button>`;
-              html += `<button onclick="deleteComment(${comment.comment_id})">삭제</button>`;
-            }
-            if (currentUserId) {
-              html += `<button onclick="replyComment(${comment.comment_id})">답글</button>`;
-            }
-            }
-            html += `</div>`;
-            if (comment.replies.length > 0) {
-              renderComments(comment.replies, depth + 1);
+    function loadComments() {
+      $.ajax({
+        url: '/api/comments/' + postId,
+        method: 'GET',
+        success: function(comments) {
+          let html = '';
+          const commentMap = {};
+          comments.forEach(comment => {
+            commentMap[comment.comment_id] = comment;
+            comment.replies = [];
+          });
+          const roots = [];
+          comments.forEach(comment => {
+            if (comment.parent_id) {
+              const parent = commentMap[comment.parent_id];
+              if (parent) parent.replies.push(comment);
+            } else {
+              roots.push(comment);
             }
           });
+          function renderComments(commentList, depth) {
+            commentList.forEach(comment => {
+              const marginLeft = depth * 20;
+              html += `<div style="margin-left:${marginLeft}px; margin-bottom:10px;">`;
+              html += `<strong>${comment.nickname || '익명'}</strong><br>`;
+              if (comment.is_deleted) {
+                  html += `<em class="deleted-comment">삭제된 댓글입니다.</em><br>`;
+              } else {
+                  html += `${comment.content}<br>`;
+              }
+              html += `<small>${comment.created_at?.replace('T', ' ').substring(0,19) || ''}</small><br>`;
+              if (!comment.is_deleted) {
+                  html += `<button onclick="toggleLike(${comment.comment_id})">좋아요 (${comment.like_count || 0})</button>`;
+                  if (currentUserId && comment.user_id === currentUserId) {
+                    html += `<button onclick="editComment(${comment.comment_id}, '${comment.content}')">수정</button>`;
+                    html += `<button onclick="deleteComment(${comment.comment_id})">삭제</button>`;
+                  }
+                  if (currentUserId) {
+                    html += `<button onclick="replyComment(${comment.comment_id})">답글</button>`;
+                  }
+              }
+              html += `</div>`;
+              if (comment.replies.length > 0) {
+                renderComments(comment.replies, depth + 1);
+              }
+            });
+          }
+          renderComments(roots, 0);
+          $('#commentList').html(html);
+        },
+        error: function() {
+          alert('댓글 불러오기 실패');
         }
-
-        renderComments(roots, 0);
-        $('#commentList').html(html);
-      },
-      error: function() {
-        alert('댓글 불러오기 실패');
-      }
-    });
-  }
-
-  function toggleLike(commentId) {
-    $.ajax({
-      url: '/api/comments/' + commentId + '/like',
-      method: 'POST',
-      xhrFields: { withCredentials: true },
-      success: function() {
-          loadComments();
-      },
-      error: function(xhr) {
-        if (xhr.status === 401) {
-          alert('로그인이 필요합니다.');
-          window.location.href = '/login';
-        } else {
-          alert('좋아요 실패');
-        }
-      }
-    });
-  }
-
-  function deleteComment(commentId) {
-    if (!confirm('정말 삭제하시겠습니까?')) return;
-    $.ajax({
-      url: '/api/comments/' + commentId,
-      method: 'DELETE',
-      xhrFields: { withCredentials: true },
-      success: function() {
-          loadComments();
-      },
-      error: function() {
-        alert('댓글 삭제 실패');
-      }
-    });
-  }
-
-  function editComment(commentId, oldContent) {
-    const newContent = prompt('댓글 수정:', oldContent);
-    if (!newContent || newContent.trim() === '') return;
-
-    $.ajax({
-      url: '/api/comments/' + commentId,
-      method: 'PUT',
-      contentType: 'application/json',
-      xhrFields: { withCredentials: true },
-      data: JSON.stringify({ content: newContent }),
-      success: function() {
-          loadComments();
-      },
-      error: function() {
-        alert('댓글 수정 실패');
-      }
-    });
-  }
-
-  function replyComment(parentId) {
-    const reply = prompt('답글 작성:');
-    if (!reply || reply.trim() === '') return;
-
-    $.ajax({
-      url: '/api/comments',
-      method: 'POST',
-      contentType: 'application/json',
-      xhrFields: { withCredentials: true },
-      data: JSON.stringify({ content: reply, post_id: postId, parent_id: parentId }),
-      success: function() {
-          loadComments();
-      },
-      error: function() {
-        alert('답글 작성 실패');
-      }
-    });
+      });
     }
-  
-  $(document).ready(function() {
-      loadComments();
+
+    function toggleLike(commentId) {
+      $.ajax({
+        url: '/api/comments/' + commentId + '/like',
+        method: 'POST',
+        xhrFields: { withCredentials: true },
+        success: function() {
+            loadComments();
+        },
+        error: function(xhr) {
+          if (xhr.status === 401) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/login';
+          } else {
+            alert('좋아요 실패');
+          }
+        }
+      });
+    }
+
+    function deleteComment(commentId) {
+      if (!confirm('정말 삭제하시겠습니까?')) return;
+      $.ajax({
+        url: '/api/comments/' + commentId,
+        method: 'DELETE',
+        xhrFields: { withCredentials: true },
+        success: function() {
+            loadComments();
+        },
+        error: function() {
+          alert('댓글 삭제 실패');
+        }
+      });
+    }
+
+    function editComment(commentId, oldContent) {
+      const newContent = prompt('댓글 수정:', oldContent);
+      if (!newContent || newContent.trim() === '') return;
+      $.ajax({
+        url: '/api/comments/' + commentId,
+        method: 'PUT',
+        contentType: 'application/json',
+        xhrFields: { withCredentials: true },
+        data: JSON.stringify({ content: newContent }),
+        success: function() {
+            loadComments();
+        },
+        error: function() {
+          alert('댓글 수정 실패');
+        }
+      });
+    }
+
+    function replyComment(parentId) {
+      const reply = prompt('답글 작성:');
+      if (!reply || reply.trim() === '') return;
+      $.ajax({
+        url: '/api/comments',
+        method: 'POST',
+        contentType: 'application/json',
+        xhrFields: { withCredentials: true },
+        data: JSON.stringify({ content: reply, post_id: postId, parent_id: parentId }),
+        success: function() {
+            loadComments();
+        },
+        error: function() {
+          alert('답글 작성 실패');
+        }
+      });
+    }
+
+    $(document).ready(function() {
+        loadComments();
+        initKakaoMap();
     });
 
     // 카카오맵 관련 함수
@@ -367,20 +479,13 @@
 
           var places = new kakao.maps.services.Places();
           var geocoder = new kakao.maps.services.Geocoder();
-          
-          // 1. 대형 랜드마크 검색을 위한 설정
+
           places.keywordSearch('관광명소', function(data, status) {
             var placeName = null;
-            
-            // 관광명소 검색 성공 시
             if (status === kakao.maps.services.Status.OK && data.length > 0) {
               var nearestPlace = findNearestPlace(data, latitude, longitude);
-              
-              // 1km 이내의 관광명소만 표시
               if (calculateDistance(latitude, longitude, nearestPlace.y, nearestPlace.x) < 1000) {
                 placeName = nearestPlace.place_name;
-                
-                // 카테고리 확인 (테마파크/리조트 등)
                 if (nearestPlace.category_name.includes('관광명소') || 
                     nearestPlace.category_name.includes('테마파크') ||
                     nearestPlace.category_name.includes('리조트')) {
@@ -388,8 +493,6 @@
                 }
               }
             }
-
-            // 2. 관광명소가 없으면 일반 장소 검색
             if (!placeName) {
               places.keywordSearch('', function(generalData, generalStatus) {
                 if (generalStatus === kakao.maps.services.Status.OK && generalData.length > 0) {
@@ -398,8 +501,6 @@
                     placeName = nearestGeneral.place_name;
                   }
                 }
-                
-                // 3. 최종적으로 주소 표시
                 if (!placeName) {
                   geocoder.coord2Address(longitude, latitude, function(result) {
                     var addr = result[0]?.road_address?.address_name || 
@@ -412,7 +513,7 @@
                 }
               }, {
                 location: new kakao.maps.LatLng(latitude, longitude),
-                radius: 2000,  // 반경 2km로 확대
+                radius: 2000,
                 sort: kakao.maps.services.SortBy.DISTANCE
               });
             } else {
@@ -420,11 +521,10 @@
             }
           }, {
             location: new kakao.maps.LatLng(latitude, longitude),
-            radius: 2000,  // 초기 검색 반경 2km
+            radius: 2000,
             sort: kakao.maps.services.SortBy.DISTANCE
           });
 
-          // 공통 함수
           function showInfoWindow(text) {
             new kakao.maps.InfoWindow({
               content: `<div style="padding:5px;font-size:13px;font-weight:bold;">${text}</div>`
@@ -432,12 +532,11 @@
           }
 
           function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // 미터 단위
+            const R = 6371e3;
             const φ1 = lat1 * Math.PI/180;
             const φ2 = lat2 * Math.PI/180;
             const Δφ = (lat2-lat1) * Math.PI/180;
             const Δλ = (lon2-lon1) * Math.PI/180;
-            
             const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
                       Math.cos(φ1) * Math.cos(φ2) *
                       Math.sin(Δλ/2) * Math.sin(Δλ/2);
@@ -456,15 +555,6 @@
         }  
       });
     }
-
-    // 페이지 로드 시 두 기능 모두 초기화
-    $(document).ready(function() {
-      // 댓글 로드
-      loadComments();
-      
-      // 카카오맵 초기화
-      initKakaoMap();
-    });
-  </script>
+    </script>
 </body>
 </html>

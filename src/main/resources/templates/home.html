@@ -12,67 +12,10 @@
             box-sizing: border-box;
             font-family: 'Noto Sans KR', sans-serif;
         }
-        
         body {
             background-color: #f5f7fa;
             min-height: 100vh;
         }
-        
-        .header {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.2);
-        }
-        
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-            line-height: 1.5;
-        }
-
-        #suggestList {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        left: 50%;
-        border: 1px solid #ccc;
-        border-top: none;
-        max-height: 200px;
-        overflow-y: auto;
-        background: white;
-        position: absolute;
-        width: 60%;
-        max-width: 500px;
-        z-index: 10;
-        transform: translateX(-58%);
-        }
-
-        .suggest-item {
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        .suggest-item:hover {
-            background-color: #f0f0f0;
-        }
-        
         .nav {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -80,7 +23,6 @@
             top: 0;
             z-index: 100;
         }
-        
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -89,19 +31,16 @@
             align-items: center;
             padding: 1rem 20px;
         }
-        
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
             color: #3a7bd5;
             text-decoration: none;
         }
-        
         .nav-links {
             display: flex;
             gap: 20px;
         }
-        
         .nav-links a {
             text-decoration: none;
             color: #333;
@@ -110,18 +49,15 @@
             border-radius: 4px;
             transition: all 0.3s;
         }
-        
         .nav-links a:hover {
             background-color: #f0f0f0;
             color: #3a7bd5;
         }
-        
         .auth-buttons {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-        
         .btn {
             padding: 8px 16px;
             border-radius: 4px;
@@ -132,87 +68,168 @@
             border: none;
             font-size: 0.9rem;
         }
-        
         .btn-login {
             background-color: white;
             color: #3a7bd5;
             border: 1px solid #3a7bd5;
         }
-        
         .btn-login:hover {
             background-color: #f0f4ff;
         }
-        
         .btn-register {
             background-color: #3a7bd5;
             color: white;
         }
-        
         .btn-register:hover {
             background-color: #2d62b1;
             box-shadow: 0 2px 8px rgba(58, 123, 213, 0.3);
         }
-        
-        .main {
+        /* 헤더 배너 (자연 사진) */
+        .header {
+            background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+            color: white;
+            padding: 3.5rem 0 2.5rem 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(58, 123, 213, 0.18);
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(33,150,243,0.38) 0%, rgba(33,150,243,0.14) 100%);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
             max-width: 1200px;
-            margin: 3rem auto;
+            margin: 0 auto;
             padding: 0 20px;
         }
-        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 0 2px 16px rgba(25, 118, 210, 0.18);
+        }
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+            line-height: 1.5;
+            text-shadow: 0 1px 8px rgba(25, 118, 210, 0.15);
+        }
+        /* 검색창 */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
+        }
+        .search-bar input {
+            width: 60vw;
+            max-width: 500px;
+            padding: 12px;
+            border-radius: 6px 0 0 6px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+        .search-bar button {
+            padding: 12px 20px;
+            background-color: #3a7bd5;
+            color: white;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        .search-bar button:hover {
+            background-color: #2d62b1;
+        }
+        #suggestList {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            left: 50%;
+            border: 1px solid #ccc;
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            width: 60vw;
+            max-width: 500px;
+            z-index: 20;
+            transform: translateX(-58%);
+        }
+        .suggest-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggest-item:hover {
+            background-color: #f0f0f0;
+        }
+        /* 여행지 카드 섹션 */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-bottom: 4rem;
         }
-        
         .feature-card {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
+            background-color: #fff;
+            border-radius: 16px;
+            overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-        }
-
-        .feature-card-4{
-            background-image: url('images/canadapark.jpg');
-            background-size: cover; /* 전체 화면 채우기 */
-            background-position: center; /* 가운데 정렬 */
-            background-repeat: no-repeat; /* 반복 없음 */
+            text-align: left;
+            position: relative;
+            min-height: 320px;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            justify-content: flex-end;
         }
-        
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.03);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
         }
-        
-        .feature-icon {
-            font-size: 2.5rem;
-            color: #3a7bd5;
-            margin-bottom: 1rem;
+        .feature-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: brightness(0.72) saturate(1.18);
+            transition: filter .2s;
         }
-        
+        .feature-card:hover .feature-image {
+            filter: brightness(0.88) saturate(1.1);
+        }
+        .feature-content {
+            position: relative;
+            z-index: 2;
+            padding: 32px 22px 22px 22px;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(25, 118, 210, 0.18);
+            background: linear-gradient(0deg, rgba(25,118,210,0.18) 0%, rgba(0,0,0,0.00) 100%);
+        }
         .feature-title {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: #333;
+            font-size: 1.35rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
-        
         .feature-text {
-            color: #666;
-            line-height: 1.6;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
+            font-weight: 400;
         }
-        
         .cta-container {
             text-align: center;
             margin: 3rem 0;
         }
-        
         .btn-cta {
             background: linear-gradient(135deg, #3a7bd5, #00d2ff);
             color: white;
@@ -221,23 +238,19 @@
             border-radius: 6px;
             box-shadow: 0 5px 15px rgba(58, 123, 213, 0.3);
         }
-        
         .btn-cta:hover {
             background: linear-gradient(135deg, #2d62b1, #00bce4);
             box-shadow: 0 8px 20px rgba(58, 123, 213, 0.4);
         }
-        
         .btn-cta i {
             margin-left: 8px;
         }
-        
         .footer {
             background-color: #333;
             color: #f5f5f5;
             padding: 3rem 0;
             margin-top: 4rem;
         }
-        
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -246,54 +259,44 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
         }
-        
         .footer-section h3 {
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             color: white;
         }
-        
         .footer-section p {
             line-height: 1.6;
             color: #ccc;
             font-size: 0.9rem;
         }
-        
         .footer-links {
             list-style: none;
         }
-        
         .footer-links li {
             margin-bottom: 0.8rem;
         }
-        
         .footer-links a {
             text-decoration: none;
             color: #ccc;
             transition: color 0.3s;
             font-size: 0.9rem;
         }
-        
         .footer-links a:hover {
             color: white;
         }
-        
         .social-links {
             display: flex;
             gap: 15px;
             margin-top: 1.5rem;
         }
-        
         .social-links a {
             color: #ccc;
             font-size: 1.2rem;
             transition: color 0.3s;
         }
-        
         .social-links a:hover {
             color: white;
         }
-        
         .copyright {
             margin-top: 3rem;
             text-align: center;
@@ -305,32 +308,61 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
             }
-            
             .nav-container {
                 flex-direction: column;
                 gap: 15px;
             }
-            
             .nav-links {
                 flex-wrap: wrap;
                 justify-content: center;
             }
+            .features {
+                grid-template-columns: 1fr;
+            }
         }
-        
         @media (max-width: 480px) {
             .feature-card {
-                padding: 20px;
+                padding: 0;
+                min-height: 220px;
             }
-            
             .header p {
                 font-size: 0.95rem;
             }
+            .search-bar input {
+                width: 90vw;
+                font-size: 0.98rem;
+            }
+            .search-bar, #suggestList {
+                width: 98vw;
+                max-width: 98vw;
+            }
         }
+        .btn-admin {
+		    background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+		    color: #fff !important;
+		    border: none;
+		    border-radius: 6px;
+		    padding: 8px 18px;
+		    font-weight: 700;
+		    font-size: 0.98rem;
+		    margin-left: 8px;
+		    box-shadow: 0 2px 8px rgba(231,76,60,0.13);
+		    transition: background .2s, box-shadow .2s, color .2s;
+		    text-decoration: none;
+		    display: inline-block;
+		    letter-spacing: 0.5px;
+		}
+		.btn-admin:hover {
+		    background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
+		    color: #fff !important;
+		    box-shadow: 0 4px 16px rgba(231,76,60,0.18);
+		    text-decoration: none;
+		}
+        
     </style>
 </head>
 <body>
@@ -338,15 +370,12 @@
     <nav class="nav">
         <div class="nav-container">
             <a href="#" class="logo">A조 여행 게시판</a>
-            
             <div class="nav-links">
                 <a href="#" class="active">홈</a>
                 <a th:href="@{/post/list}">게시판</a>
                 <a href="#">공지사항</a>
                 <a href="#">이벤트</a>
-                <a th:if="${session.isAdmin}" th:href="@{/admin/index}" style="color: #e74c3c;">관리자</a>
             </div>
-            
             <div class="auth-buttons" th:if="${session.userId == null}">
                 <a th:href="@{/login}" class="btn btn-login">로그인</a>
                 <a th:href="@{/register}" class="btn btn-register">회원가입</a>
@@ -354,86 +383,78 @@
             <div class="auth-buttons" th:unless="${session.userId == null}">
                 <span th:text="${session.username}"></span>님 환영합니다!
                 <a href="#" class="btn btn-login">내 정보</a>
-                <a th:if="${session.isAdmin}" th:href="@{/admin/index}" class="btn" style="background-color: #e74c3c; color: white;">관리자</a>
                 <a th:href="@{/logout}" class="btn btn-register">로그아웃</a>
+                <a th:if="${session.isAdmin}" th:href="@{/admin/index}"class="btn-admin">관리자</a>
             </div>
         </div>
     </nav>
 
-    <!-- 헤더 섹션 -->
+    <!-- 헤더 섹션 (자연 사진 배경) -->
     <header class="header">
         <div class="header-content">
             <h1>여행 게시판 커뮤니티 포털에 오신 것을 환영합니다</h1>
             <p>여행 관련 게시판, 정보 공유, 소통의 장을 제공합니다. 여러분의 생각과 경험을 공유해보세요.</p>
+            <form th:action="@{/post/list}" method="get" class="search-bar" autocomplete="off">
+                <input type="text" name="keyword" id="searchInput" placeholder="여행지를 검색해보세요!" autocomplete="off">
+                <input type="hidden" name="type" value="title" />
+                <button type="submit">검색</button>
+                <ul id="suggestList"></ul>
+            </form>
         </div>
     </header>
-    
-    <!-- 검색창 섹션 -->
-<section class="main" style="margin-top: 2rem; position: relative;">
-    <form th:action="@{/post/list}" method="get" style="text-align: center; margin-bottom: 2rem;">
-        <input type="text" name="keyword" id="searchInput" placeholder="여행지를 검색해보세요!" 
-               style="padding: 12px; width: 60%; max-width: 500px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;" autocomplete="off">
-        <input type="hidden" name="type" value="title" />
-        <button type="submit" 
-                style="padding: 12px 20px; margin-left: 8px; background-color: #3a7bd5; color: white; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer;">
-            검색
-        </button>
-        <ul id="suggestList"></ul>
-    </form>
-</section>
-    <!-- 메인 콘텐츠 -->
-    <main class="main">
+
+    <!-- 여행지 카드 섹션 -->
+    <main class="main" style="margin-top: 2.5rem;">
         <section class="features">
+            <!-- 제주도 -->
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTA4MDhfMTI5%2FMDAxNjI4NDAxNTgzMTI3.V0IX-NmApY7nr_8VHDkNml93hOT4UVOFagKdzov5CmIg.JctCmsKDeU0zcHBCU5tDRBWzRzdcwkNeNijvl-NCZ5Yg.JPEG.jjoyotae%2FIMG_2612.jpg&type=sc960_832" alt="경주">
+                <div class="feature-content">
+                    <div class="feature-title">경주</div>
+                    <div class="feature-text">천년의 고도, 신라의 역사가 살아 숨 쉬는 경주에서 한국의 전통과 아름다운 유적을 만나보세요.</div>
                 </div>
-                <h3 class="feature-title">활발한 커뮤니티</h3>
-                <p class="feature-text">의견을 나누고 정보를 공유하는 커뮤니티 활동에 참여하세요.</p>
             </div>
-            
+            <!-- 서울 야경 -->
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-map-marked-alt"></i>
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20130701_140%2Fzaoaso_1372645620319BPm6w_JPEG%2F696d3b355c59cd2d28ceddd60c145124.jpg&type=sc960_832" alt="서울 야경">
+                <div class="feature-content">
+                    <div class="feature-title">서울</div>
+                    <div class="feature-text">도시의 활기와 다양한 문화를 느낄 수 있는 대한민국의 수도, 서울.</div>
                 </div>
-                <h3 class="feature-title">지역 기반 여행 정보</h3>
-                <p class="feature-text">여행 관련 소식과 정보를 지역 기반으로 확인 할 수 있습니다</p>
             </div>
-            
+            <!-- 부산 해운대 -->
             <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxOTA1MDZfMTU3%2FMDAxNTU3MTQ5MTkzMTM2.rgSeTQIcm3tXiyTwLYznXWILMEGf_bxeKy0Rw21tprQg.dlEZAFnOlBJo_xOyBEesvPRmRMvqXiM5TgEi4JBEHjwg.JPEG.e_ducare%2F1557149073872.jpg&type=a340" alt="부산 해운대">
+                <div class="feature-content">
+                    <div class="feature-title">부산</div>
+                    <div class="feature-text">푸른 바다와 활기찬 분위기의 해운대, 먹거리와 볼거리가 가득한 부산.</div>
                 </div>
-                <h3 class="feature-title">안전한 환경</h3>
-                <p class="feature-text">개인정보 보호와 보안을 최우선으로 생각하는 안전한 커뮤니티 환경을 제공합니다.</p>
+            </div>
+            <!-- 강원도 설경 -->
+            <div class="feature-card">
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20160804_298%2Flemoninhouse_1470299366769el2iy_JPEG%2FIMG_0004.jpg&type=sc960_832" alt="강원도 설경">
+                <div class="feature-content">
+                    <div class="feature-title">강원도</div>
+                    <div class="feature-text">아름다운 산과 계곡, 사계절 내내 색다른 매력을 지닌 강원도 여행.</div>
+                </div>
+            </div>
+            <!-- 전주 한옥마을 -->
+            <div class="feature-card">
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA1MTVfMjYg%2FMDAxNzE1NzY2Mzk0NTQz.AuHKd4S3ePSYJryh2UQdF6PH2LJbDQPqklWgAsSS3tsg.4_V2-Paxgrgs7KNJrzK5D4yTjDHAXXaNzwsS11QiNskg.JPEG%2F20240513%25A3%25DF145431.jpg&type=sc960_832" alt="전주 한옥마을">
+                <div class="feature-content">
+                    <div class="feature-title">전주</div>
+                    <div class="feature-text">전통과 현대가 어우러진 한옥마을에서 특별한 추억을 만들어보세요.</div>
+                </div>
+            </div>
+            <!-- 설악산 등산 -->
+            <div class="feature-card">
+                <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTA4MDFfMzkg%2FMDAxNjI3ODEwMTYwOTUx.tu02_oTJlbXpaJaVI2sdW-Ag61kCF8TuOBfWzVIctxMg.Ukblukn6iA6gwG-pRvC4sMEO9ap_q0Sv7MrFFnU1VaMg.JPEG.wonkeun5820%2F%25B4%25D9%25BF%25EE%25B7%25CE%25B5%25E5_%252843%2529.jpg&type=sc960_832" alt="제주도">
+                <div class="feature-content">
+                    <div class="feature-title">제주도</div>
+                    <div class="feature-text">맑은 바다와 푸른 자연이 어우러진 제주에서의 특별한 여행을 경험하세요.</div>
+                </div>
             </div>
         </section>
-        <section class="features">
-            <div class="feature-card" id="feature-card-4">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 class="feature-title"></h3>
-                <p class="feature-text"></p>
-            </div>
-            
-            <div class="feature-card" id="feature-card-5">
-                <div class="feature-icon">
-                    <i class="fas fa-map-marked-alt"></i>
-                </div>
-                <h3 class="feature-title"></h3>
-                <p class="feature-text"></p>
-            </div>
-            
-            <div class="feature-card" id="feature-card-6">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3 class="feature-title"></h3>
-                <p class="feature-text"></p>
-            </div>
-        </section>
-        
         <div class="cta-container">
             <a th:href="@{/post/list}" class="btn btn-cta">
                 게시판 바로가기 <i class="fas fa-arrow-right"></i>
@@ -454,7 +475,6 @@
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-            
             <div class="footer-section">
                 <h3>바로가기</h3>
                 <ul class="footer-links">
@@ -464,7 +484,6 @@
                     <li><a href="#">자주 묻는 질문</a></li>
                 </ul>
             </div>
-            
             <div class="footer-section">
                 <h3>고객지원</h3>
                 <ul class="footer-links">
@@ -475,51 +494,47 @@
                 </ul>
             </div>
         </div>
-        
         <div class="copyright">
             <p>&copy; 2025 커뮤니티 포털. All rights reserved.</p>
         </div>
     </footer>
     <!-- 자동완성 스크립트 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function () {
-    $('#searchInput').on('keyup', function () {
-        const keyword = $(this).val();
-        if (keyword.length === 0) {
-            $('#suggestList').hide();
-            return;
-        }
-
-        $.ajax({
-            url: '/post/suggest',
-            type: 'get',
-            data: { keyword: keyword },
-            success: function (data) {
-                let suggestHTML = '';
-                if (data.length > 0) {
-                    data.forEach(function (title) {
-                        suggestHTML += `<li class="suggest-item">${title}</li>`;
-                    });
-                    $('#suggestList').html(suggestHTML).show();
-                } else {
-                    $('#suggestList').hide();
-                }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#searchInput').on('keyup', function () {
+            const keyword = $(this).val();
+            if (keyword.length === 0) {
+                $('#suggestList').hide();
+                return;
             }
+            $.ajax({
+                url: '/post/suggest',
+                type: 'get',
+                data: { keyword: keyword },
+                success: function (data) {
+                    let suggestHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(function (title) {
+                            suggestHTML += `<li class="suggest-item">${title}</li>`;
+                        });
+                        $('#suggestList').html(suggestHTML).show();
+                    } else {
+                        $('#suggestList').hide();
+                    }
+                }
+            });
+        });
+        // 클릭 시 검색창에 입력
+        $(document).on('click', '.suggest-item', function () {
+            $('#searchInput').val($(this).text());
+            $('#suggestList').hide();
+        });
+        // 입력창 이탈 시 숨김
+        $('#searchInput').on('blur', function () {
+            setTimeout(() => $('#suggestList').hide(), 200);
         });
     });
-
-    // 클릭 시 검색창에 입력
-    $(document).on('click', '.suggest-item', function () {
-        $('#searchInput').val($(this).text());
-        $('#suggestList').hide();
-    });
-
-    // 입력창 이탈 시 숨김
-    $('#searchInput').on('blur', function () {
-        setTimeout(() => $('#suggestList').hide(), 200);
-    });
-});
-</script>
+    </script>
 </body>
 </html>
