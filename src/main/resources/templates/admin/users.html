@@ -126,18 +126,43 @@
                 padding: 10px;
             }
         }
+
+        /* 알림 메시지 스타일 */
+        .alert {
+            padding: 15px;
+            margin: 20px auto;
+            border-radius: 5px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
 
     <!-- 헤더 -->
     <div class="header">
-         <div class="admin-name" th:text="${nickname}"></div>
+         <div class="admin-name" th:text="${session.nickname}"></div>
         <a href="/logout" class="logout-btn">로그아웃</a>
     </div>
 
     <!-- 페이지 제목 -->
     <h1>전체 회원 조회</h1>
+    
+    <!-- 알림 메시지 표시 -->
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
     <!-- 회원 목록 테이블 -->
     <table>
@@ -154,16 +179,22 @@
         </thead>
         <tbody>
             <tr th:each="user : ${members}">
-                <td th:text="${user.user_id}"></td>
+                <td th:text="${user.userId}"></td>
                 <td th:text="${user.username}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.nickname}"></td>
-                <td th:text="${user.isManager ? 'Y' : 'N'}"></td>
-                <td th:text="${user.createdAt}"></td>
+                <td th:text="${user.isManager}"></td>
+                <td th:text="${#temporals.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
-                    <a th:href="@{/admin/user/edit/{id}(id=${user.user_id})}">수정</a>
-                    <a th:href="@{/admin/user/delete/{id}(id=${user.user_id})}" class="delete-btn" 
-                       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                    <a th:href="@{/admin/users/{id}(id=${user.userId})}" class="edit-btn">
+                        <i class="fas fa-edit"></i> 수정
+                    </a>
+                    <form th:action="@{/admin/users/{id}/delete(id=${user.userId})}" method="post" style="display: inline;">
+                        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');" 
+                                style="background: none; border: none; color: #e74c3c; cursor: pointer; font-weight: bold;">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </form>
                 </td>
             </tr>
         </tbody>

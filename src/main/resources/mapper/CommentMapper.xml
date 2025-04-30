@@ -26,6 +26,14 @@
 		WHERE c.post_id = #{post_id} AND c.is_deleted = false
 		ORDER BY c.created_at ASC
 	</select>
+	
+	<select id="getAllComments" resultMap="CommentResultMap">
+		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id, c.is_deleted, c.like_count, c.parent_id, u.nickname, u.profile_img
+		FROM Comments c
+		LEFT JOIN Users u ON c.user_id = u.user_id
+		ORDER BY c.created_at DESC
+	</select>
 
 	<insert id="insertComment"
 		parameterType="com.bbs.demo.model.Comment" useGeneratedKeys="true"

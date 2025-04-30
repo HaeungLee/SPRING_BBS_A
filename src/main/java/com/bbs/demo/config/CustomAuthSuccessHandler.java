@@ -43,6 +43,8 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
         
         // 지연 로딩 방식으로 MemberService 가져오기
         Member member = getMemberService().getMemberByUsername(username);
+        boolean isAdmin = false;
+        
         if (member != null) {
             session.setAttribute("userId", member.getUserId());
             session.setAttribute("username", member.getUsername());
@@ -50,6 +52,7 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
             
             if ("Y".equals(member.getIsManager())) {
                 session.setAttribute("isAdmin", true);
+                isAdmin = true;
             }
         }
         
@@ -61,6 +64,12 @@ public class CustomAuthSuccessHandler extends SavedRequestAwareAuthenticationSuc
                 response.sendRedirect(returnUrl);
                 return;
             }
+        }
+        
+        // 관리자인 경우 admin/index로 리다이렉션
+        if (isAdmin) {
+            response.sendRedirect("/admin/index");
+            return;
         }
         
         // 지정된 returnUrl이 없거나 안전하지 않은 경우 기본 동작 수행

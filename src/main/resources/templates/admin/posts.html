@@ -134,18 +134,43 @@
                 padding: 10px;
             }
         }
+
+        /* 알림 메시지 스타일 */
+        .alert {
+            padding: 15px;
+            margin: 20px auto;
+            border-radius: 5px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
 
     <!-- 헤더 섹션 -->
     <div class="header">
-        <div class="admin-name" th:text="${nickname}">관리자</div>
+        <div class="admin-name" th:text="${session.nickname}">관리자</div>
         <a href="/logout" class="logout-btn">로그아웃</a>
     </div>
 
     <!-- 페이지 제목 -->
     <h1 id="title-admin">전체 게시글 조회</h1>
+    
+    <!-- 알림 메시지 표시 -->
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
     <!-- 게시글 조회 테이블 -->
     <table>
@@ -155,19 +180,26 @@
                 <th>제목</th>
                 <th>작성자</th>
                 <th>작성일</th>
+                <th>조회수</th>
                 <th>관리</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="post : ${posts}">
-                <td th:text="${post.id}"></td>
-                <td th:text="${post.title}"></td>
-                <td th:text="${post.username}"></td>
-                <td th:text="${post.createdAt}"></td>
+                <td th:text="${post.post_id}"></td>
                 <td>
-                    <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}">수정</a> |
-                    <a th:href="@{/posts/delete/{id}(id=${post.id})}" class="delete-btn" 
-                       onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                    <a th:href="@{/post/view/{id}(id=${post.post_id})}" th:text="${post.title}" target="_blank"></a>
+                </td>
+                <td th:text="${post.username}"></td>
+                <td th:text="${#temporals.format(post.created_at, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${post.views}"></td>
+                <td>
+                    <form th:action="@{/admin/posts/{id}/delete(id=${post.post_id})}" method="post" style="display: inline;">
+                        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');" 
+                                style="background: none; border: none; color: #e74c3c; cursor: pointer; font-weight: bold;">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </form>
                 </td>
             </tr>
         </tbody>

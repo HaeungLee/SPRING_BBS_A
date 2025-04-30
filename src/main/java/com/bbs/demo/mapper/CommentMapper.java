@@ -13,6 +13,8 @@ public interface CommentMapper {
     List<Comment> getCommentsByPostId(@Param("post_id") int postId);
 
     List<Comment> getRepliesByParentId(@Param("parent_id") int parentId);
+    
+    List<Comment> getAllComments();
 
     int insertComment(Comment comment);
 
@@ -34,7 +36,6 @@ public interface CommentMapper {
     
     List<Integer> getChildCommentIds(@Param("parent_id") int parentId);
 
-    
 }
 
 

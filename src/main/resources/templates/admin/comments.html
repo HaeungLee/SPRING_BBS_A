@@ -1,10 +1,208 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>댓글 관리 - 관리자</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댓글 관리</title>
+    <!-- FontAwesome 아이콘 CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 설정 */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333; 
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* 페이지 제목 */
+        #title-admin {
+            text-align: center;
+            font-size: 36px;
+            color: #333;
+            margin-top: 40px;
+        }
+
+        /* 테이블 스타일 */
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(to bottom, #000066, #3333cc);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 댓글 내용 스타일 */
+        .comment-content {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .delete-btn {
+            color: #e74c3c;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            color: #c0392b;
+            transform: scale(1.1);
+        }
+
+        /* 뒤로가기 링크 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            font-size: 18px;
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        .back-link:hover {
+            color: #2980b9;
+        }
+        
+        /* 알림 메시지 스타일 */
+        .alert {
+            padding: 15px;
+            margin: 20px auto;
+            border-radius: 5px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+            
+            .comment-content {
+                max-width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- 헤더 섹션 -->
+    <div class="header">
+        <div class="admin-name" th:text="${session.nickname}">관리자</div>
+        <a href="/logout" class="logout-btn">로그아웃</a>
+    </div>
 
+    <!-- 페이지 제목 -->
+    <h1 id="title-admin">댓글 관리</h1>
+    
+    <!-- 알림 메시지 표시 -->
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+
+    <!-- 댓글 목록 테이블 -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>내용</th>
+                <th>작성자</th>
+                <th>게시글 ID</th>
+                <th>작성일</th>
+                <th>좋아요</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="comment : ${comments}">
+                <td th:text="${comment.comment_id}"></td>
+                <td class="comment-content" th:text="${comment.content}"></td>
+                <td th:text="${comment.nickname}"></td>
+                <td>
+                    <a th:href="@{/post/view/{id}(id=${comment.post_id})}" target="_blank" th:text="${comment.post_id}"></a>
+                </td>
+                <td th:text="${#temporals.format(comment.created_at, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${comment.like_count}"></td>
+                <td>
+                    <form th:action="@{/admin/comments/{id}/delete(id=${comment.comment_id})}" method="post" style="display: inline;">
+                        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');" class="delete-btn" style="background: none; border: none;">
+                            <i class="fas fa-trash"></i> 삭제
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- 뒤로가기 링크 -->
+    <p><a href="/admin/index" class="back-link">관리자 페이지</a></p>
 </body>
 </html>

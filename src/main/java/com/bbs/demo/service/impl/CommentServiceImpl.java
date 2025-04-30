@@ -19,6 +19,11 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> getCommentsByPostId(int postId) {
         return commentMapper.getCommentsByPostId(postId);
     }
+    
+    @Override
+    public List<Comment> getAllComments() {
+        return commentMapper.getAllComments();
+    }
 
     @Override
     public void createComment(Comment comment) {
@@ -53,7 +58,7 @@ public class CommentServiceImpl implements CommentService {
             deleteChildCommentsRecursively(childId, userId);
         }
     }
-
+    
     @Override
     public void toggleLike(int commentId, int userId) {
         boolean liked = commentMapper.hasLiked(commentId, userId);
