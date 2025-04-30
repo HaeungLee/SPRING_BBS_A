@@ -440,21 +440,41 @@
     }
 
     function replyComment(parentId) {
-      const reply = prompt('답글 작성:');
-      if (!reply || reply.trim() === '') return;
-      $.ajax({
-        url: '/api/comments',
-        method: 'POST',
-        contentType: 'application/json',
-        xhrFields: { withCredentials: true },
-        data: JSON.stringify({ content: reply, post_id: postId, parent_id: parentId }),
-        success: function() {
-            loadComments();
-        },
-        error: function() {
-          alert('답글 작성 실패');
-        }
-      });
+    	
+    	  $('.reply-input').remove();
+
+    	  const replyBox = `
+    	    <div class="reply-input" style="margin-top: 8px; margin-left: 20px;">
+    	      <textarea class="reply-textarea" rows="2" style="width: 90%; border-radius: 6px; padding: 6px;"></textarea><br>
+    	      <button onclick="submitReply(${parentId}, this)">답글 등록</button>
+    	      <button onclick="$(this).parent().remove()">취소</button>
+    	    </div>
+    	  `;
+
+    	  const target = $(`button[onclick="replyComment(${parentId})"]`).closest('div');
+    	  target.after(replyBox);
+    	}
+
+    	function submitReply(parentId, btn) {
+    	  const replyContent = $(btn).siblings('.reply-textarea').val();
+    	  if (!replyContent.trim()) {
+    	    alert('답글을 입력하세요.');
+    	    return;
+    	  }
+
+    	  $.ajax({
+    	    url: '/api/comments',
+    	    method: 'POST',
+    	    contentType: 'application/json',
+    	    xhrFields: { withCredentials: true },
+    	    data: JSON.stringify({ content: replyContent, post_id: postId, parent_id: parentId }),
+    	    success: function () {
+    	      loadComments();
+    	    },
+    	    error: function () {
+    	      alert('답글 작성 실패');
+    	    }
+    	  });
     }
 
     $(document).ready(function() {
