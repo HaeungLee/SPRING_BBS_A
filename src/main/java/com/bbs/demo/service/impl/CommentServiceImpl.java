@@ -1,6 +1,7 @@
 package com.bbs.demo.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,16 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public boolean deleteComment(int id, int userId) {
         Comment existing = commentMapper.getCommentById(id);
-        if (existing != null && existing.getUser_id().equals(userId)) {
+        
+        // 관리자는 모든 댓글 삭제 가능 (userId가 0이면 관리자로 간주)
+        if (userId == 0) {
+            commentMapper.markCommentAsDeleted(id, userId);
+            deleteChildCommentsRecursively(id, userId);
+            return true;
+        }
+        
+        // 작성자 ID가 null이거나 삭제 요청자 ID와 일치하는 경우
+        if (existing != null && (existing.getUser_id() == null || Objects.equals(existing.getUser_id(), userId))) {
             commentMapper.markCommentAsDeleted(id, userId);
             deleteChildCommentsRecursively(id, userId);
             return true;
@@ -55,6 +65,7 @@ public class CommentServiceImpl implements CommentService {
         List<Integer> childIds = commentMapper.getChildCommentIds(parentId);
         for (Integer childId : childIds) {
             commentMapper.markCommentAsDeleted(childId, userId);
+            // 재귀적으로 자식 댓글들도 삭제 처리
             deleteChildCommentsRecursively(childId, userId);
         }
     }
