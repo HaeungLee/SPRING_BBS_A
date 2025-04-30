@@ -20,7 +20,7 @@
         SELECT * FROM Users
     </select>
 
-    <select id="getMemberById" resultMap="MemberResultMap" parameterType="long">
+    <select id="getMemberById" resultMap="MemberResultMap" parameterType="int">
         SELECT * FROM Users WHERE user_id = #{userId}
     </select>
     
@@ -35,8 +35,23 @@
 
     <update id="updateMember" parameterType="com.bbs.demo.model.Member">
         UPDATE Users
-        SET username = #{username}, password = #{password}, email = #{email}, nickname = #{nickname}, 
-            phone = #{phone}, profile_img = #{profileImg}, agree_marketing = #{agreeMarketing}, is_manager = #{isManager}
+        SET 
+            username = #{username},
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            email = #{email},
+            nickname = #{nickname},
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="profileImg != null">
+                profile_img = #{profileImg},
+            </if>
+            <if test="agreeMarketing != null">
+                agree_marketing = #{agreeMarketing},
+            </if>
+            is_manager = #{isManager}
         WHERE user_id = #{userId}
     </update>
     
