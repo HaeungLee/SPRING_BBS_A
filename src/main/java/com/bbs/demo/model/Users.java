@@ -40,8 +40,9 @@ public class Users {
     @Column(length = 50)
     private String nickname;
 
-    @Column(length = 255)
-    private String profile_Img; // DB 컬럼명 profile_img와 매핑 필요 시 @Column(name = "profile_img")
+    @Column(length = 255, name = "profile_img")
+    private String profile_Img; 
+    // DB 컬럼명 profile_img와 매핑 필요 시 @Column(name = "profile_img")
 
     @Builder.Default
     @Column(name = "is_manager", columnDefinition = "CHAR(1) default 'N'") // ENUM → CHAR(1)
@@ -81,6 +82,10 @@ public class Users {
         this.password = password;
     }
     
+    // 사용자 권한 문자열 반환 (ADMIN 또는 USER)
+    public String getRole() {
+        return isAdmin() ? "ADMIN" : "USER";
+    }
 
     // updateFields 메소드 수정
     public void updateFields(Users updatedUser) {
@@ -93,4 +98,12 @@ public class Users {
         if (updatedUser.getIs_Manager() != null) this.is_Manager = updatedUser.getIs_Manager();
         // 필요 시 다른 필드들도 추가 가능
     }
+    // html에서 인식하게 하기 위해
+    public Integer getUserId() {
+        return this.user_Id;
+    }
+    public void setProfile_Img(String profile_Img) {
+        this.profile_Img = profile_Img;
+    }
+
 }

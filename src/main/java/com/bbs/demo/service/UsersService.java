@@ -29,7 +29,7 @@ public class UsersService {
   
     // 사용자 ID로 조회
     @Transactional
-    public Users getUserById(Long userId) {
+    public Users getUserById(Integer userId) {
         return usersRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. ID: " + userId));
     }
@@ -47,7 +47,7 @@ public class UsersService {
 
     // 사용자 정보 수정
     @Transactional
-    public void updateUser(Long userId, Users updatedUser) {
+    public void updateUser(Integer userId, Users updatedUser) {
         Users user = getUserById(userId);
         user.updateFields(updatedUser);  // 엔티티 내에서 필드 업데이트
         usersRepository.save(user);  // 변경된 내용 저장
@@ -55,10 +55,10 @@ public class UsersService {
 
     // 사용자 삭제
     @Transactional
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         usersRepository.deleteById(userId);
     }
-
+    
 	  // 초기화 (테스트용 하드코딩된 패스워드 수정)
 	  /*
 	  @PostConstruct public void init() { // 예시로 패스워드 하드코딩 (실제 배포에서는 적절한 암호화 및 보안조치가 필요) 

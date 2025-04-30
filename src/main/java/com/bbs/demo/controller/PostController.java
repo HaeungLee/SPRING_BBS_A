@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bbs.demo.model.Post;
+import com.bbs.demo.model.Users;
 import com.bbs.demo.service.PostService;
+import com.bbs.demo.service.UsersService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,11 +28,14 @@ public class PostController {
     @Autowired
     private PostService postService;
     
+    @Autowired
+    private UsersService userService;
+    
     @InitBinder("post")
     public void initBinder(WebDataBinder binder) {
         binder.setDisallowedFields("files");
     }
- 
+
     /** 게시글 목록 조회 */
     @GetMapping("/list")
     public String listPosts(Model model) {
@@ -39,18 +44,18 @@ public class PostController {
         return "post/list";
     }
 
-    /** 게시글 상세 조회 + 조회수 증가 (중요 수정) */
+    /** 게시글 상세 조회 + 조회수 증가 */
     @GetMapping("/view/{id}")
     public String viewPost(@PathVariable("id") int post_id, Model model, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
         if (currentUserId == null) currentUserId = 0;
 
-        // 조회수 증가 + 게시글 조회 (작성자가 아닐 때만 증가)
+        // 조회수 증가 + 게시글 조회
         Post post = postService.getPostWithViewCount(post_id, currentUserId);
         model.addAttribute("post", post);
         return "post/view";
     }
-    
+
     /** 게시글 등록 폼 */
     @GetMapping("/create")
     public String showCreateForm(Model model) {
@@ -58,7 +63,7 @@ public class PostController {
         return "post/form";
     }
 
-    /** 게시글 등록 처리 (중요 수정) */
+    /** 게시글 등록 처리 */
     @PostMapping("/create")
     public String createPost(
             @ModelAttribute Post post,
@@ -75,7 +80,7 @@ public class PostController {
             throw new IllegalArgumentException("위치 정보가 없습니다.");
         }
 
-        // 2. 파일 처리 로직 개선
+        // 2. 파일 처리 로직
         if (files != null && !files.isEmpty()) {
             Path uploadPath = Paths.get("upload-dir");
             if (!Files.exists(uploadPath)) {
@@ -96,7 +101,7 @@ public class PostController {
         return "redirect:/post/list";
     }
 
-    /** 게시글 수정 폼 (중요 수정) */
+    /** 게시글 수정 폼 */
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable("id") int post_id, Model model, HttpSession session) {
         Integer currentUserId = (Integer) session.getAttribute("userId");
@@ -104,16 +109,20 @@ public class PostController {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        Post post = postService.getPostById(post_id); // 변경
+        Post post = postService.getPostById(post_id);
         if (post == null || post.getUser_id() != currentUserId) {
-            throw new RuntimeException("수정 권한이 없습니다.");
+            // 관리자 권한 추가
+            boolean isAdmin = checkIfUserIsAdmin(currentUserId);
+            if (!isAdmin) {
+                throw new RuntimeException("수정 권한이 없습니다.");
+            }
         }
 
         model.addAttribute("post", post);
         return "post/form";
     }
 
-    /** 게시글 수정 처리 (중요 수정) */
+    /** 게시글 수정 처리 */
     @PostMapping("/edit/{id}")
     public String updatePost(
             @PathVariable("id") int post_id, 
@@ -136,9 +145,12 @@ public class PostController {
             // 파일 업로드 및 DB 저장 로직 구현
         }
 
+        // 관리자 여부 확인
+        boolean isAdmin = checkIfUserIsAdmin(currentUserId);
+
         // 3. 서비스 계층 호출
         post.setPost_id(post_id);
-        postService.updatePost(post, currentUserId);
+        postService.updatePost(post, currentUserId, isAdmin);
         return "redirect:/post/view/" + post_id;
     }
 
@@ -150,7 +162,16 @@ public class PostController {
             throw new RuntimeException("로그인이 필요합니다.");
         }
 
-        postService.deletePost(post_id, currentUserId);
+        boolean isAdmin = checkIfUserIsAdmin(currentUserId);
+
+        postService.deletePost(post_id, currentUserId, isAdmin);
         return "redirect:/post/list";
+    }
+
+    // 관리자 여부 확인 메서드
+    private boolean checkIfUserIsAdmin(int userId) {
+        // UserService를 사용하여 userId에 해당하는 Users 객체를 가져옴
+        Users user = userService.getUserById(userId);
+        return "ADMIN".equals(user.getRole());  // ADMIN 역할 확인
     }
 }

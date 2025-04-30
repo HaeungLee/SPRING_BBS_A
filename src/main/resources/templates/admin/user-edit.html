@@ -1,16 +1,146 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>사용자 정보 수정</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>사용자 정보 수정</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+        .custom-file-button {
+            margin-top: 10px;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .custom-file-button:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            margin-top: 10px;
+        }
+        button[type="submit"] {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-<h1>사용자 수정</h1>
-<form th:action="@{/admin/users/save}" th:object="${user}" method="post">
-    <input type="hidden" th:field="*{id}"/>
-    <label>아이디: <input type="text" th:field="*{username}" readonly/></label><br/>
-    <label>이메일: <input type="text" th:field="*{email}"/></label><br/>
-    <label>권한: <input type="text" th:field="*{role}"/></label><br/>
+
+<h1>사용자 정보 수정</h1>
+
+<form th:action="@{/admin/user-edit/{id}(id=${user.userId})}" th:object="${user}" method="post" enctype="multipart/form-data">
+    <input type="hidden" th:field="*{userId}" />
+
+    <div class="profile-container">
+        <img id="profileImagePreview" src="https://t1.kakaocdn.net/account_images/default_profile.jpeg" alt="기본 프로필 이미지" />
+        <input type="file" id="profileImage" name="profileImage" onchange="previewImage(event)" />
+        <label for="profileImage" class="custom-file-button">사진 선택</label>
+    </div>
+
+    <label>아이디</label>
+    <input type="text" th:field="*{username}" readonly />
+
+    <label>이메일</label>
+    <input type="email" th:field="*{email}" />
+
+    <label>닉네임</label>
+    <input type="text" th:field="*{nickname}" />
+
+    <label>전화번호</label>
+    <input type="text" th:field="*{phone}" />
+
+    <label>마케팅 동의</label>
+    <input type="checkbox" th:field="*{agreeMarketing}" />
+
     <button type="submit">저장</button>
 </form>
-	<p><a href="admin/index">관리자 페이지</a></p>
+
+<a class="back-link" href="/admin/users">뒤로가기</a>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('profileImagePreview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
 </body>
 </html>
- 

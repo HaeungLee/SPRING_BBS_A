@@ -1,53 +1,56 @@
 package com.bbs.demo.controller;
 
-import com.bbs.demo.model.Users;
-import com.bbs.demo.service.UsersService;
-import com.bbs.demo.model.Post;
-import com.bbs.demo.model.Comment;
-import com.bbs.demo.service.PostService;
-import com.bbs.demo.service.CommentService;
-import com.bbs.demo.service.FileService;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-// 파일업로드, comment 등록후 변경예정
+import com.bbs.demo.model.Post;
+import com.bbs.demo.model.Users;
+import com.bbs.demo.service.PostService;
+import com.bbs.demo.service.UsersService;
+
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequiredArgsConstructor
 public class AdminController {
-	 
-	// 생성자 주입 - final
+
     private final UsersService usersService;
     private final PostService postService;
-    //private final CommentService commentService;
-    //private final FileService fileService;
-    
-    // 다른 페이지에 닉네임 나오게 하기
+
     @ModelAttribute("nickname")
-    public String getAdminNickname() {  
+    public String getAdminNickname() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();  // 로그인한 사용자의 닉네임을 반환
+        return authentication.getName();
     }
+
     @GetMapping("/admin/index")
-    // 관리자 홈 페이지로 이동
     public String adminHome(Model model) {
-	    // 로그인한 사용자 정보 가져오기
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    String nickname = authentication.getName();  // 예: nickname을 가져오는 방식 (DB에서 가져올 수 있음)
-	    
-	    // 모델에 닉네임 추가
-	    model.addAttribute("nickname", nickname);
-        return "admin/index";  
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String nickname = authentication.getName();
+        model.addAttribute("nickname", nickname);
+        return "admin/index";
     }
-    
-    // 전체 회원 조회
+
     @GetMapping("/admin/users")
     public String getAllUsers(Model model) {
         List<Users> users = usersService.getAllUsers();
@@ -55,46 +58,67 @@ public class AdminController {
         return "admin/users";
     }
 
-    // 회원 정보 수정 페이지
-    @GetMapping("/admin/users/edit/{id}")
-    public String editUser(@PathVariable("id") Long userId, Model model) {
-        Users user = usersService.getUserById(userId); // 회원 정보 가져오기
-        model.addAttribute("user", user); // 회원 정보 model에 저장
+    @GetMapping("/admin/user-edit/{id}")
+    public String editUser(@PathVariable("id") Integer userId, Model model) {
+        Users user = usersService.getUserById(userId);
+        model.addAttribute("user", user);
         return "admin/user-edit";
     }
 
-    // 회원 정보 업데이트
-    @PostMapping("/admin/users/edit/{id}")
-    public String updateUser(@PathVariable("id") Long userId, @ModelAttribute Users user) {
-        usersService.updateUser(userId, user); // 수정된 정보 업데이트
+    @PostMapping("/admin/user-edit/{id}")
+    public String updateUser(@PathVariable("id") Integer userId,
+                             @ModelAttribute Users user,
+                             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws IOException {
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String imagePath = saveImage(profileImage);
+            user.setProfile_Img(imagePath);
+        }
+
+        usersService.updateUser(userId, user);
         return "redirect:/admin/users";
     }
 
-    // 회원 삭제
-    @GetMapping("/admin/users/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long userId) {
+    @DeleteMapping("/admin/users/{userId}")
+    @ResponseBody
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") Integer userId) {
         usersService.deleteUser(userId);
-        return "redirect:/admin/users";
+        return ResponseEntity.ok("success");
     }
 
-    // 전체 게시글 조회
+
+
     @GetMapping("/admin/posts")
     public String getAllPosts(Model model) {
         List<Post> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);
         return "admin/posts";
     }
-   // 게시글 삭제
+
     @GetMapping("/posts/delete/{id}")
     public String deletePost(@PathVariable("id") Long postId, Authentication authentication) {
-        // 로그인한 사용자의 username으로부터 사용자 정보 가져오기
         String username = authentication.getName();
-        Users user = usersService.getUserByUsername(username);  // 사용자 정보 가져오기
-        int currentUserId = user.getUser_Id().intValue();       // user_id 추출
+        Users user = usersService.getUserByUsername(username);
+        int currentUserId = user.getUser_Id().intValue();
 
-        postService.deletePost(postId.intValue(), currentUserId);  // 게시글 삭제 호출
-        return "redirect:/admin/posts";  // 게시글 목록 페이지로 리다이렉트
+        postService.deletePost(postId.intValue(), currentUserId, true); // 관리자 삭제이므로 true
+        return "redirect:/admin/posts";
     }
+
+    private String saveImage(MultipartFile file) throws IOException {
+        String uploadDir = "src/main/resources/static/images/profile/";
+        File uploadDirectory = new File(uploadDir);
+        if (!uploadDirectory.exists()) {
+            uploadDirectory.mkdirs();
+        }
+
+        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir + fileName);
+
+        Files.copy(file.getInputStream(), filePath);
+        return "/images/profile/" + fileName;
+    }
+
+
 
 
     /*
@@ -106,7 +130,7 @@ public class AdminController {
         return "admin/comment-list";
     }
 
-    // 특정 댓글 삭제 
+    // 특정 댓글 삭제
     @GetMapping("/admin/comments/delete/{id}")
     public String deleteComment(@PathVariable("id") Long commentId) {
         commentService.deleteComment(commentId);
