@@ -1,231 +1,223 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>게시글 상세보기</title>
-<style>
-    body {
-        min-height: 100vh;
-        margin: 0;
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        font-family: 'Pretendard', 'Segoe UI', Arial, sans-serif;
-        color: #222;
-    }
-    .view-container {
-        max-width: 900px;
-        margin: 48px auto 0 auto;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px rgba(33,150,243,0.10), 0 1.5px 6px rgba(33,150,243,0.08);
-        padding: 36px 36px 28px 36px;
-    }
-    .view-header {
-        margin-bottom: 24px;
-        border-bottom: 2px solid #e3f2fd;
-        padding-bottom: 12px;
-    }
-    .view-header h2 {
-        margin: 0;
-        color: #1565c0;
-        font-weight: 800;
-        font-size: 2rem;
-        letter-spacing: 1px;
-    }
-    .view-meta {
-        font-size: 1rem;
-        color: #1976d2;
-        margin-top: 8px;
-        font-weight: 500;
-        display: flex;
-        gap: 18px;
-        flex-wrap: wrap;
-    }
-    .main-image-container {
-        width: 100%;
-        margin: 26px 0 18px 0;
-        text-align: center;
-    }
-    .main-image {
-        max-width: 100%;
-        max-height: 420px;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(33,150,243,0.10);
-        background: #f7fbff;
-    }
-    .view-content {
-        margin: 28px 0 24px 0;
-        white-space: pre-wrap;
-        font-size: 1.08rem;
-        color: #222;
-        line-height: 1.7;
-    }
-    #post-map {
-        width: 100%;
-        height: 320px;
-        margin: 18px 0 28px 0;
-        border-radius: 12px;
-        box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
-        background: #f7fbff;
-    }
-    .attached-files {
-        background-color: #f0f6fb;
-        padding: 14px 18px;
-        border-radius: 8px;
-        margin-top: 18px;
-        font-size: 1rem;
-        color: #1565c0;
-        box-shadow: 0 1px 4px rgba(33,150,243,0.04);
-    }
-    .attached-files ul {
-        padding-left: 18px;
-        margin: 8px 0 0 0;
-    }
-    .attached-files li {
-        margin: 4px 0;
-        font-size: 0.98rem;
-    }
-    .attached-files a {
-        color: #1976d2;
-        text-decoration: underline;
-        font-weight: 500;
-        transition: color .2s;
-    }
-    .attached-files a:hover {
-        color: #0d47a1;
-    }
-    .btn-group {
-        margin-top: 34px;
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-    .btn {
-        padding: 10px 28px;
-        border: none;
-        border-radius: 999px;
-        text-decoration: none;
-        color: #fff;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(33,150,243,0.10);
-        transition: background .2s, transform .1s;
-        display: inline-block;
-    }
-    .btn-back {
-        background: linear-gradient(90deg, #90caf9 0%, #42a5f5 100%);
-        color: #1565c0;
-    }
-    .btn-back:hover {
-        background: linear-gradient(90deg, #42a5f5 0%, #90caf9 100%);
-        color: #0d47a1;
-    }
-    .btn-edit {
-        background: linear-gradient(90deg, #2196f3 0%, #1565c0 100%);
-    }
-    .btn-edit:hover {
-        background: linear-gradient(90deg, #1565c0 0%, #2196f3 100%);
-    }
-    .btn-delete {
-        background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
-    }
-    .btn-delete:hover {
-        background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
-    }
-    /* 댓글 영역 */
-    .comment-section {
-        margin-top: 48px;
-        background: #f7fbff;
-        border-radius: 14px;
-        padding: 28px 22px 22px 22px;
-        box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
-    }
-    .comment-section h3 {
-        margin-top: 0;
-        color: #1565c0;
-        font-weight: 700;
-        font-size: 1.15rem;
-        letter-spacing: 0.5px;
-    }
-    .comment-section textarea {
-        width: 100%;
-        height: 80px;
-        border-radius: 8px;
-        border: 1.5px solid #bbdefb;
-        padding: 10px;
-        font-size: 1rem;
-        resize: vertical;
-        background: #fff;
-        margin-bottom: 8px;
-        transition: border .2s;
-    }
-    .comment-section textarea:focus {
-        border: 1.5px solid #42a5f5;
-        outline: none;
-    }
-    .comment-section button {
-        background: linear-gradient(90deg, #42a5f5 0%, #1976d2 100%);
-        color: #fff;
-        border: none;
-        border-radius: 999px;
-        padding: 7px 22px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background .2s, transform .1s;
-        margin-top: 4px;
-    }
-    .comment-section button:hover {
-        background: linear-gradient(90deg, #1976d2 0%, #42a5f5 100%);
-        transform: translateY(-2px) scale(1.04);
-    }
-    .comment-section a {
-        color: #1976d2;
-        text-decoration: underline;
-        font-weight: 500;
-    }
-    .comment-section a:hover {
-        color: #0d47a1;
-    }
-    /* 댓글 리스트 스타일 */
-    #commentList {
-        margin-top: 22px;
-        font-size: 0.97rem;
-        color: #1565c0;
-    }
-    .deleted-comment {
-        color: #aaa;
-        font-style: italic;
-    }
-    /* 모바일 반응형 */
-    @media (max-width: 600px) {
+    <meta charset="UTF-8">
+    <title>게시글 상세보기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            color: #222;
+        }
         .view-container {
-            padding: 10px 2vw 18px 2vw;
+            max-width: 900px;
+            margin: 48px auto 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(58,123,213,0.09);
+            padding: 36px 36px 28px 36px;
+        }
+        .view-header {
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e3f2fd;
+            padding-bottom: 12px;
         }
         .view-header h2 {
-            font-size: 1.2rem;
+            margin: 0;
+            color: #3a7bd5;
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        .view-meta {
+            font-size: 1rem;
+            color: #1976d2;
+            margin-top: 8px;
+            font-weight: 500;
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .main-image-container {
+            width: 100%;
+            margin: 26px 0 18px 0;
+            text-align: center;
         }
         .main-image {
-            max-height: 220px;
+            max-width: 100%;
+            max-height: 420px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(58,123,213,0.10);
+            background: #f7fbff;
         }
-        .btn, .btn-group .btn {
-            padding: 8px 14px;
-            font-size: 0.98rem;
+        .view-content {
+            margin: 28px 0 24px 0;
+            white-space: pre-wrap;
+            font-size: 1.08rem;
+            color: #222;
+            line-height: 1.7;
+        }
+        #post-map {
+            width: 100%;
+            height: 320px;
+            margin: 18px 0 28px 0;
+            border-radius: 12px;
+            box-shadow: 0 1.5px 8px rgba(58,123,213,0.06);
+            background: #f7fbff;
         }
         .attached-files {
-            padding: 10px 8px;
-            font-size: 0.95rem;
+            background-color: #e3f2fd;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-top: 18px;
+            font-size: 1rem;
+            color: #1565c0;
+            box-shadow: 0 1px 4px rgba(58,123,213,0.04);
+        }
+        .attached-files ul {
+            padding-left: 18px;
+            margin: 8px 0 0 0;
+        }
+        .attached-files li {
+            margin: 4px 0;
+            font-size: 0.98rem;
+        }
+        .attached-files a {
+            color: #1976d2;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color .2s;
+        }
+        .attached-files a:hover {
+            color: #0d47a1;
+        }
+        .btn-group {
+            margin-top: 34px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 999px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(58,123,213,0.10);
+            transition: background .2s, transform .1s;
+            display: inline-block;
+        }
+        .btn-back {
+            background: linear-gradient(90deg, #90caf9 0%, #3a7bd5 100%);
+            color: #1565c0;
+        }
+        .btn-back:hover {
+            background: linear-gradient(90deg, #3a7bd5 0%, #90caf9 100%);
+            color: #0d47a1;
+        }
+        .btn-edit {
+            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+        }
+        .btn-edit:hover {
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+        }
+        .btn-delete {
+            background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
+        }
+        .btn-delete:hover {
+            background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
         }
         .comment-section {
-            padding: 16px 6px 12px 6px;
+            margin-top: 48px;
+            background: #f7fbff;
+            border-radius: 14px;
+            padding: 28px 22px 22px 22px;
+            box-shadow: 0 1.5px 8px rgba(58,123,213,0.06);
         }
-    }
-</style>
-<!-- jQuery 라이브러리 추가 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- 카카오맵 API 스크립트 -->
-<script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
+        .comment-section h3 {
+            margin-top: 0;
+            color: #3a7bd5;
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+        }
+        .comment-section textarea {
+            width: 100%;
+            height: 80px;
+            border-radius: 8px;
+            border: 1.5px solid #bbdefb;
+            padding: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            background: #fff;
+            margin-bottom: 8px;
+            transition: border .2s;
+        }
+        .comment-section textarea:focus {
+            border: 1.5px solid #3a7bd5;
+            outline: none;
+        }
+        .comment-section button {
+            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 7px 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+            margin-top: 4px;
+        }
+        .comment-section button:hover {
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+        .comment-section a {
+            color: #1976d2;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+        .comment-section a:hover {
+            color: #0d47a1;
+        }
+        #commentList {
+            margin-top: 22px;
+            font-size: 0.97rem;
+            color: #1565c0;
+        }
+        .deleted-comment {
+            color: #aaa;
+            font-style: italic;
+        }
+        @media (max-width: 700px) {
+            .view-container {
+                padding: 10px 2vw 18px 2vw;
+            }
+            .view-header h2 {
+                font-size: 1.2rem;
+            }
+            .main-image {
+                max-height: 220px;
+            }
+            .btn, .btn-group .btn {
+                padding: 8px 14px;
+                font-size: 0.98rem;
+            }
+            .attached-files {
+                padding: 10px 8px;
+                font-size: 0.95rem;
+            }
+            .comment-section {
+                padding: 16px 6px 12px 6px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="view-container">
@@ -283,7 +275,10 @@
             <div id="commentList"></div>
         </div>
     </div>
-    <!-- 카카오맵과 댓글 기능을 위한 스크립트 -->
+    <!-- 카카오맵 API 및 jQuery (필요시) 추가 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
     <script th:inline="javascript">
     // 서버에서 받은 데이터를 전역 변수로 설정
     const postId = [[${post.post_id}]];
@@ -440,41 +435,21 @@
     }
 
     function replyComment(parentId) {
-    	
-    	  $('.reply-input').remove();
-
-    	  const replyBox = `
-    	    <div class="reply-input" style="margin-top: 8px; margin-left: 20px;">
-    	      <textarea class="reply-textarea" rows="2" style="width: 90%; border-radius: 6px; padding: 6px;"></textarea><br>
-    	      <button onclick="submitReply(${parentId}, this)">답글 등록</button>
-    	      <button onclick="$(this).parent().remove()">취소</button>
-    	    </div>
-    	  `;
-
-    	  const target = $(`button[onclick="replyComment(${parentId})"]`).closest('div');
-    	  target.after(replyBox);
-    	}
-
-    	function submitReply(parentId, btn) {
-    	  const replyContent = $(btn).siblings('.reply-textarea').val();
-    	  if (!replyContent.trim()) {
-    	    alert('답글을 입력하세요.');
-    	    return;
-    	  }
-
-    	  $.ajax({
-    	    url: '/api/comments',
-    	    method: 'POST',
-    	    contentType: 'application/json',
-    	    xhrFields: { withCredentials: true },
-    	    data: JSON.stringify({ content: replyContent, post_id: postId, parent_id: parentId }),
-    	    success: function () {
-    	      loadComments();
-    	    },
-    	    error: function () {
-    	      alert('답글 작성 실패');
-    	    }
-    	  });
+      const reply = prompt('답글 작성:');
+      if (!reply || reply.trim() === '') return;
+      $.ajax({
+        url: '/api/comments',
+        method: 'POST',
+        contentType: 'application/json',
+        xhrFields: { withCredentials: true },
+        data: JSON.stringify({ content: reply, post_id: postId, parent_id: parentId }),
+        success: function() {
+            loadComments();
+        },
+        error: function() {
+          alert('답글 작성 실패');
+        }
+      });
     }
 
     $(document).ready(function() {

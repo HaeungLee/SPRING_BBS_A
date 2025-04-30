@@ -6,16 +6,14 @@
     <title>커뮤니티 홈</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
         body {
             background-color: #f5f7fa;
+            font-family: 'Noto Sans KR', Arial, sans-serif;
+            margin: 0;
             min-height: 100vh;
+            color: #222;
         }
+        /* 네비게이션 바 */
         .nav {
             background-color: white;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -49,7 +47,7 @@
             border-radius: 4px;
             transition: all 0.3s;
         }
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             background-color: #f0f0f0;
             color: #3a7bd5;
         }
@@ -83,6 +81,27 @@
         .btn-register:hover {
             background-color: #2d62b1;
             box-shadow: 0 2px 8px rgba(58, 123, 213, 0.3);
+        }
+        .btn-admin {
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+            color: #fff !important;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-weight: 700;
+            font-size: 0.98rem;
+            margin-left: 8px;
+            box-shadow: 0 2px 8px rgba(231,76,60,0.13);
+            transition: background .2s, box-shadow .2s, color .2s;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+        .btn-admin:hover {
+            background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(231,76,60,0.18);
+            text-decoration: none;
         }
         /* 헤더 배너 (자연 사진) */
         .header {
@@ -121,60 +140,95 @@
             line-height: 1.5;
             text-shadow: 0 1px 8px rgba(25, 118, 210, 0.15);
         }
-        /* 검색창 */
+        /* 검색창 카드 스타일 */
         .search-bar {
             display: flex;
-            justify-content: center;
-            margin-bottom: 0.5rem;
+            flex-direction: column;
+            align-items: center;
             position: relative;
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto 1.5rem auto;
             z-index: 10;
         }
-        .search-bar input {
-            width: 60vw;
-            max-width: 500px;
-            padding: 12px;
-            border-radius: 6px 0 0 6px;
-            border: none;
-            font-size: 1rem;
-            outline: none;
+        .search-input-wrap {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(58,123,213,0.13);
+            padding: 0 16px;
+            position: relative;
         }
-        .search-bar button {
-            padding: 12px 20px;
-            background-color: #3a7bd5;
-            color: white;
+        .search-icon {
+            color: #90caf9;
+            font-size: 1.2rem;
+            margin-right: 8px;
+            margin-left: 2px;
+        }
+        .search-bar input {
+            flex: 1;
             border: none;
-            border-radius: 0 6px 6px 0;
+            outline: none;
+            background: transparent;
+            font-size: 1.08rem;
+            color: #222;
+            padding: 18px 0 18px 0;
+            min-width: 0;
+        }
+        .search-btn {
+            background: #3a7bd5;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
             font-size: 1rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            margin-left: 10px;
             cursor: pointer;
             transition: background .2s;
+            box-shadow: 0 2px 8px rgba(58,123,213,0.08);
         }
-        .search-bar button:hover {
-            background-color: #2d62b1;
+        .search-btn:hover {
+            background: #1565c0;
         }
+        /* 자동완성 리스트 */
         #suggestList {
-            list-style: none;
+            position: absolute;
+            top: 58px;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 8px 24px rgba(58,123,213,0.10);
+            border: 1.5px solid #e3f2fd;
+            border-top: none;
+            z-index: 20;
+            color: #222;
+            font-size: 1rem;
             padding: 0;
             margin: 0;
-            left: 50%;
-            border: 1px solid #ccc;
-            border-top: none;
-            max-height: 200px;
-            overflow-y: auto;
-            background: white;
-            position: absolute;
-            width: 60vw;
-            max-width: 500px;
-            z-index: 20;
-            transform: translateX(-58%);
+            list-style: none;
+            display: none;
+            overflow: hidden;
         }
         .suggest-item {
-            padding: 10px;
+            padding: 16px 24px;
             cursor: pointer;
+            background: #fff;
+            color: #222;
+            border-bottom: 1px solid #f0f4ff;
+            transition: background-color 0.18s, color 0.18s;
         }
-        .suggest-item:hover {
-            background-color: #f0f0f0;
+        .suggest-item:last-child {
+            border-bottom: none;
         }
-        /* 여행지 카드 섹션 */
+        .suggest-item:hover, .suggest-item.active {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        /* 카드 섹션 */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -245,124 +299,26 @@
         .btn-cta i {
             margin-left: 8px;
         }
-        .footer {
-            background-color: #333;
-            color: #f5f5f5;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-        }
-        .footer-section h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-        .footer-section p {
-            line-height: 1.6;
-            color: #ccc;
-            font-size: 0.9rem;
-        }
-        .footer-links {
-            list-style: none;
-        }
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-        .footer-links a {
-            text-decoration: none;
-            color: #ccc;
-            transition: color 0.3s;
-            font-size: 0.9rem;
-        }
-        .footer-links a:hover {
-            color: white;
-        }
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 1.5rem;
-        }
-        .social-links a {
-            color: #ccc;
-            font-size: 1.2rem;
-            transition: color 0.3s;
-        }
-        .social-links a:hover {
-            color: white;
-        }
-        .copyright {
-            margin-top: 3rem;
-            text-align: center;
-            color: #999;
-            font-size: 0.8rem;
-            padding-top: 1rem;
-            border-top: 1px solid #444;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
+        @media (max-width: 900px) {
             .nav-container {
                 flex-direction: column;
-                gap: 15px;
-            }
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .features {
-                grid-template-columns: 1fr;
+                gap: 12px;
             }
         }
-        @media (max-width: 480px) {
-            .feature-card {
-                padding: 0;
-                min-height: 220px;
-            }
-            .header p {
-                font-size: 0.95rem;
+        @media (max-width: 600px) {
+            .search-bar, .search-input-wrap {
+                max-width: 98vw;
+                min-width: 0;
             }
             .search-bar input {
-                width: 90vw;
                 font-size: 0.98rem;
+                padding: 12px 0 12px 0;
             }
-            .search-bar, #suggestList {
-                width: 98vw;
-                max-width: 98vw;
+            #suggestList {
+                top: 48px;
+                font-size: 0.97rem;
             }
         }
-        .btn-admin {
-		    background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
-		    color: #fff !important;
-		    border: none;
-		    border-radius: 6px;
-		    padding: 8px 18px;
-		    font-weight: 700;
-		    font-size: 0.98rem;
-		    margin-left: 8px;
-		    box-shadow: 0 2px 8px rgba(231,76,60,0.13);
-		    transition: background .2s, box-shadow .2s, color .2s;
-		    text-decoration: none;
-		    display: inline-block;
-		    letter-spacing: 0.5px;
-		}
-		.btn-admin:hover {
-		    background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
-		    color: #fff !important;
-		    box-shadow: 0 4px 16px rgba(231,76,60,0.18);
-		    text-decoration: none;
-		}
-        
     </style>
 </head>
 <body>
@@ -376,6 +332,7 @@
                 <a href="#">공지사항</a>
                 <a href="#">이벤트</a>
             </div>
+            <!-- 로그인/회원가입/내정보/로그아웃/관리자 -->
             <div class="auth-buttons" th:if="${session.userId == null}">
                 <a th:href="@{/login}" class="btn btn-login">로그인</a>
                 <a th:href="@{/register}" class="btn btn-register">회원가입</a>
@@ -384,29 +341,28 @@
                 <span th:text="${session.username}"></span>님 환영합니다!
                 <a href="#" class="btn btn-login">내 정보</a>
                 <a th:href="@{/logout}" class="btn btn-register">로그아웃</a>
-                <a th:if="${session.isAdmin}" th:href="@{/admin/index}"class="btn-admin">관리자</a>
+                <a th:if="${session.isAdmin}" th:href="@{/admin/index}" class="btn-admin">관리자</a>
             </div>
         </div>
     </nav>
-
     <!-- 헤더 섹션 (자연 사진 배경) -->
     <header class="header">
         <div class="header-content">
             <h1>여행 게시판 커뮤니티 포털에 오신 것을 환영합니다</h1>
-            <p>여행 관련 게시판, 정보 공유, 소통의 장을 제공합니다. 여러분의 생각과 경험을 공유해보세요.</p>
+            <p>여행 관련 게시판, 정보 공유, 소통의 창을 제공합니다. 여러분의 생각과 경험을 공유해보세요.</p>
             <form th:action="@{/post/list}" method="get" class="search-bar" autocomplete="off">
-                <input type="text" name="keyword" id="searchInput" placeholder="여행지를 검색해보세요!" autocomplete="off">
-                <input type="hidden" name="type" value="title" />
-                <button type="submit">검색</button>
+                <div class="search-input-wrap">
+                    <span class="search-icon"><i class="fas fa-search"></i></span>
+                    <input type="text" name="keyword" id="searchInput" placeholder="여행지를 검색해보세요!" autocomplete="off">
+                    <button type="submit" class="search-btn">검색</button>
+                </div>
                 <ul id="suggestList"></ul>
             </form>
         </div>
     </header>
-
-    <!-- 여행지 카드 섹션 -->
     <main class="main" style="margin-top: 2.5rem;">
         <section class="features">
-            <!-- 제주도 -->
+            <!-- 경주 -->
             <div class="feature-card">
                 <img class="feature-image" src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTA4MDhfMTI5%2FMDAxNjI4NDAxNTgzMTI3.V0IX-NmApY7nr_8VHDkNml93hOT4UVOFagKdzov5CmIg.JctCmsKDeU0zcHBCU5tDRBWzRzdcwkNeNijvl-NCZ5Yg.JPEG.jjoyotae%2FIMG_2612.jpg&type=sc960_832" alt="경주">
                 <div class="feature-content">
@@ -456,49 +412,11 @@
             </div>
         </section>
         <div class="cta-container">
-            <a th:href="@{/post/list}" class="btn btn-cta">
+            <a th:href="@{/post/list}" class="btn-cta">
                 게시판 바로가기 <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </main>
-
-    <!-- 푸터 -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>커뮤니티</h3>
-                <p>다양한 주제에 대한 토론과 정보 공유를 위한 온라인 커뮤니티 플랫폼입니다.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>바로가기</h3>
-                <ul class="footer-links">
-                    <li><a href="#">홈</a></li>
-                    <li><a th:href="@{/post/list}">게시판</a></li>
-                    <li><a href="#">공지사항</a></li>
-                    <li><a href="#">자주 묻는 질문</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>고객지원</h3>
-                <ul class="footer-links">
-                    <li><a href="#">문의하기</a></li>
-                    <li><a href="#">이용약관</a></li>
-                    <li><a href="#">개인정보처리방침</a></li>
-                    <li><a href="#">사이트맵</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2025 커뮤니티 포털. All rights reserved.</p>
-        </div>
-    </footer>
-    <!-- 자동완성 스크립트 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function () {
@@ -525,12 +443,10 @@
                 }
             });
         });
-        // 클릭 시 검색창에 입력
         $(document).on('click', '.suggest-item', function () {
             $('#searchInput').val($(this).text());
             $('#suggestList').hide();
         });
-        // 입력창 이탈 시 숨김
         $('#searchInput').on('blur', function () {
             setTimeout(() => $('#suggestList').hide(), 200);
         });
