@@ -122,178 +122,253 @@
         color: #0d47a1;
     }
     .btn-edit {
-        background: linear-gradient(90deg, #2196f3 0%, #1565c0 100%);
+        background: linear-gradient(90deg, #66bb6a 0%, #388e3c 100%);
     }
-    .btn-edit:hover {
-        background: linear-gradient(90deg, #1565c0 0%, #2196f3 100%);
+    .btn-edit:hover,
+    .edit-btn:hover {
+        background: linear-gradient(90deg, #388e3c 0%, #66bb6a 100%);
+        color: #fff;
     }
-    .btn-delete {
+    .btn-delete,
+    .delete-btn {
         background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
+        color: #fff;
     }
-    .btn-delete:hover {
+    .btn-delete:hover,
+    .delete-btn:hover {
         background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
+        color: #fff;
     }
-/* 댓글 영역 */
-.comment-section {
-    margin-top: 48px;
-    background: #e3f2fd; /* 배경색 변경 */
-    border-radius: 14px;
-    padding: 24px 22px 22px 22px;
-    box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
-}
-
-.comment-section h3 {
-    margin-top: 0;
-    color: #1565c0;
-    font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: 0.5px;
-}
-
-/* 댓글 스타일 */
-.comment-block {
-    background-color: #ffffff; /* 댓글 박스 배경 */
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.comment-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-}
-
-.comment-nickname {
-    font-weight: 700;
-    color: #1565c0;
-    font-size: 1.1rem;
-}
-
-.comment-content {
-    color: #333;
-    font-size: 1rem;
-    margin-bottom: 8px;
-    word-wrap: break-word;
-}
-
-/* 답글 관련 스타일 */
-.reply {
-    margin-left: 20px;
-    background-color: #f3faff;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 1px 6px rgba(33, 150, 243, 0.1);
-}
-
-.reply .comment-nickname {
-    color: #1976d2;
-}
-
-/* 댓글 수정, 삭제, 답글 버튼 */
-.comment-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-    justify-content: flex-start;
-}
-
-.comment-actions button {
-    background: transparent;
-    color: #1976d2;
-    border: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: color 0.2s;
-}
-
-.comment-actions button:hover {
-    color: #1565c0;
-}
-
-/* 답글 입력창 스타일 */
-.reply-input {
-    margin-top: 16px;
-    background: #ffffff;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
-}
-
-.reply-input textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #bbdefb;
-    border-radius: 8px;
-    resize: vertical;
-}
-
-.reply-input button {
-    background: #42a5f5;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-weight: bold;
-    margin-top: 8px;
-}
-
-.reply-input button:hover {
-    background: #1976d2;
-}
-
-/* 댓글 입력란 */
-textarea {
-    width: 100%;
-    height: 60px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #bbdefb;
-    font-size: 1rem;
-}
-
-textarea:focus {
-    border-color: #42a5f5;
-    outline: none;
-}
-
-/* 댓글 등록 버튼 */
-.comment-submit-btn {
-    background: #42a5f5;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-weight: bold;
-    margin-top: 12px;
-}
-
-.comment-submit-btn:hover {
-    background: #1976d2;
-}
-
-/* 전체적인 레이아웃 */
-.comment-section {
-    max-width: 800px;
-    margin: 20px auto;
-}
-
-textarea {
-    width: 97%;
-    height: 6.25em;
-    border: none;
-    resize: none;
-  }
-  
+    /* 댓글 영역 */
+    .comment-section {
+        margin-top: 48px;
+        background: #e3f2fd;
+        border-radius: 14px;
+        padding: 24px 22px 22px 22px;
+        box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .comment-section h3 {
+        margin-top: 0;
+        color: #1565c0;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
+    }
+    .comment-form-outer {
+        position: relative;
+        background: #e3f2fd;
+        border-radius: 14px;
+        padding: 28px 22px 60px 22px;
+        margin-bottom: 44px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    textarea#commentContent {
+        width: 100%;
+        height: 90px;
+        padding: 28px 16px;
+        border-radius: 10px;
+        border: 1px solid #bbdefb;
+        font-size: 1.1rem;
+        resize: none;
+        box-sizing: border-box;
+        line-height: 1.7;
+        background: #fff;
+    }
+    textarea#commentContent:focus {
+        border-color: #42a5f5;
+        outline: none;
+    }
+    .mini-btn, .comment-submit-btn, .reply-submit-btn, .reply-cancel-btn, .reply-btn, .edit-btn, .delete-btn {
+        padding: 6px 16px;
+        font-size: 0.95rem;
+        border-radius: 999px;
+        border: none;
+        font-weight: 600;
+        margin: 2px 2px 0 0;
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s;
+        background: #e3f2fd;
+        color: #1976d2;
+        box-shadow: none;
+        display: inline-block;
+    }
+    .mini-btn:hover, .comment-submit-btn:hover, .reply-submit-btn:hover, .reply-btn:hover {
+        background: #bbdefb;
+        color: #0d47a1;
+    }
+    .comment-submit-btn {
+        background: #42a5f5;
+        color: #fff;
+        position: absolute;
+        right: 26px;
+        bottom: 18px;
+        margin: 0;
+    }
+    .comment-submit-btn:hover {
+        background: #1976d2;
+        color: #fff;
+    }
+    .reply-submit-btn {
+        background: #42a5f5;
+        color: #fff;
+    }
+    .reply-submit-btn:hover {
+        background: #1976d2;
+        color: #fff;
+    }
+    .reply-cancel-btn {
+        background: #f0f0f0;
+        color: #666;
+    }
+    .reply-cancel-btn:hover {
+        background: #e0e0e0;
+        color: #222;
+    }
+    .reply-btn {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    .reply-btn:hover {
+        background: #bbdefb;
+        color: #0d47a1;
+    }
+    .edit-btn {
+        background: #a5d6a7;
+        color: #1b5e20;
+    }
+    .edit-btn:hover {
+        background: #43a047;
+        color: #fff;
+    }
+    .delete-btn {
+        background: #f8bbd0;
+        color: #c2185b;
+    }
+    .delete-btn:hover {
+        background: #e57373;
+        color: #fff;
+    }
+    /* 댓글 스타일 */
+    .comment-block {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
+        display: flex;
+        flex-direction: column;
+    }
+    .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+    .comment-nickname {
+        font-weight: 700;
+        color: #1565c0;
+        font-size: 1.05rem;
+        margin-right: 2px;
+    }
+    .comment-like-btn {
+        padding: 2px 10px;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: none;
+        background: #e3f2fd;
+        color: #1976d2;
+        margin-left: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.18s, color 0.18s;
+        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+        height: 28px;
+    }
+    .comment-like-btn:hover {
+        background: #bbdefb;
+        color: #0d47a1;
+    }
+    .comment-date {
+        color: #888;
+        font-size: 0.92rem;
+        margin-left: 10px;
+    }
+    .comment-content {
+        color: #333;
+        font-size: 1rem;
+        margin-bottom: 8px;
+        word-wrap: break-word;
+    }
+    .comment-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 2px;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    .deleted-comment {
+        color: #aaa;
+        font-style: italic;
+    }
+    /* 답글 입력창 고정 스타일 */
+    .reply-input {
+        margin-top: 12px;
+        background: #ffffff;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
+        position: relative;
+    }
+    .reply-input textarea {
+        width: 100%;
+        height: 90px;
+        padding: 28px 16px;
+        border-radius: 10px;
+        border: 1px solid #bbdefb;
+        font-size: 1.1rem;
+        resize: none;
+        box-sizing: border-box;
+        line-height: 1.7;
+        background: #fff;
+    }
+    .reply-btn-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 0;
+    }
+    @media (max-width: 600px) {
+        .view-container {
+            padding: 10px 2vw 18px 2vw;
+        }
+        .view-header h2 {
+            font-size: 1.2rem;
+        }
+        .main-image {
+            max-height: 220px;
+        }
+        .btn, .btn-group .btn, .mini-btn, .comment-submit-btn, .reply-submit-btn, .reply-cancel-btn, .reply-btn, .edit-btn, .delete-btn {
+            font-size: 0.88rem;
+            padding: 6px 10px;
+        }
+        textarea#commentContent,
+        .reply-input textarea {
+            font-size: 0.95rem;
+            height: 64px;
+            padding: 18px 10px;
+        }
+        .comment-submit-btn {
+            right: 14px;
+            bottom: 10px;
+        }
+    }
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"
@@ -309,13 +384,11 @@ textarea {
                 <span>조회수: <span th:utext="${post.views}"></span></span>
             </div>
         </div>
-        <!-- 메인 이미지 표시 (썸네일 이미지를 크게 표시) -->
         <div th:if="${mainImage != null}" class="main-image-container">
             <img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}"
                 class="main-image" th:alt="${mainImage.fileOriginName}">
         </div>
         <div class="view-content" th:utext="${post.content}">게시글 내용</div>
-        <!-- 지도 표시 영역 추가 -->
         <div id="post-map"></div>
         <div class="attached-files"
             th:if="${post.files != null and !post.files.isEmpty()}">
@@ -343,9 +416,10 @@ textarea {
         <div class="comment-section">
             <h3>댓글</h3>
             <div th:if="${user_id != null}">
-                <textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
-                <br>
-                <button onclick="submitComment()">댓글 등록</button>
+                <div class="comment-form-outer">
+                    <textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
+                    <button class="mini-btn comment-submit-btn" onclick="submitComment()">댓글 등록</button>
+                </div>
             </div>
             <div th:unless="${user_id != null}">
                 <p>
@@ -435,15 +509,14 @@ function loadComments() {
           } else {
               html += `<div class="comment-content">${comment.content}</div>`;
           }
-          // 답글/수정/삭제 버튼
           if (!comment.is_deleted) {
             html += `<div class="comment-actions">`;
             if (currentUserId && comment.user_id === currentUserId) {
-              html += `<button class="comment-edit-btn" onclick="editComment(${comment.comment_id}, '${comment.content}')">수정</button>`;
-              html += `<button class="comment-delete-btn" onclick="deleteComment(${comment.comment_id})">삭제</button>`;
+              html += `<button class="mini-btn edit-btn" onclick="editComment(${comment.comment_id}, '${comment.content}')">수정</button>`;
+              html += `<button class="mini-btn delete-btn" onclick="deleteComment(${comment.comment_id})">삭제</button>`;
             }
             if (currentUserId) {
-              html += `<button class="comment-reply-btn" onclick="replyComment(${comment.comment_id})">답글</button>`;
+              html += `<button class="mini-btn reply-btn" onclick="replyComment(${comment.comment_id})">답글</button>`;
             }
             html += `</div>`;
           }
@@ -518,9 +591,11 @@ function replyComment(parentId) {
   $('.reply-input').remove();
   const replyBox = `
     <div class="reply-input">
-      <textarea class="reply-textarea" rows="2"></textarea><br>
-      <button onclick="submitReply(${parentId}, this)">답글 등록</button>
-      <button onclick="$(this).parent().remove()">취소</button>
+      <textarea class="reply-textarea" rows="2" placeholder="답글을 입력하세요"></textarea>
+      <div class="reply-btn-group">
+        <button class="mini-btn reply-submit-btn" onclick="submitReply(${parentId}, this)">답글 등록</button>
+        <button class="mini-btn reply-cancel-btn" onclick="$(this).closest('.reply-input').remove()">취소</button>
+      </div>
     </div>
   `;
   const target = $(`button[onclick="replyComment(${parentId})"]`).closest('.comment-actions');
@@ -528,7 +603,7 @@ function replyComment(parentId) {
 }
 
 function submitReply(parentId, btn) {
-  const replyContent = $(btn).siblings('.reply-textarea').val();
+  const replyContent = $(btn).closest('.reply-input').find('.reply-textarea').val();
   if (!replyContent.trim()) {
     alert('답글을 입력하세요.');
     return;
@@ -553,7 +628,6 @@ $(document).ready(function() {
     initKakaoMap();
 });
 
-// 카카오맵 관련 함수
 function initKakaoMap() {
   kakao.maps.load(function() {
     if (latitude && longitude) {
