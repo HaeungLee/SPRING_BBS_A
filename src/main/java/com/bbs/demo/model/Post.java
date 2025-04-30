@@ -23,6 +23,7 @@ public class Post {
     private Double lng;   // 경도
 	
 	private String username;
+	private String nickname;
 	
 	// 파일 리스트 추가
 	private List<FileInfo> files = new ArrayList<>();
