@@ -1,119 +1,193 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 홈</title>
-    <!-- FontAwesome 아이콘 CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 대시보드</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; 
-            background-color: #333;
-            color: white;
-            padding: 20px 40px;
-        }
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #1b2735, #090a0f);
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-        .admin-name {
-            font-size: 24px;
-            font-weight: bold;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      margin: 0 auto;
+    }
 
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+    .admin-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 0 8px rgba(0, 242, 255, 0.6);
+    }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
+    .logout-btn {
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      padding: 10px 22px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 14px rgba(255, 65, 108, 0.4);
+    }
 
-        #title-admin {
-            text-align: center;
-            font-size: 36px;
-            color: #333;
-            margin-top: 40px;
-        }
+    .logout-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(255, 65, 108, 0.6);
+    }
 
-        .nav-box {
-            width: 500px;
-            height: 500px;
-            margin: 0 auto;
-            margin-top: 30px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+    #title-admin {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 50px auto 20px;
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+      max-width: 1024px;
+    }
 
-        .nav-box p {
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
+    .nav-box {
+      display: grid;
+      grid-template-areas:
+        "a b"
+        "c d"
+        "e e";
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 30px 40px;
+    }
 
-        .nav-box p a {
-            text-decoration: none;
-            color: #333;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
+    .nav-box p {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 36px 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: scale(1);
+      animation: floatIn 0.6s ease forwards;
+    }
 
-        .nav-box p a:hover {
-            color: #3498db;
-        }
+    .nav-box p:nth-child(1) { grid-area: a; }
+    .nav-box p:nth-child(2) { grid-area: b; }
+    .nav-box p:nth-child(3) { grid-area: c; }
+    .nav-box p:nth-child(4) { grid-area: d; }
+    .nav-box p:nth-child(5) { grid-area: e; }
 
-        .nav-box p i {
-            margin-right: 10px;
-            font-size: 20px;
-        }
+    .nav-box p:hover {
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
 
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+    .nav-box a {
+      text-decoration: none;
+      color: #f0f0f0;
+      font-size: 1.3rem;
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
 
-            .nav-box {
-                width: 90%;
-                margin-top: 20px;
-            }
+    .nav-box i {
+      font-size: 3rem;
+      color: #00f2ff;
+      text-shadow: 0 0 12px rgba(0, 242, 255, 0.5);
+      animation: pulse 2.5s infinite ease-in-out;
+    }
 
-            #title-admin {
-                font-size: 28px;
-            }
-        }
-    </style>
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.85; }
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .spacer-section {
+      margin: 40px auto 60px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ccc;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      max-width: 800px;
+    }
+
+    .spacer-section span {
+      color: #00f2ff;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      #title-admin {
+        font-size: 2.2rem;
+      }
+      .header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+      .nav-box {
+        grid-template-areas:
+          "a"
+          "b"
+          "c"
+          "d"
+          "e";
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-            <div class="admin-name" th:text="${nickname}"></div>
+  <div class="header">
+    <div class="admin-name" th:text="${nickname}">관리자</div>
+    <a href="/logout" class="logout-btn">로그아웃</a>
+  </div>
 
-        <a href="/logout" class="logout-btn">로그아웃</a>
-    </div>
+  <h1 id="title-admin">관리자 대시보드</h1>
 
-    <h1 id="title-admin">관리자 페이지</h1>
+  <div class="nav-box">
+    <p><a href="/"><i class="fas fa-home"></i>홈으로</a></p>
+    <p><a href="/admin/users"><i class="fas fa-users-cog"></i>회원 관리</a></p>
+    <p><a href="/admin/posts"><i class="fas fa-clipboard-list"></i>게시판 관리</a></p>
+    <p><a href="/admin/comments"><i class="fas fa-comments"></i>댓글 관리</a></p>
+    <p><a href="/admin/files"><i class="fas fa-file-alt"></i>파일 관리</a></p>
+  </div>
 
-    <div class="nav-box">
-        <p><a href="/"><i class="fas fa-home"></i>홈으로</a></p>
-        <p><a href="/admin/users"><i class="fas fa-users"></i>회원 관리</a></p>
-        <p><a href="/admin/posts"><i class="fas fa-clipboard-list"></i>게시판 관리</a></p>
-        <p><a href="/admin/comments"><i class="fas fa-comments"></i>댓글 관리</a></p>
-        <p><a href="/admin/files"><i class="fas fa-file-alt"></i>파일 관리</a></p>
-    </div>
+  <div class="spacer-section">
+    현재 <span>운영 현황</span>을 점검하고 있습니다. <br/>
+    필요한 메뉴를 선택해 <span>빠르게 작업</span>을 진행하세요.
+  </div>
 </body>
 </html>

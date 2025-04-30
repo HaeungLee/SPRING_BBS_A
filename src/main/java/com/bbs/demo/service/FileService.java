@@ -15,4 +15,5 @@ public interface FileService {
     List<FileInfo> getFilesByPostId(int postId); // 특정 게시글(postId) 파일 조회
     List<FileInfo> uploadFiles(int postId, List<MultipartFile> files) throws IOException; // 파일 업로드
     FileInfo getThumbnailByPostId(int postId);  // 특정 게시글의 썸네일 이미지 조회
+    boolean deleteFile(int fileId);            // 파일 삭제
 }

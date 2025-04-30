@@ -148,4 +148,16 @@ public class FileServiceImpl implements FileService {
         }
         return Files.readAllBytes(path);
     }
+
+    // 파일 삭제 (데이터베이스에서만 삭제)
+    @Override
+    public boolean deleteFile(int fileId) {
+        try {
+            fileInfoMapper.deleteById(fileId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

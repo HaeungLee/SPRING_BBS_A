@@ -1,5 +1,6 @@
 package com.bbs.demo.controller;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,8 +166,17 @@ public class AdminController {
     @PostMapping("/files/{fileId}/delete")
     public String deleteFile(@PathVariable("fileId") int fileId, RedirectAttributes redirectAttributes) {
         try {
-            // 실제 파일 및 DB 정보 삭제 메서드 호출
-            // fileService.deleteFile(fileId);
+            FileInfo fileInfo = fileService.getFileById(fileId);
+            if(fileInfo != null) {
+                // 파일 시스템에서 파일 삭제
+                File file = new File(fileInfo.getFilePath());
+                if(file.exists()) {
+                    file.delete();
+                }
+                
+                // 데이터베이스에서 파일 정보 삭제
+                fileService.deleteFile(fileId);
+            }
             redirectAttributes.addFlashAttribute("message", "파일이 삭제되었습니다.");
             return "redirect:/admin/files";
         } catch (Exception e) {

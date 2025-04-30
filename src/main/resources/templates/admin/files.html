@@ -218,7 +218,7 @@
                        th:text="${file.postId}" target="_blank"></a>
                     <span th:unless="${file.postId != null}">-</span>
                 </td>
-                <td th:text="${#temporals.format(file.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${#temporals.format(file.uploadedAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
                     <a th:href="@{/file/download/{id}(id=${file.fileId})}" class="action-btn" target="_blank">
                         <i class="fas fa-download"></i> 다운로드

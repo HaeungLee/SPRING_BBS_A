@@ -49,5 +49,9 @@
 		SELECT * FROM file_uploads WHERE file_store_name =
 		#{storedFileName} LIMIT 1
 	</select>
+	
+	<delete id="deleteById" parameterType="int">
+		DELETE FROM file_uploads WHERE file_id = #{fileId}
+	</delete>
 
 </mapper>
