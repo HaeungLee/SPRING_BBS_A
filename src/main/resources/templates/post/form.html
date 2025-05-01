@@ -343,7 +343,10 @@ input[type="file"] {
         <!-- 버튼 -->
         <div class="form-actions">
             <a th:href="@{/post/list}" class="btn btn-secondary">취소</a>
-            <button type="submit" class="btn btn-primary" th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">등록하기</button>
+            <button type="submit" class="btn btn-primary" id="postSubmitBtn"
+			  th:text="${post.post_id != null && post.post_id > 0} ? '수정하기' : '등록하기'">
+			  등록하기
+			</button>
         </div>
     </form>
 </div>
@@ -485,6 +488,21 @@ function searchPlace(event) {
         }
     });
 }
+
+let isPostSubmitting = false;
+
+document.getElementById('postForm').addEventListener('submit', function(e) {
+  if (isPostSubmitting) {
+    e.preventDefault();
+    return;
+  }
+  isPostSubmitting = true;
+  const btn = document.getElementById('postSubmitBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '등록 중...';
+  }
+});
 </script>
 </body>
 </html>
