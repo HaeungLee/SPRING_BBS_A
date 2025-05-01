@@ -140,9 +140,3 @@ Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능
 | 파일 관리 | 업로드 파일 정보 조회 및 삭제 |
 
 ---
-
-## 설치 및 실행 방법
-
-1. 프로젝트 클론
-   ```bash
-   git clone <repository-url>
