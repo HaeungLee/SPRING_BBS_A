@@ -18,80 +18,100 @@
 	</resultMap>
 
 	<select id="getCommentsByPostId" resultMap="CommentResultMap">
-		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
-		c.post_id, c.is_deleted,
+		SELECT c.comment_id,
+		c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id,
+		c.is_deleted,
 		c.like_count, c.parent_id, u.nickname, u.profile_img
-		FROM Comments c
+		FROM
+		Comments c
 		LEFT JOIN Users u ON c.user_id = u.user_id
-		WHERE c.post_id = #{post_id} AND c.is_deleted = false
+		WHERE c.post_id =
+		#{post_id} AND c.is_deleted = false
 		ORDER BY c.created_at ASC
 	</select>
-	
+
 	<select id="getAllComments" resultMap="CommentResultMap">
-		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
-		c.post_id, c.is_deleted, c.like_count, c.parent_id, u.nickname, u.profile_img
+		SELECT c.comment_id,
+		c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id,
+		c.is_deleted, c.like_count, c.parent_id, u.nickname, u.profile_img
 		FROM Comments c
 		LEFT JOIN Users u ON c.user_id = u.user_id
-		ORDER BY c.created_at DESC
+		ORDER BY
+		c.created_at DESC
 	</select>
 
 	<insert id="insertComment"
 		parameterType="com.bbs.demo.model.Comment" useGeneratedKeys="true"
 		keyProperty="comment_id">
-		INSERT INTO Comments (content, created_at, updated_at, user_id, post_id,
+		INSERT INTO Comments (content, created_at, updated_at,
+		user_id, post_id,
 		parent_id, is_deleted, like_count)
-		VALUES (#{content}, NOW(), NOW(), #{user_id}, #{post_id}, #{parent_id},
+		VALUES (#{content},
+		NOW(), NOW(), #{user_id}, #{post_id}, #{parent_id},
 		false, 0)
 	</insert>
 
 	<update id="updateComment"
 		parameterType="com.bbs.demo.model.Comment">
 		UPDATE Comments
-		SET content = #{content}, updated_at = NOW()
+		SET content = #{content}, updated_at =
+		NOW()
 		WHERE comment_id = #{comment_id}
 	</update>
 
 	<update id="markCommentAsDeleted">
 		UPDATE Comments
 		SET is_deleted = true, updated_at = NOW()
-		WHERE comment_id = #{id} AND user_id = #{user_id}
+		WHERE (comment_id = #{id} OR parent_id = #{id}) AND user_id = #{user_id}
 	</update>
 
 	<select id="getCommentById" resultMap="CommentResultMap">
-		SELECT c.comment_id, c.content, c.created_at, c.updated_at, c.user_id,
-		c.post_id, c.is_deleted,
+		SELECT c.comment_id,
+		c.content, c.created_at, c.updated_at, c.user_id,
+		c.post_id,
+		c.is_deleted,
 		c.like_count, c.parent_id, u.nickname, u.profile_img
-		FROM Comments c
+		FROM
+		Comments c
 		LEFT JOIN Users u ON c.user_id = u.user_id
-		WHERE c.comment_id = #{id}
+		WHERE c.comment_id
+		= #{id}
 	</select>
 
 	<update id="incrementLikeCount">
-		UPDATE Comments SET like_count = like_count + 1 WHERE comment_id = #{id}
+		UPDATE Comments SET like_count = like_count + 1 WHERE
+		comment_id = #{id}
 	</update>
 
 	<update id="decrementLikeCount">
-		UPDATE Comments SET like_count = like_count - 1 WHERE comment_id = #{id} AND
+		UPDATE Comments SET like_count = like_count - 1 WHERE
+		comment_id = #{id} AND
 		like_count > 0
 	</update>
 
 	<select id="hasLiked" resultType="boolean">
-		SELECT COUNT(*) > 0 FROM Comment_likes WHERE comment_id = #{commentId} AND
+		SELECT COUNT(*) > 0 FROM
+		Comment_likes WHERE comment_id = #{commentId} AND
 		user_id = #{userId}
 	</select>
 
 	<insert id="insertLike">
-		INSERT INTO Comment_likes (comment_id, user_id) VALUES (#{commentId},
+		INSERT INTO Comment_likes (comment_id, user_id)
+		VALUES (#{commentId},
 		#{userId})
 	</insert>
 
 	<delete id="deleteLike">
-		DELETE FROM Comment_likes WHERE comment_id = #{commentId} AND user_id =
+		DELETE FROM Comment_likes WHERE comment_id =
+		#{commentId} AND user_id =
 		#{userId}
 	</delete>
 
 	<select id="getChildCommentIds" resultType="int">
-		SELECT comment_id FROM Comments
+		SELECT comment_id
+		FROM Comments
 		WHERE parent_id = #{parent_id} AND is_deleted = false
 	</select>
 
