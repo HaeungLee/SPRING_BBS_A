@@ -6,6 +6,16 @@
              카카오 맵 API 적용
              조회수(viewcount 증가 기능) - 글 작성자 본인이면 증가하지 않음
              작성자면 게시글 수정 삭제 가능
+  
+  파일 - file 소연님
+- 구현한 점 : 파일 업로드 기능
+             파일 다운로드 기능
+             파일 업로드한 첫번째 이미지가 썸네일 기능 구현
+
+페이지 - pagination / search - 지선님
+- 구현한 점 : 검색창 및 검색 기능 구현
+             Suggest 기능(자동완성) 구현
+             Ajax를 활용한 pagination 기능 구현
 
   ## 댓글 시스템 - Comment
 
@@ -70,16 +80,7 @@ Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능
 - **API 스타일**: RESTful  
 
 ---
-
-파일 - file 소연님
-- 구현한 점 : 파일 업로드 기능
-             파일 다운로드 기능
-             파일 업로드한 첫번째 이미지가 썸네일 기능 구현
-
-페이지 - pagination / search - 지선님
-- 구현한 점 : 검색창 및 검색 기능 구현
-             Suggest 기능(자동완성) 구현
-             Ajax를 활용한 pagination 기능 구현
+---
 
 
   ## 🔐 인증 및 보안
