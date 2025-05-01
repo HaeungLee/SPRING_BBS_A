@@ -500,6 +500,11 @@ textarea#commentContent:focus {
   color: white;
   cursor: pointer;
 }
+#commentSubmitBtn[disabled] {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -567,7 +572,8 @@ textarea#commentContent:focus {
 				<div class="comment-form-outer">
 					<textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
 					<button class="mini-btn comment-submit-btn"
-						onclick="submitComment()">댓글 등록</button>
+				        onclick="submitComment()"
+				        id="commentSubmitBtn">댓글 등록</button>
 				</div>
 			</div>
 			<div th:unless="${user_id != null}">
@@ -597,12 +603,23 @@ $.ajaxSetup({
   }
 });
 
+let isSubmitting = false;
+
 function submitComment() {
+  if (isSubmitting) return; // 이미 제출 중이면 무시
+
+  const btn = document.getElementById('commentSubmitBtn');
   const content = $('#commentContent').val();
+
   if (!content.trim()) {
     alert('댓글을 입력하세요.');
     return;
   }
+
+  isSubmitting = true;
+  btn.disabled = true;
+  btn.textContent = '등록 중...';
+
   $.ajax({
     url: '/api/comments',
     method: 'POST',
@@ -620,6 +637,11 @@ function submitComment() {
       } else {
         alert('댓글 등록 실패');
       }
+    },
+    complete: function() {
+      isSubmitting = false;
+      btn.disabled = false;
+      btn.textContent = '댓글 등록';
     }
   });
 }
@@ -795,12 +817,21 @@ function replyComment(parentId) {
   target.after(replyBox);
 }
 
+const replySubmitting = new WeakMap();
+
 function submitReply(parentId, btn) {
+  if (replySubmitting.get(btn)) return; // 이미 등록 중이면 무시
+
   const replyContent = $(btn).closest('.reply-input').find('.reply-textarea').val();
   if (!replyContent.trim()) {
     alert('답글을 입력하세요.');
     return;
   }
+
+  replySubmitting.set(btn, true);
+  btn.disabled = true;
+  btn.textContent = '등록 중...';
+
   $.ajax({
     url: '/api/comments',
     method: 'POST',
@@ -812,6 +843,11 @@ function submitReply(parentId, btn) {
     },
     error: function () {
       alert('답글 작성 실패');
+    },
+    complete: function() {
+      replySubmitting.set(btn, false);
+      btn.disabled = false;
+      btn.textContent = '답글 등록';
     }
   });
 }
