@@ -12,6 +12,7 @@
                 <a th:href="@{/post/view/{id}(id=${post?.post_id})}" class="post-title">
                     <img th:if="${post.thumbnailId != null}" th:src="@{/file/preview/{fileId}(fileId=${post.thumbnailId})}" class="thumbnail" alt="썸네일">
                     <span th:text="${post?.title}"></span>
+                    <span style="color:gray;" th:text="'[' + ${post?.commentCount} + ']'"></span>
                 </a>
             </td>
             <td th:text="${post?.region}"></td>
