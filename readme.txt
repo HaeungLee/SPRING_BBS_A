@@ -25,14 +25,13 @@
              파일 다운로드 기능
              파일 업로드한 첫번째 이미지가 썸네일 기능 구현
 
+페이지 - pagination / search - 지선님
+- 구현한 점 : 검색창 및 검색 기능 구현
+             Suggest 기능(자동완성) 구현
+             Ajax를 활용한 pagination 기능 구현
+
 관리자 - admin 준서님
 - 구현한 점 : Spring Security 적용
              관리자 페이지 css
              관리자 로그인시 관리자 대시보드로 이동
              관리자시 파일, 게시판, 댓글, 회원관리 수정 삭제 기능
-
-
-페이지 - pagination / search - 지선님
-- 구현한 점 : 검색창 및 검색 기능 구현
-             Suggest 기능(자동완성) 구현
-             Ajax를 활용한 pagination 기능 구현
