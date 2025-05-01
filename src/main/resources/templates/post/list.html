@@ -124,13 +124,18 @@
             text-decoration: underline;
         }
         .thumbnail {
-            width: 42px;
-            height: 42px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             margin-right: 10px;
             border-radius: 8px;
             border: 1.5px solid #bbdefb;
             box-shadow: 0 1px 4px rgba(58,123,213,0.08);
+            transition: transform 0.3s;
+        }
+        .thumbnail:hover {
+            transform: scale(1.5);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         #loading {
             text-align: center;

@@ -397,7 +397,7 @@
                 <a href="#" class="active">홈</a>
                 <a th:href="@{/post/list}">게시판</a>
                 <a href="#">공지사항</a>
-                <a href="#">이벤트</a>
+                <a th:href="@{/event5.html}">이벤트</a>
             </div>
             <!-- 로그인/회원가입/내정보/로그아웃/관리자 -->
             <div class="auth-buttons" th:if="${session.userId == null}">
@@ -517,7 +517,7 @@
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2025 커뮤니티 포털. All rights reserved.</p>
+            <p>&copy; 2025 A조 여행 게시판. All rights reserved.</p>
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
