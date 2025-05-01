@@ -17,6 +17,7 @@
         <result property="lng" column="lng" />      <!-- 추가: 경도 -->
         <result property="username" column="username" />
         <result property="nickname" column="nickname" />
+        <result property="commentCount" column="comment_count" />
             </resultMap>
 
     <select id="suggestTitles" resultType="string">
@@ -33,6 +34,7 @@
             p.post_id, p.title, p.content, p.region, p.views,
             p.created_at, p.updated_at, p.user_id, p.is_notice,
             p.lat, p.lng, u.username, u.nickname,
+            (SELECT COUNT(*) FROM Comments c WHERE c.post_id = p.post_id AND c.is_deleted = false) AS comment_count,
             (SELECT f.file_id FROM file_uploads f 
              WHERE f.post_id = p.post_id AND f.is_thumbnail = true 
              LIMIT 1) as thumbnail_id
