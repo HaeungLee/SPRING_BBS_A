@@ -30,6 +30,7 @@ public class Post {
 	
 	// 썸네일 이미지 ID (DB 컬럼 아님, 뷰에서 표시용)
 	private Integer thumbnailId;
+	private String thumbnailUrl;
 	
 	private int commentCount;
 }
