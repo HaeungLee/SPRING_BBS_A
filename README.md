@@ -81,8 +81,48 @@ Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능
              Suggest 기능(자동완성) 구현
              Ajax를 활용한 pagination 기능 구현
 
-관리자 - admin 준서님
-- 구현한 점 : Spring Security 적용
-             관리자 페이지 css
-             관리자 로그인시 관리자 대시보드로 이동
-             관리자시 파일, 게시판, 댓글, 회원관리 수정 삭제 기능
+
+  ## 🔐 인증 및 보안
+
+- **Spring Security 적용**
+  - 로그인/로그아웃 처리
+  - URL 접근 권한 분리 (`ROLE_USER`, `ROLE_ADMIN`)
+- **비밀번호 암호화**
+  - BCrypt 암호화 저장
+  - 기존 평문 비밀번호 일괄 마이그레이션 처리
+- **로그인 성공 핸들러**
+  - 로그인 성공 시 세션에 사용자 정보 저장
+  - 권한에 따라 리디렉션 처리
+
+### 📁 주요 보안 파일
+
+- `SecurityConfig.java`: Spring Security 설정
+- `MemberSecurityService.java`: 사용자 인증 정보 제공
+- `CustomAuthSuccessHandler.java`: 로그인 후 세션 저장 처리
+- `PasswordMigrationService.java`: 평문 → 암호화 마이그레이션
+
+---
+
+## 👥 회원 시스템
+
+| 기능 | 설명 |
+|------|------|
+| 회원 가입 | 닉네임, 아이디, 비밀번호 등록 |
+| 로그인 / 로그아웃 | Spring Security 연동 |
+| 비밀번호 암호화 | BCrypt 적용 |
+| 사용자 구분 | 일반 사용자 / 관리자 |
+
+> `MemberService`, `MemberMapper`, `Member` 등으로 구성된 계층 구조
+
+---
+
+## 🛠 관리자 기능 (AdminController)
+
+| 기능 | 설명 |
+|------|------|
+| 회원 관리 | 회원 목록 조회, 삭제 |
+| 게시물 관리 | 게시글 전체 조회 및 삭제 |
+| 댓글 관리 | 모든 댓글 조회 및 삭제 |
+| 파일 관리 | 업로드 파일 정보 조회 및 삭제 |
+
+---
