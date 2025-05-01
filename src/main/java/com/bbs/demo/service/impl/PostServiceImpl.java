@@ -53,15 +53,24 @@ public class PostServiceImpl implements PostService {
 
 		// 5. 각 게시글에 썸네일 ID 설정
 		for (Post post : posts) {
-		    String html = post.getContent(); // content는 HTML 문자열
-		    if (html != null) {
-		        Document doc = Jsoup.parse(html);
-		        Element firstImg = doc.selectFirst("img");
-		        if (firstImg != null) {
-		            String src = firstImg.attr("src");
-		            post.setThumbnailUrl(src); // 썸네일 URL 설정
-		        }
-		    }
+			Integer thumbnailId = postIdToThumbnailId.get(post.getPost_id());
+			post.setThumbnailId(thumbnailId);
+			
+			// 이미지 URL도 설정 (가능한 경우)
+			String html = post.getContent();
+			if (html != null) {
+				try {
+					Document doc = Jsoup.parse(html);
+					Element firstImg = doc.selectFirst("img");
+					if (firstImg != null) {
+						String src = firstImg.attr("src");
+						post.setThumbnailUrl(src);
+					}
+				} catch (Exception e) {
+					// 예외 발생 시 무시하고 계속 진행
+					System.err.println("썸네일 추출 중 오류: " + e.getMessage());
+				}
+			}
 		}
 		return posts;
 	}
@@ -92,6 +101,22 @@ public class PostServiceImpl implements PostService {
 		for (Post post : posts) {
 			Integer thumbnailId = postIdToThumbnailId.get(post.getPost_id());
 			post.setThumbnailId(thumbnailId);
+			
+			// 이미지 URL도 설정 (가능한 경우)
+			String html = post.getContent();
+			if (html != null) {
+				try {
+					Document doc = Jsoup.parse(html);
+					Element firstImg = doc.selectFirst("img");
+					if (firstImg != null) {
+						String src = firstImg.attr("src");
+						post.setThumbnailUrl(src);
+					}
+				} catch (Exception e) {
+					// 예외 발생 시 무시하고 계속 진행
+					System.err.println("썸네일 추출 중 오류: " + e.getMessage());
+				}
+			}
 		}
 
 		return posts;
