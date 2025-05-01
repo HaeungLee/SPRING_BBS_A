@@ -1,23 +1,4 @@
-주제선정 및 기획안, User table 작성 - 원석님
-
-게시판 - post 한영님
-- 구현한 점 : home.html 및 Post  (view , list)등 css
-             글 작성 부분 CKEditor 적용
-             카카오 맵 API 적용
-             조회수(viewcount 증가 기능) - 글 작성자 본인이면 증가하지 않음
-             작성자면 게시글 수정 삭제 가능
-
-  파일 - file 소연님
-- 구현한 점 : 파일 업로드 기능
-             파일 다운로드 기능
-             파일 업로드한 첫번째 이미지가 썸네일 기능 구현
-
-페이지 - pagination / search - 지선님
-- 구현한 점 : 검색창 및 검색 기능 구현
-             Suggest 기능(자동완성) 구현
-             Ajax를 활용한 pagination 기능 구현
-
-  ## 💡 주요 기능 설명
+ ## 💡 주요 기능 설명
 
 ### 🔐  사용자(User) 테이블 설계
 - 프로젝트 주제 기획 및 기본 구조 설계
@@ -50,7 +31,6 @@
 - **페이지네이션 (AJAX 기반)**:
   - 비동기로 페이지 전환 → 빠른 UX 제공
 
----
 ---
   ## 댓글 시스템 - Comment
 
@@ -114,7 +94,6 @@ Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능
 - **DB**: MySQL (Railway 사용)  
 - **API 스타일**: RESTful  
 
----
 ---
 
 
