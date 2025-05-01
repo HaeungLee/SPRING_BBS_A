@@ -34,7 +34,7 @@
 ---
   ## 댓글 시스템 - Comment
 
-Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능
+Spring Boot, MyBatis, JSP, AJAX를 활용하여 구현한 댓글(Comment) 기능,
 사용자 경험을 고려한 동적 UI와 RESTful API 구조를 통해, 게시글에 대한 댓글 작성, 조회, 수정, 삭제, 좋아요 및 대댓글 기능까지 포괄하는 직관적인 댓글 시스템을 구현
 
 ---
