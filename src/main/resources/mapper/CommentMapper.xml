@@ -31,6 +31,7 @@
 		ORDER BY c.created_at ASC
 	</select>
 
+
 	<select id="getAllComments" resultMap="CommentResultMap">
 		SELECT c.comment_id,
 		c.content, c.created_at, c.updated_at, c.user_id,
@@ -38,9 +39,10 @@
 		c.is_deleted, c.like_count, c.parent_id, u.nickname, u.profile_img
 		FROM Comments c
 		LEFT JOIN Users u ON c.user_id = u.user_id
-		ORDER BY
-		c.created_at DESC
+		WHERE c.is_deleted = false
+		ORDER BY c.created_at DESC
 	</select>
+
 
 	<insert id="insertComment"
 		parameterType="com.bbs.demo.model.Comment" useGeneratedKeys="true"
@@ -63,8 +65,11 @@
 
 	<update id="markCommentAsDeleted">
 		UPDATE Comments
-		SET is_deleted = true, updated_at = NOW()
-		WHERE (comment_id = #{id} OR parent_id = #{id}) AND user_id = #{user_id}
+		SET is_deleted = true, updated_at =
+		NOW()
+		WHERE (comment_id = #{id} OR parent_id = #{id})
+		AND (user_id =
+		#{user_id} OR #{user_id} = 0)
 	</update>
 
 	<select id="getCommentById" resultMap="CommentResultMap">
