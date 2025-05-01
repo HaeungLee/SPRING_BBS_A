@@ -4,447 +4,419 @@
 <meta charset="UTF-8">
 <title>게시글 상세보기</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <style>
 body {
-	min-height: 100vh;
-	margin: 0;
-	background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-	font-family: 'Pretendard', 'Segoe UI', Arial, sans-serif;
-	color: #222;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    font-family: 'Pretendard', 'Segoe UI', Arial, sans-serif;
+    color: #222;
 }
-
 .view-container {
-	max-width: 900px;
-	margin: 48px auto 0 auto;
-	background: #fff;
-	border-radius: 20px;
-	box-shadow: 0 8px 32px rgba(33, 150, 243, 0.10), 0 1.5px 6px
-		rgba(33, 150, 243, 0.08);
-	padding: 36px 36px 28px 36px;
+    max-width: 900px;
+    margin: 48px auto 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(33,150,243,0.10), 0 1.5px 6px rgba(33,150,243,0.08);
+    padding: 36px 36px 28px 36px;
 }
-
 .view-header {
-	margin-bottom: 24px;
-	border-bottom: 2px solid #e3f2fd;
-	padding-bottom: 12px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #e3f2fd;
+    padding-bottom: 12px;
 }
-
 .view-header h2 {
-	margin: 0;
-	color: #1565c0;
-	font-weight: 800;
-	font-size: 2rem;
-	letter-spacing: 1px;
+    margin: 0;
+    color: #1565c0;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: 1px;
 }
-
 .view-meta {
-	font-size: 1rem;
-	color: #1976d2;
-	margin-top: 8px;
-	font-weight: 500;
-	display: flex;
-	gap: 18px;
-	flex-wrap: wrap;
+    font-size: 1rem;
+    color: #1976d2;
+    margin-top: 8px;
+    font-weight: 500;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
 }
-
 .main-image-container {
-	width: 100%;
-	margin: 26px 0 18px 0;
-	text-align: center;
+    width: 100%;
+    margin: 26px 0 18px 0;
+    text-align: center;
 }
-
 .main-image {
-	max-width: 100%;
-	max-height: 420px;
-	border-radius: 12px;
-	box-shadow: 0 2px 12px rgba(33, 150, 243, 0.10);
-	background: #f7fbff;
+    max-width: 100%;
+    max-height: 420px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(33,150,243,0.10);
+    background: #f7fbff;
 }
-
 .view-content {
-	margin: 28px 0 24px 0;
-	white-space: pre-wrap;
-	font-size: 1.08rem;
-	color: #222;
-	line-height: 1.7;
+    margin: 28px 0 24px 0;
+    white-space: pre-wrap;
+    font-size: 1.08rem;
+    color: #222;
+    line-height: 1.7;
 }
-
 #post-map {
-	width: 100%;
-	height: 320px;
-	margin: 18px 0 28px 0;
-	border-radius: 12px;
-	box-shadow: 0 1.5px 8px rgba(33, 150, 243, 0.06);
-	background: #f7fbff;
+    width: 100%;
+    height: 320px;
+    margin: 18px 0 28px 0;
+    border-radius: 12px;
+    box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
+    background: #f7fbff;
 }
-
 .attached-files {
-	background-color: #f0f6fb;
-	padding: 14px 18px;
-	border-radius: 8px;
-	margin-top: 18px;
-	font-size: 1rem;
-	color: #1565c0;
-	box-shadow: 0 1px 4px rgba(33, 150, 243, 0.04);
+    background-color: #f0f6fb;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-top: 18px;
+    font-size: 1rem;
+    color: #1565c0;
+    box-shadow: 0 1px 4px rgba(33,150,243,0.04);
 }
-
 .attached-files ul {
-	padding-left: 18px;
-	margin: 8px 0 0 0;
+    padding-left: 18px;
+    margin: 8px 0 0 0;
 }
-
 .attached-files li {
-	margin: 4px 0;
-	font-size: 0.98rem;
+    margin: 4px 0;
+    font-size: 0.98rem;
 }
-
 .attached-files a {
-	color: #1976d2;
-	text-decoration: underline;
-	font-weight: 500;
-	transition: color .2s;
+    color: #1976d2;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color .2s;
 }
-
 .attached-files a:hover {
-	color: #0d47a1;
+    color: #0d47a1;
 }
-
 .btn-group {
-	margin-top: 34px;
-	display: flex;
-	gap: 12px;
-	flex-wrap: wrap;
+    margin-top: 34px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
-
 .btn {
-	padding: 10px 28px;
-	border: none;
-	border-radius: 999px;
-	text-decoration: none;
-	color: #fff;
-	font-size: 1rem;
-	font-weight: 700;
-	cursor: pointer;
-	box-shadow: 0 2px 8px rgba(33, 150, 243, 0.10);
-	transition: background .2s, transform .1s;
-	display: inline-block;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+    transition: background .2s, transform .1s;
+    display: inline-block;
 }
-
 .btn-back {
-	background: linear-gradient(90deg, #90caf9 0%, #42a5f5 100%);
-	color: #1565c0;
+    background: linear-gradient(90deg, #90caf9 0%, #42a5f5 100%);
+    color: #1565c0;
 }
-
 .btn-back:hover {
-	background: linear-gradient(90deg, #42a5f5 0%, #90caf9 100%);
-	color: #0d47a1;
+    background: linear-gradient(90deg, #42a5f5 0%, #90caf9 100%);
+    color: #0d47a1;
 }
-
 .btn-edit {
-	background: linear-gradient(90deg, #66bb6a 0%, #388e3c 100%);
+    background: linear-gradient(90deg, #66bb6a 0%, #388e3c 100%);
 }
-
-.btn-edit:hover, .edit-btn:hover {
-	background: linear-gradient(90deg, #388e3c 0%, #66bb6a 100%);
-	color: #fff;
+.btn-edit:hover,
+.edit-btn:hover {
+    background: linear-gradient(90deg, #388e3c 0%, #66bb6a 100%);
+    color: #fff;
 }
-
-.btn-delete, .delete-btn {
-	background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
-	color: #fff;
+.btn-delete,
+.delete-btn {
+    background: linear-gradient(90deg, #e57373 0%, #d32f2f 100%);
+    color: #fff;
 }
-
-.btn-delete:hover, .delete-btn:hover {
-	background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
-	color: #fff;
+.btn-delete:hover,
+.delete-btn:hover {
+    background: linear-gradient(90deg, #d32f2f 0%, #e57373 100%);
+    color: #fff;
 }
 /* 댓글 영역 */
 .comment-section {
-	margin-top: 48px;
-	background: #e3f2fd;
-	border-radius: 14px;
-	padding: 24px 22px 22px 22px;
-	box-shadow: 0 1.5px 8px rgba(33, 150, 243, 0.06);
-	max-width: 800px;
-	margin-left: auto;
-	margin-right: auto;
+    margin-top: 48px;
+    background: #e3f2fd;
+    border-radius: 14px;
+    padding: 24px 22px 22px 22px;
+    box-shadow: 0 1.5px 8px rgba(33,150,243,0.06);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
-
 .comment-section h3 {
-	margin-top: 0;
-	color: #1565c0;
-	font-weight: 700;
-	font-size: 1.15rem;
-	letter-spacing: 0.5px;
+    margin-top: 0;
+    color: #1565c0;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
 }
-
 .comment-form-outer {
-	position: relative;
-	background: #e3f2fd;
-	border-radius: 14px;
-	padding: 28px 22px 60px 22px;
-	margin-bottom: 44px;
-	max-width: 800px;
-	margin-left: auto;
-	margin-right: auto;
+    position: relative;
+    background: #e3f2fd;
+    border-radius: 14px;
+    padding: 28px 22px 60px 22px;
+    margin-bottom: 44px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
-
 textarea#commentContent {
-	width: 100%;
-	height: 90px;
-	padding: 28px 16px;
-	border-radius: 10px;
-	border: 1px solid #bbdefb;
-	font-size: 1.1rem;
-	resize: none;
-	box-sizing: border-box;
-	line-height: 1.7;
-	background: #fff;
+    width: 100%;
+    height: 90px;
+    padding: 28px 16px;
+    border-radius: 10px;
+    border: 1px solid #bbdefb;
+    font-size: 1.1rem;
+    resize: none;
+    box-sizing: border-box;
+    line-height: 1.7;
+    background: #fff;
 }
-
 textarea#commentContent:focus {
-	border-color: #42a5f5;
-	outline: none;
+    border-color: #42a5f5;
+    outline: none;
 }
-
-.mini-btn, .comment-submit-btn, .reply-submit-btn, .reply-cancel-btn,
-	.reply-btn, .edit-btn, .delete-btn {
-	padding: 6px 16px;
-	font-size: 0.95rem;
-	border-radius: 999px;
-	border: none;
-	font-weight: 600;
-	margin: 2px 2px 0 0;
-	cursor: pointer;
-	transition: background 0.18s, color 0.18s;
-	background: #e3f2fd;
-	color: #1976d2;
-	box-shadow: none;
-	display: inline-block;
+.mini-btn, .comment-submit-btn, .reply-submit-btn, .reply-cancel-btn, .reply-btn, .edit-btn, .delete-btn {
+    padding: 6px 16px;
+    font-size: 0.95rem;
+    border-radius: 999px;
+    border: none;
+    font-weight: 600;
+    margin: 2px 2px 0 0;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    background: #e3f2fd;
+    color: #1976d2;
+    box-shadow: none;
+    display: inline-block;
 }
-
-.mini-btn:hover, .comment-submit-btn:hover, .reply-submit-btn:hover,
-	.reply-btn:hover {
-	background: #bbdefb;
-	color: #0d47a1;
+.mini-btn:hover, .comment-submit-btn:hover, .reply-submit-btn:hover, .reply-btn:hover {
+    background: #bbdefb;
+    color: #0d47a1;
 }
-
 .comment-submit-btn {
-	background: #42a5f5;
-	color: #fff;
-	position: absolute;
-	right: 26px;
-	bottom: 18px;
-	margin: 0;
+    background: #42a5f5;
+    color: #fff;
+    position: absolute;
+    right: 26px;
+    bottom: 18px;
+    margin: 0;
 }
-
 .comment-submit-btn:hover {
-	background: #1976d2;
-	color: #fff;
+    background: #1976d2;
+    color: #fff;
 }
-
 .reply-submit-btn {
-	background: #42a5f5;
-	color: #fff;
+    background: #42a5f5;
+    color: #fff;
 }
-
 .reply-submit-btn:hover {
-	background: #1976d2;
-	color: #fff;
+    background: #1976d2;
+    color: #fff;
 }
-
 .reply-cancel-btn {
-	background: #f0f0f0;
-	color: #666;
+    background: #f0f0f0;
+    color: #666;
 }
-
 .reply-cancel-btn:hover {
-	background: #e0e0e0;
-	color: #222;
+    background: #e0e0e0;
+    color: #222;
 }
-
 .reply-btn {
-	background: #e3f2fd;
-	color: #1976d2;
+    background: #e3f2fd;
+    color: #1976d2;
 }
-
 .reply-btn:hover {
-	background: #bbdefb;
-	color: #0d47a1;
+    background: #bbdefb;
+    color: #0d47a1;
 }
-
 .edit-btn {
-	background: #a5d6a7;
-	color: #1b5e20;
+    background: #a5d6a7;
+    color: #1b5e20;
 }
-
 .edit-btn:hover {
-	background: #43a047;
-	color: #fff;
+    background: #43a047;
+    color: #fff;
 }
-
 .delete-btn {
-	background: #f8bbd0;
-	color: #c2185b;
+    background: #f8bbd0;
+    color: #c2185b;
 }
-
 .delete-btn:hover {
-	background: #e57373;
-	color: #fff;
+    background: #e57373;
+    color: #fff;
 }
 /* 댓글 스타일 */
 .comment-block {
-	background-color: #fff;
-	border-radius: 12px;
-	padding: 16px;
-	margin-bottom: 12px;
-	box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
-	display: flex;
-	flex-direction: column;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
+    display: flex;
+    flex-direction: column;
 }
-
 .comment-header {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
 }
-
 .comment-nickname {
-	font-weight: 700;
-	color: #1565c0;
-	font-size: 1.05rem;
-	margin-right: 2px;
+    font-weight: 700;
+    color: #1565c0;
+    font-size: 1.05rem;
+    margin-right: 2px;
 }
-
 .comment-like-btn {
-	padding: 2px 10px;
-	font-size: 1rem;
-	border-radius: 8px;
-	border: none;
-	background: #e3f2fd;
-	color: #1976d2;
-	margin-left: 6px;
-	cursor: pointer;
-	font-weight: 600;
-	transition: background 0.18s, color 0.18s;
-	vertical-align: middle;
-	display: inline-flex;
-	align-items: center;
-	height: 28px;
+    padding: 2px 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    background: #e3f2fd;
+    color: #1976d2;
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.18s, color 0.18s;
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
 }
-
 .comment-like-btn:hover {
-	background: #bbdefb;
-	color: #0d47a1;
+    background: #bbdefb;
+    color: #0d47a1;
 }
-
 .comment-date {
-	color: #888;
-	font-size: 0.92rem;
-	margin-left: 10px;
+    color: #888;
+    font-size: 0.92rem;
+    margin-left: 10px;
 }
-
 .comment-content {
-	color: #333;
-	font-size: 1rem;
-	margin-bottom: 8px;
-	word-wrap: break-word;
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    word-wrap: break-word;
 }
-
 .comment-actions {
-	display: flex;
-	gap: 8px;
-	margin-top: 2px;
-	justify-content: flex-end;
-	align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-top: 2px;
+    justify-content: flex-end;
+    align-items: center;
 }
-
 .deleted-comment {
-	color: #aaa;
-	font-style: italic;
+    color: #aaa;
+    font-style: italic;
 }
 /* 답글 입력창 고정 스타일 */
 .reply-input {
-	margin-top: 12px;
-	background: #ffffff;
-	padding: 10px;
-	border-radius: 10px;
-	box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
-	position: relative;
+    margin-top: 12px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
+    position: relative;
 }
-
 .reply-input textarea {
-	width: 100%;
-	height: 90px;
-	padding: 28px 16px;
-	border-radius: 10px;
-	border: 1px solid #bbdefb;
-	font-size: 1.1rem;
-	resize: none;
-	box-sizing: border-box;
-	line-height: 1.7;
-	background: #fff;
+    width: 100%;
+    height: 90px;
+    padding: 28px 16px;
+    border-radius: 10px;
+    border: 1px solid #bbdefb;
+    font-size: 1.1rem;
+    resize: none;
+    box-sizing: border-box;
+    line-height: 1.7;
+    background: #fff;
 }
-
 .reply-btn-group {
-	display: flex;
-	justify-content: flex-end;
-	gap: 8px;
-	margin-top: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 0;
 }
 /* 수정 입력창 스타일 - reply-input와 동일 스타일 적용 */
 .edit-input {
-	margin-top: 12px;
-	background: #ffffff;
-	padding: 10px;
-	border-radius: 10px;
-	box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
-	position: relative;
+    margin-top: 12px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
+    position: relative;
 }
-
 .edit-input textarea {
-	width: 100%;
-	height: 90px;
-	padding: 28px 16px;
-	border-radius: 10px;
-	border: 1px solid #bbdefb;
-	font-size: 1.1rem;
-	resize: none;
-	box-sizing: border-box;
-	line-height: 1.7;
-	background: #fff;
+    width: 100%;
+    height: 90px;
+    padding: 28px 16px;
+    border-radius: 10px;
+    border: 1px solid #bbdefb;
+    font-size: 1.1rem;
+    resize: none;
+    box-sizing: border-box;
+    line-height: 1.7;
+    background: #fff;
 }
-
 .edit-input textarea:focus {
-	border-color: #42a5f5;
-	outline: none;
+    border-color: #42a5f5;
+    outline: none;
 }
 /* 반응형 디자인 */
-@media ( max-width : 600px) {
-	.view-container {
-		padding: 10px 2vw 18px 2vw;
-	}
-	.view-header h2 {
-		font-size: 1.2rem;
-	}
-	.main-image {
-		max-height: 220px;
-	}
-	.btn, .btn-group .btn, .mini-btn, .comment-submit-btn, .reply-submit-btn,
-		.reply-cancel-btn, .reply-btn, .edit-btn, .delete-btn {
-		font-size: 0.88rem;
-		padding: 6px 10px;
-	}
-	textarea#commentContent, .reply-input textarea, .edit-input textarea {
-		font-size: 0.95rem;
-		height: 64px;
-		padding: 18px 10px;
-	}
-	.comment-submit-btn {
-		right: 14px;
-		bottom: 10px;
-	}
+@media (max-width: 600px) {
+    .view-container {
+        padding: 10px 2vw 18px 2vw;
+    }
+    .view-header h2 {
+        font-size: 1.2rem;
+    }
+    .main-image {
+        max-height: 220px;
+    }
+    .btn, .btn-group .btn, .mini-btn, .comment-submit-btn, .reply-submit-btn, .reply-cancel-btn, .reply-btn, .edit-btn, .delete-btn {
+        font-size: 0.88rem;
+        padding: 6px 10px;
+    }
+    textarea#commentContent,
+    .reply-input textarea,
+    .edit-input textarea {
+        font-size: 0.95rem;
+        height: 64px;
+        padding: 18px 10px;
+    }
+    .comment-submit-btn {
+        right: 14px;
+        bottom: 10px;
+    }
+}
+/**/
+.mySwiper {
+	width: 100%;
+	max-width: 900px;
+	height: 480px;
+	margin: 20px auto;
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.swiper-slide img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+}
+
+.view-content img {
+	display: none !important;
 }
 
 .image-modal {
@@ -454,16 +426,15 @@ textarea#commentContent:focus {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	display: none;
+	background: rgba(0, 0, 0, 0.85);
+	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: rgba(0, 0, 0, 0.8);
 }
 
 .image-modal img {
 	max-width: 90%;
 	max-height: 90%;
-	border: 4px solid white;
 	border-radius: 8px;
 }
 
@@ -475,118 +446,112 @@ textarea#commentContent:focus {
 	color: white;
 	cursor: pointer;
 }
-.content-image-modal {
-  position: fixed;
-  z-index: 99998;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
+
+.modal-nav {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 48px;
+	color: white;
+	cursor: pointer;
+	user-select: none;
+	padding: 10px;
 }
 
-.content-image-modal img {
-  max-width: 90%;
-  max-height: 90%;
+.modal-nav.prev {
+	left: 30px;
 }
 
-.content-image-modal .close {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 36px;
-  color: white;
-  cursor: pointer;
+.modal-nav.next {
+	right: 30px;
 }
-#commentSubmitBtn[disabled] {
-  background: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6cf3d7111812f0d90ad76a99a16d0f39&autoload=false&libraries=services"></script>
 </head>
 <body>
-	<div class="view-container">
-		<div class="view-header">
-			<h2 th:utext="${post.title}">게시글 제목</h2>
-			<div class="view-meta">
-				<span>작성자: <span th:utext="${post.nickname}"></span></span> <span>지역:
-					<span th:utext="${post.region}"></span>
-				</span> <span>조회수: <span th:utext="${post.views}"></span></span>
-			</div>
-		</div>
-		<div th:if="${mainImage != null}" class="main-image-container">
-			<img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}"
-				class="main-image" th:alt="${mainImage.fileOriginName}">
-		</div>
-		<!-- view-content 이미지용 모달창 -->
-		<div id="contentImageModal" class="content-image-modal"
+    <div class="view-container">
+        <div class="view-header">
+            <h2 th:utext="${post.title}">게시글 제목</h2>
+            <div class="view-meta">
+                <span>작성자: <span th:utext="${post.nickname}"></span></span>
+                <span>지역: <span th:utext="${post.region}"></span></span>
+                <span>조회수: <span th:utext="${post.views}"></span></span>
+            </div>
+        </div>
+        <div th:if="${mainImage != null}" class="main-image-container">
+            <img th:src="@{/file/preview/{fileId}(fileId=${mainImage.fileId})}"
+                class="main-image" th:alt="${mainImage.fileOriginName}">
+        </div>
+        <div id="contentImageModal" class="content-image-modal"
 			style="display: none;">
 			<span class="close" onclick="closeContentImageModal()">&times;</span>
-			<img id="contentModalImage" src="" alt="본문 이미지 확대">
+			<span class="nav prev" onclick="showPrevContentImage()">&#10094;</span>
+			<img id="contentModalImage" src="" alt="본문 이미지 확대"> <span
+				class="nav next" onclick="showNextContentImage()">&#10095;</span>
 		</div>
-
+		<div class="swiper mySwiper">
+			<div class="swiper-wrapper" id="contentSliderWrapper"></div>
+			<div class="swiper-pagination"></div>
+			<div class="swiper-button-next"></div>
+			<div class="swiper-button-prev"></div>
+		</div>
 		<div class="view-content" th:utext="${post.content}">게시글 내용</div>
-		<div id="post-map"></div>
-		<div class="attached-files"
-			th:if="${post.files != null and !post.files.isEmpty()}">
-			<strong>첨부파일:</strong>
-			<ul>
-				<li th:each="file : ${post.files}"><a
-					th:href="@{/file/download/{fileId}(fileId=${file.fileId})}"
-					th:text="${file.fileOriginName}"></a> <span
-					th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA')} + ' KB'"></span>
-					<button type="button" class="preview-button"
-						th:attr="data-fileid=${file.fileId}, data-filename=${file.fileOriginName}">
-						미리보기</button></li>
-			</ul>
+		<!-- 슬라이드 -->
+		<div id="sliderImageModal" class="image-modal" style="display: none;">
+			<span class="close" onclick="closeSliderModal()">&times;</span> <img
+				id="sliderModalImage" src="" alt="확대 이미지">
 		</div>
-		<div id="previewModal" class="image-modal" style="display: none;">
-			<span class="close" onclick="closePreviewModal()">&times;</span>
-			<div id="previewContent"
-				style="max-width: 90%; max-height: 90%; background: #fff; padding: 10px; border-radius: 10px;">
-				<!-- 여기 안에 미리보기가 들어감 -->
-			</div>
+		<!-- 모달창 -->
+		<div id="carouselImageModal" class="image-modal"
+			style="display: none;">
+			<span class="close" onclick="closeCarouselModal()">&times;</span> <span
+				class="modal-nav prev" onclick="showPrevModalImage()">&#10094;</span>
+			<img id="carouselModalImage" src="" alt="확대 이미지"> <span
+				class="modal-nav next" onclick="showNextModalImage()">&#10095;</span>
 		</div>
-		<div class="btn-group">
-			<a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
-			<th:block th:if="${post.user_id} == ${sessionUserId}">
-				<a th:href="@{/post/edit/{id}(id=${post.post_id})}"
-					class="btn btn-edit">수정</a>
-				<form th:action="@{/post/delete/{id}(id=${post.post_id})}"
-					method="post" style="display: inline;">
-					<button type="submit" class="btn btn-delete"
-						onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-				</form>
-			</th:block>
-		</div>
-		<div class="comment-section">
-			<h3>댓글</h3>
-			<div th:if="${user_id != null}">
-				<div class="comment-form-outer">
-					<textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
-					<button class="mini-btn comment-submit-btn"
-				        onclick="submitComment()"
-				        id="commentSubmitBtn">댓글 등록</button>
-				</div>
-			</div>
-			<div th:unless="${user_id != null}">
-				<p>
-					댓글을 작성하려면 <a
-						th:href="@{/login(returnUrl=${'/post/view/' + post.post_id})}">로그인</a>이
-					필요합니다.
-				</p>
-			</div>
-			<div id="commentList"></div>
-		</div>
-	</div>
-	<script th:inline="javascript">
+        <div id="post-map"></div>
+        <div class="attached-files"
+            th:if="${post.files != null and !post.files.isEmpty()}">
+            <strong>첨부파일:</strong>
+            <ul>
+                <li th:each="file : ${post.files}">
+                    <a th:href="@{/file/download/{fileId}(fileId=${file.fileId})}"
+                        th:text="${file.fileOriginName}"></a>
+                    <span th:text="${#numbers.formatInteger(file.fileSize/1024, 1, 'COMMA')} + ' KB'"></span>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a th:href="@{/post/list}" class="btn btn-back">목록으로</a>
+            <th:block th:if="${post.user_id} == ${sessionUserId}">
+                <a th:href="@{/post/edit/{id}(id=${post.post_id})}"
+                    class="btn btn-edit">수정</a>
+                <form th:action="@{/post/delete/{id}(id=${post.post_id})}"
+                    method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-delete"
+                        onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+                </form>
+            </th:block>
+        </div>
+        <div class="comment-section">
+            <h3>댓글</h3>
+            <div th:if="${user_id != null}">
+                <div class="comment-form-outer">
+                    <textarea id="commentContent" placeholder="댓글을 입력하세요"></textarea>
+                    <button class="mini-btn comment-submit-btn" onclick="submitComment()">댓글 등록</button>
+                </div>
+            </div>
+            <div th:unless="${user_id != null}">
+                <p>
+                    댓글을 작성하려면 <a th:href="@{/login(returnUrl=${'/post/view/' + post.post_id})}">로그인</a>이 필요합니다.
+                </p>
+            </div>
+            <div id="commentList"></div>
+        </div>
+    </div>
+<script th:inline="javascript">
 const postId = [[${post.post_id}]];
 const currentUserId = [[${user_id}]];
 const latitude = [[${post.lat}]];
@@ -603,23 +568,12 @@ $.ajaxSetup({
   }
 });
 
-let isSubmitting = false;
-
 function submitComment() {
-  if (isSubmitting) return; // 이미 제출 중이면 무시
-
-  const btn = document.getElementById('commentSubmitBtn');
   const content = $('#commentContent').val();
-
   if (!content.trim()) {
     alert('댓글을 입력하세요.');
     return;
   }
-
-  isSubmitting = true;
-  btn.disabled = true;
-  btn.textContent = '등록 중...';
-
   $.ajax({
     url: '/api/comments',
     method: 'POST',
@@ -637,11 +591,6 @@ function submitComment() {
       } else {
         alert('댓글 등록 실패');
       }
-    },
-    complete: function() {
-      isSubmitting = false;
-      btn.disabled = false;
-      btn.textContent = '댓글 등록';
     }
   });
 }
@@ -817,21 +766,12 @@ function replyComment(parentId) {
   target.after(replyBox);
 }
 
-const replySubmitting = new WeakMap();
-
 function submitReply(parentId, btn) {
-  if (replySubmitting.get(btn)) return; // 이미 등록 중이면 무시
-
   const replyContent = $(btn).closest('.reply-input').find('.reply-textarea').val();
   if (!replyContent.trim()) {
     alert('답글을 입력하세요.');
     return;
   }
-
-  replySubmitting.set(btn, true);
-  btn.disabled = true;
-  btn.textContent = '등록 중...';
-
   $.ajax({
     url: '/api/comments',
     method: 'POST',
@@ -843,11 +783,6 @@ function submitReply(parentId, btn) {
     },
     error: function () {
       alert('답글 작성 실패');
-    },
-    complete: function() {
-      replySubmitting.set(btn, false);
-      btn.disabled = false;
-      btn.textContent = '답글 등록';
     }
   });
 }
@@ -949,76 +884,98 @@ function initKakaoMap() {
     }  
   });
 }
-document.addEventListener("DOMContentLoaded", function () {
-	  const image = document.querySelector(".main-image");
-	  const modal = document.getElementById("imageModal");
-	  const modalImg = document.getElementById("modalImage");
-
-	  if (image && modal && modalImg) {
-	    image.style.cursor = "pointer";
-	    image.addEventListener("click", function () {
-	      modalImg.src = this.src;
-	      modal.style.display = "flex";
-	    });
-	  }
-	});
-
-	function closeModal() {
-	  document.getElementById("imageModal").style.display = "none";
+function closePreviewModal() {
+	  document.getElementById("previewModal").style.display = "none";
 	}
+	let contentImages = []; // 이미지 src 리스트
+	let currentContentIndex = 0;
 
 	document.addEventListener("DOMContentLoaded", function () {
-	  const modal = document.getElementById("previewModal");
-	  const previewArea = document.getElementById("previewContent");
+	  const modal = document.getElementById("contentImageModal");
+	  const modalImg = document.getElementById("contentModalImage");
 
-	  document.querySelectorAll(".preview-button").forEach(function(btn) {
-	    btn.addEventListener("click", function () {
-	      const fileId = btn.getAttribute("data-fileid");
-	      const fileName = btn.getAttribute("data-filename").toLowerCase();
-	      const fileUrl = `/file/preview/${fileId}`;
+	  contentImages = Array.from(document.querySelectorAll(".view-content img")).map(img => img.src);
 
-	      previewArea.innerHTML = ""; // 초기화
-
-	      if (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg") || fileName.endsWith(".gif") || fileName.endsWith(".webp")) {
-	        const img = document.createElement("img");
-	        img.src = fileUrl;
-	        img.style.maxWidth = "100%";
-	        img.style.maxHeight = "80vh";
-	        previewArea.appendChild(img);
-	      } else if (fileName.endsWith(".pdf")) {
-	        const iframe = document.createElement("iframe");
-	        iframe.src = fileUrl;
-	        iframe.width = "800";
-	        iframe.height = "600";
-	        previewArea.appendChild(iframe);
-	      } else {
-	        previewArea.innerHTML = `<p>이 파일은 미리보기를 지원하지 않습니다.</p>`;
-	      }
-
+	  document.querySelectorAll(".view-content img").forEach(function (img, idx) {
+	    img.style.cursor = "pointer";
+	    img.addEventListener("click", function () {
+	      currentContentIndex = idx;
+	      modalImg.src = this.src;
 	      modal.style.display = "flex";
 	    });
 	  });
 	});
 
-	function closePreviewModal() {
-	  document.getElementById("previewModal").style.display = "none";
-	}
-	document.addEventListener("DOMContentLoaded", function () {
-		  const contentModal = document.getElementById("contentImageModal");
-		  const modalImg = document.getElementById("contentModalImage");
+	//
+let modalImageList = [];
+let currentModalIndex = 0;
 
-		  document.querySelectorAll(".view-content img").forEach(function (img) {
-		    img.style.cursor = "pointer";
-		    img.addEventListener("click", function () {
-		      modalImg.src = this.src;
-		      contentModal.style.display = "flex";
-		    });
-		  });
-		});
+document.addEventListener("DOMContentLoaded", function () {
+  const imgs = document.querySelectorAll(".view-content img");
+  const wrapper = document.getElementById("contentSliderWrapper");
 
-		function closeContentImageModal() {
-		  document.getElementById("contentImageModal").style.display = "none";
-		}
+  imgs.forEach((img, idx) => {
+    const slide = document.createElement("div");
+    slide.className = "swiper-slide";
+    const copy = document.createElement("img");
+    copy.src = img.src;
+    copy.alt = img.alt || `image-${idx}`;
+    copy.addEventListener("click", function () {
+      modalImageList = Array.from(document.querySelectorAll(".swiper-slide img")).map(img => img.src);
+      currentModalIndex = idx;
+      document.getElementById("carouselModalImage").src = this.src;
+      document.getElementById("carouselImageModal").style.display = "flex";
+    });
+    slide.appendChild(copy);
+    wrapper.appendChild(slide);
+  });
+
+  new Swiper(".mySwiper", {
+    loop: true,
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev"
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true
+    }
+  });
+});
+
+function closeCarouselModal() {
+  document.getElementById("carouselImageModal").style.display = "none";
+}
+
+function showPrevModalImage() {
+  if (modalImageList.length === 0) return;
+  currentModalIndex = (currentModalIndex - 1 + modalImageList.length) % modalImageList.length;
+  document.getElementById("carouselModalImage").src = modalImageList[currentModalIndex];
+}
+
+function showNextModalImage() {
+  if (modalImageList.length === 0) return;
+  currentModalIndex = (currentModalIndex + 1) % modalImageList.length;
+  document.getElementById("carouselModalImage").src = modalImageList[currentModalIndex];
+}
+</script>
+</body>
+</html>
+<script>
+  if (modalImageList.length === 0) return;
+    currentModalIndex = (currentModalIndex - 1 + modalImageList.length) % modalImageList.length;
+    document.getElementById("carouselModalImage").src = modalImageList[currentModalIndex];
+  }
+
+  function showNextModalImage() {
+    if (modalImageList.length === 0) return;
+    currentModalIndex = (currentModalIndex + 1) % modalImageList.length;
+    document.getElementById("carouselModalImage").src = modalImageList[currentModalIndex];
+  }
 </script>
 </body>
 </html>
