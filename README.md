@@ -18,7 +18,8 @@
 
 ## 🎥 시연 영상
 
-> 📹 **데모 영상 링크**: ![Uploading board.gif…]()
+> 📹 **데모 영상 링크**: ![board](https://github.com/user-attachments/assets/cb7d6b18-51a1-4f70-978c-ac651e942da6)
+
 
 
 ### 주요 시연 내용
